@@ -1,0 +1,49 @@
+run_name: tiser_qwen7b_full
+
+seed: 42
+
+paths:
+  data_dir: data
+  train_file: data/TISER_train.json
+  test_file: data/TISER_test.json
+  model_dir: model
+  output_dir: outputs
+  local_source_dir: "/Users/gabrieleadorni/Documents/POLITO/Magistrale Data Science Engineering/Deep Natural Language Processing/TISER-main/data"
+  hf_dataset_id: AmazonScience/TISER
+
+model:
+  name: Qwen/Qwen2.5-7B-Instruct        # swap to -3B-Instruct / -1.5B-Instruct, no code change
+  load_in_4bit: true
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
+  # compute dtype is auto: bf16 if supported (A100) else fp16 (T4)
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+  bias: none
+
+train:
+  subset_size: null            # null = full ~60k (default). set e.g. 2000 for a T4 smoke run
+  max_seq_len: 2048
+  per_device_batch_size: 1
+  gradient_accumulation_steps: 16
+  num_epochs: 3
+  learning_rate: 2.0e-4
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  optim: paged_adamw_8bit
+  gradient_checkpointing: true
+  logging_steps: 20
+  save_strategy: epoch
+
+eval:
+  max_samples_per_split: null  # null = full test split. set e.g. 200 for a T4 sampled eval
+  batch_size: 8                # drop to 1-2 on T4 if OOM
+  max_new_tokens: 512
+  do_sample: false             # greedy / deterministic
+
+splits: [TGQA, TempReason_L2, TempReason_L3, TimeQA_easy, TimeQA_hard]
