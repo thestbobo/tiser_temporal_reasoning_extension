@@ -49,4 +49,4 @@ eval:
   max_new_tokens: 256
   do_sample: false             # greedy / deterministic
 
-splits: [TGQA, TempReason_L2, TempReason_L3, TimeQA_easy, TimeQA_hard]
+splits: [tgqa_test, tempreason_l2_test, tempreason_l3_test, timeqa_easy_test, timeqa_hard_test]

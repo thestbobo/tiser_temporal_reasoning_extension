@@ -5,10 +5,21 @@ from tqdm import tqdm
 
 
 def generate_batch(model, tokenizer, prompts: list[str], gen_cfg) -> list[str]:
+    # Wrap each prompt in the SAME chat template used at training time so the model
+    # sees the context it was fine-tuned in. `add_generation_prompt=True` ends the
+    # text at the assistant header, exactly where the gold trace began in training.
+    wrapped = [
+        tokenizer.apply_chat_template(
+            [{"role": "user", "content": p}], tokenize=False, add_generation_prompt=True
+        )
+        for p in prompts
+    ]
     outputs: list[str] = []
-    for start in tqdm(range(0, len(prompts), gen_cfg.batch_size), desc="generate"):
-        batch = prompts[start : start + gen_cfg.batch_size]
-        enc = tokenizer(batch, return_tensors="pt", padding=True).to(model.device)
+    for start in tqdm(range(0, len(wrapped), gen_cfg.batch_size), desc="generate"):
+        batch = wrapped[start : start + gen_cfg.batch_size]
+        enc = tokenizer(
+            batch, return_tensors="pt", padding=True, add_special_tokens=False
+        ).to(model.device)
 
         with torch.no_grad():
             generated = model.generate(

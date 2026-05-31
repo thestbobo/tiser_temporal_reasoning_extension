@@ -69,4 +69,12 @@ def load_adapter_for_inference(cfg, adapter_dir: str) -> tuple[PeftModel, PreTra
     )
     model = PeftModel.from_pretrained(base, adapter_dir)
     model.eval()
+
+    # Qwen ships sampling defaults (temperature/top_p/top_k) in its generation
+    # config; with greedy decoding they do nothing but spam warnings. Clear them.
+    gen_cfg = model.generation_config
+    gen_cfg.do_sample = False
+    gen_cfg.temperature = None
+    gen_cfg.top_p = None
+    gen_cfg.top_k = None
     return model, tokenizer

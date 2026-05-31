@@ -3,9 +3,10 @@ from __future__ import annotations
 import os
 
 import torch
+from transformers import DataCollatorForSeq2Seq
 from trl import SFTConfig, SFTTrainer
 
-from src.data.dataset import filter_by_length, load_tiser_train
+from src.data.dataset import build_train_dataset
 from src.model.loader import build_lora_config, load_model_and_tokenizer
 from src.utils.io import write_run_meta
 from src.utils.seeding import set_seed
@@ -38,12 +39,18 @@ def _sft_config(cfg) -> SFTConfig:
 
 
 def build_trainer(cfg, model, tokenizer, train_ds) -> SFTTrainer:
+    # train_ds is already tokenized (input_ids/attention_mask/labels), so SFTTrainer
+    # skips its own prep and does NOT apply the chat template a second time. The
+    # seq2seq collator pads input_ids and pads our -100 labels (so completion-only
+    # masking is preserved) -- the default LM collator would overwrite labels.
+    collator = DataCollatorForSeq2Seq(tokenizer, padding=True, label_pad_token_id=-100)
     return SFTTrainer(
         model=model,
         args=_sft_config(cfg),
         train_dataset=train_ds,
         processing_class=tokenizer,
         peft_config=build_lora_config(cfg),
+        data_collator=collator,
     )
 
 
@@ -54,8 +61,9 @@ def run_training(cfg) -> str:
 
     model, tokenizer = load_model_and_tokenizer(cfg)
 
-    train_ds = load_tiser_train(cfg.paths.train_file, cfg.train.subset_size)
-    train_ds, n_dropped = filter_by_length(train_ds, tokenizer, cfg.train.max_seq_len)
+    train_ds, n_dropped = build_train_dataset(
+        cfg.paths.train_file, tokenizer, cfg.train.max_seq_len, cfg.train.subset_size
+    )
     print(
         f"[train] {len(train_ds)} examples after length filter "
         f"(dropped {n_dropped} > {cfg.train.max_seq_len} tokens)"

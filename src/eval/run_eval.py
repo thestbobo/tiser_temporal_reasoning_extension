@@ -46,7 +46,7 @@ def run_eval(cfg, adapter_dir: str | None = None) -> dict:
             }
         )
 
-    metrics = aggregate(records)
+    metrics = aggregate(records, cfg.splits)
     metrics["n_malformed"] = n_malformed
     metrics["config_name"] = cfg.run_name
     metrics["adapter_dir"] = adapter_dir

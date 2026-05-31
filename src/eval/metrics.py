@@ -36,8 +36,14 @@ def token_f1(pred: str, gold: str) -> float:
     return 2 * precision * recall / (precision + recall)
 
 
-def aggregate(records: list[dict]) -> dict:
-    """Group per-example {dataset_name, em, f1} by split; macro = unweighted split mean."""
+def aggregate(records: list[dict], macro_splits: list[str] | None = None) -> dict:
+    """Group per-example {dataset_name, em, f1} by split; macro = unweighted split mean.
+
+    `per_split` is reported for every split present (informational), but the macro
+    is averaged only over `macro_splits` (the in-domain whitelist). This keeps any
+    OOD split present in the test file (e.g. tot_semantic_test) out of the headline
+    number. If `macro_splits` is None, every present split counts.
+    """
     per_split: dict[str, dict] = {}
     for name in sorted({r["dataset_name"] for r in records}):
         rows = [r for r in records if r["dataset_name"] == name]
@@ -47,17 +53,15 @@ def aggregate(records: list[dict]) -> dict:
             "n": len(rows),
         }
 
+    if macro_splits is None:
+        keys = list(per_split)
+    else:
+        keys = [s for s in macro_splits if s in per_split]
+
     return {
         "per_split": per_split,
-        "macro_em": macro_em(per_split),
-        "macro_f1": macro_f1(per_split),
+        "macro_splits": keys,
+        "macro_em": sum(per_split[s]["em"] for s in keys) / len(keys) if keys else 0.0,
+        "macro_f1": sum(per_split[s]["f1"] for s in keys) / len(keys) if keys else 0.0,
         "n_total": len(records),
     }
-
-
-def macro_em(per_split: dict) -> float:
-    return sum(v["em"] for v in per_split.values()) / len(per_split)
-
-
-def macro_f1(per_split: dict) -> float:
-    return sum(v["f1"] for v in per_split.values()) / len(per_split)

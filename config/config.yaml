@@ -46,4 +46,7 @@ eval:
   max_new_tokens: 512
   do_sample: false             # greedy / deterministic
 
-splits: [TGQA, TempReason_L2, TempReason_L3, TimeQA_easy, TimeQA_hard]
+# In-domain splits used for the macro average. Must match dataset_name in the
+# released test file (lowercase, _test suffix). The file also ships an OOD split
+# (tot_semantic_test); leaving it out here keeps it out of the macro.
+splits: [tgqa_test, tempreason_l2_test, tempreason_l3_test, timeqa_easy_test, timeqa_hard_test]

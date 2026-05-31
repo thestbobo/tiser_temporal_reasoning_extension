@@ -21,14 +21,64 @@ def _load_records(path: str) -> list[dict]:
     return obj
 
 
-def load_tiser_train(path: str, subset_size: int | None = None) -> Dataset:
+def _encode_train_example(prompt: str, completion: str, tokenizer) -> dict:
+    """Pre-tokenize one example with completion-only label masking.
+
+    We build the *exact* chat-templated text an instruct model expects
+    (`<|im_start|>user … <|im_start|>assistant {completion}<|im_end|>`) and mask
+    everything up to the assistant header so the loss is computed on the gold
+    trace only. The trailing EOS (`<|im_end|>`) stays unmasked so the model
+    learns to stop. Tokenizing the dataset ourselves bypasses TRL's automatic
+    `{prompt, completion}` handling, which would otherwise (a) re-wrap with the
+    chat template *and* (b) train on the whole sequence with no masking.
+    """
+    full_text = tokenizer.apply_chat_template(
+        [{"role": "user", "content": prompt}, {"role": "assistant", "content": completion}],
+        tokenize=False,
+    )
+    prefix_text = tokenizer.apply_chat_template(
+        [{"role": "user", "content": prompt}],
+        tokenize=False,
+        add_generation_prompt=True,
+    )
+    full_ids = tokenizer(full_text, add_special_tokens=False)["input_ids"]
+    prefix_ids = tokenizer(prefix_text, add_special_tokens=False)["input_ids"]
+
+    # Mask the longest shared prefix (user turn + assistant header). Matching by
+    # token id is robust to any merge at the prefix/completion boundary.
+    n_mask = 0
+    for a, b in zip(prefix_ids, full_ids):
+        if a != b:
+            break
+        n_mask += 1
+    labels = [-100] * n_mask + full_ids[n_mask:]
+    return {
+        "input_ids": full_ids,
+        "attention_mask": [1] * len(full_ids),
+        "labels": labels,
+    }
+
+
+def build_train_dataset(
+    path: str, tokenizer, max_seq_len: int, subset_size: int | None = None
+) -> tuple[Dataset, int]:
+    """Load -> chat-template + completion-only mask -> length filter.
+
+    Inference must wrap prompts with the *same* chat template (see
+    `src/inference/generate.py`) so the model sees the context it was trained in.
+    """
     records = _load_records(path)
     if subset_size is not None:
         records = records[:subset_size]
-    # TRL prompt-completion format -> SFTTrainer masks the prompt and trains on the
-    # completion only. completion = the gold 4-section trace (record["output"]).
-    rows = [{"prompt": r["prompt"], "completion": r["output"]} for r in records]
-    return Dataset.from_list(rows)
+    ds = Dataset.from_list([{"prompt": r["prompt"], "completion": r["output"]} for r in records])
+
+    ds = ds.map(
+        lambda ex: _encode_train_example(ex["prompt"], ex["completion"], tokenizer),
+        remove_columns=["prompt", "completion"],
+    )
+    before = len(ds)
+    ds = ds.filter(lambda ex: len(ex["input_ids"]) <= max_seq_len)
+    return ds, before - len(ds)
 
 
 def load_tiser_test(path: str, max_samples_per_split: int | None = None) -> Dataset:
@@ -49,12 +99,3 @@ def _cap_per_split(rows: list[dict], n: int) -> list[dict]:
         counts[name] = counts.get(name, 0) + 1
         kept.append(row)
     return kept
-
-
-def filter_by_length(ds: Dataset, tokenizer, max_seq_len: int) -> tuple[Dataset, int]:
-    def within_limit(example):
-        n = len(tokenizer(example["prompt"] + example["completion"])["input_ids"])
-        return n <= max_seq_len
-
-    filtered = ds.filter(within_limit)
-    return filtered, len(ds) - len(filtered)
