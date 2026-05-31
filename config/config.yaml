@@ -13,7 +13,8 @@ paths:
 
 model:
   name: Qwen/Qwen2.5-7B-Instruct        # swap to -3B-Instruct / -1.5B-Instruct, no code change
-  load_in_4bit: true
+  load_in_4bit: true                     # true = QLoRA (smoke-validated). false = bf16 base LoRA
+                                         #   (~20-40% faster on H100, fits 80GB, closer to paper)
   bnb_4bit_quant_type: nf4
   bnb_4bit_use_double_quant: true
   # compute dtype is auto: bf16 if supported (A100) else fp16 (T4)
@@ -28,22 +29,22 @@ lora:
 train:
   subset_size: null            # null = full ~60k (default). set e.g. 2000 for a T4 smoke run
   max_seq_len: 2048
-  per_device_batch_size: 1
-  gradient_accumulation_steps: 16
+  per_device_batch_size: 8     # H100-80GB; effective batch = 8 x 2 = 16 (unchanged from smoke)
+  gradient_accumulation_steps: 2
   num_epochs: 3
   learning_rate: 2.0e-4
   lr_scheduler_type: cosine
   warmup_ratio: 0.03
   weight_decay: 0.0
   optim: paged_adamw_8bit
-  gradient_checkpointing: true
+  gradient_checkpointing: true   # safe default; try `false` on H100 to go ~20-30% faster if no OOM
   logging_steps: 20
   save_strategy: epoch
 
 eval:
   max_samples_per_split: null  # null = full test split. set e.g. 200 for a T4 sampled eval
-  batch_size: 8                # drop to 1-2 on T4 if OOM
-  max_new_tokens: 512
+  batch_size: 32               # H100-80GB; drop to 16 if KV-cache OOM, or to 1-2 on T4
+  max_new_tokens: 768          # headroom for long TempReason_L3 timelines (EOS stops early, so ~free)
   do_sample: false             # greedy / deterministic
 
 # In-domain splits used for the macro average. Must match dataset_name in the
