@@ -48,7 +48,10 @@ def filter_eligible(cfg) -> dict:
             n_no_memory += 1
             continue
         m, agreement = rec["m"], rec["agreement"]
-        confident = agreement >= agreement_min
+        # An empty majority answer means no usable belief (e.g. closed-book is OOD for
+        # the fine-tune and the samples were malformed) -> not confident, so it is
+        # dropped rather than mis-filed into the confident-wrong bucket.
+        confident = agreement >= agreement_min and bool(normalize_answer(m))
         correct = exact_match(m, it["answer_orig"]) == 1.0
         if confident and correct:
             eligible.append({**it, "m": m, "agreement": agreement, "n_malformed": rec["n_malformed"]})

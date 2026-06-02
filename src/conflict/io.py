@@ -14,7 +14,7 @@ from src.utils.io import ensure_dir, git_sha, write_json
 
 # Library versions worth pinning when present. Imported best-effort so the CPU
 # stages (M0/M2) run on a laptop without the GPU stack installed.
-_TRACKED_LIBS = ("torch", "transformers", "peft", "trl", "datasets")
+_TRACKED_LIBS = ("torch", "transformers", "peft", "trl", "datasets", "vllm")
 
 
 def stage_dir(cfg, stage: str) -> str:

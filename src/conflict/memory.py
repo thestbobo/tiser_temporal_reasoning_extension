@@ -56,11 +56,57 @@ def _majority(answers: list[str]) -> tuple[str, float]:
     return rep, top_count / len(answers)
 
 
-def _load(cfg, entry):
+def _free_torch(model) -> None:
+    # Free the HF model before the next entry (two 7B loads back-to-back otherwise).
+    del model
+    gc.collect()
+    try:
+        import torch
+
+        torch.cuda.empty_cache()
+    except Exception:
+        pass
+
+
+def _build_generate(cfg, entry):
+    """Return (generate_fn, cleanup_fn) for the configured inference engine.
+
+    'generate_fn(prompts, *, temperature=None, top_p=None, num_return_sequences=1)'
+    matches 'generate_batch''s flat, k-per-input-in-input-order contract, so the
+    self-consistency slicing below is engine-agnostic ('hf' | 'vllm').
+    """
+    engine = cfg.conflict.memory.get("engine", "hf")
     adapter = entry.get("adapter_dir")
-    if adapter:
-        return load_adapter_for_inference(cfg, _resolve(adapter))
-    return load_base_for_inference(cfg)
+    adapter = _resolve(adapter) if adapter else None
+
+    if engine == "vllm":
+        from src.inference.vllm_engine import load_vllm, vllm_generate
+
+        llm, tokenizer, lora_request = load_vllm(cfg, adapter)
+
+        def generate(prompts, *, temperature=None, top_p=None, num_return_sequences=1):
+            return vllm_generate(
+                llm, tokenizer, prompts, cfg.eval,
+                temperature=temperature, top_p=top_p,
+                num_return_sequences=num_return_sequences, lora_request=lora_request,
+            )
+
+        return generate, lambda: _free_torch(llm)
+
+    if engine != "hf":
+        raise ValueError(f"unknown inference engine {engine!r} (expected 'hf' or 'vllm')")
+
+    model, tokenizer = (
+        load_adapter_for_inference(cfg, adapter) if adapter else load_base_for_inference(cfg)
+    )
+
+    def generate(prompts, *, temperature=None, top_p=None, num_return_sequences=1):
+        return generate_batch(
+            model, tokenizer, prompts, cfg.eval,
+            temperature=temperature, top_p=top_p, num_return_sequences=num_return_sequences,
+        )
+
+    return generate, lambda: _free_torch(model)
 
 
 def elicit_for_model(cfg, items: list[dict], entry: dict) -> dict:
@@ -69,17 +115,13 @@ def elicit_for_model(cfg, items: list[dict], entry: dict) -> dict:
     k = mem_cfg.k
     set_seed(cfg.seed)
 
-    model, tokenizer = _load(cfg, entry)
+    generate, cleanup = _build_generate(cfg, entry)
     prompts = build_closed_book_prompts(items, mem_cfg.closed_book_style)
 
-    samples_flat = generate_batch(
-        model, tokenizer, prompts, cfg.eval,
-        temperature=mem_cfg.temperature, top_p=mem_cfg.top_p, num_return_sequences=k,
+    samples_flat = generate(
+        prompts, temperature=mem_cfg.temperature, top_p=mem_cfg.top_p, num_return_sequences=k
     )
-    greedy_flat = (
-        generate_batch(model, tokenizer, prompts, cfg.eval)
-        if mem_cfg.include_greedy else [None] * len(items)
-    )
+    greedy_flat = generate(prompts) if mem_cfg.include_greedy else [None] * len(items)
 
     rows = []
     for i, it in enumerate(items):
@@ -105,17 +147,10 @@ def elicit_for_model(cfg, items: list[dict], entry: dict) -> dict:
     write_jsonl(os.path.join(out_dir, f"memory_{tag}.jsonl"), rows)
     report = _report(rows, k, tag, mem_cfg.closed_book_style)
     write_json(os.path.join(out_dir, f"memory_{tag}_report.json"), report)
-    write_run_meta(out_dir, cfg, extra={"model_tag": tag, "model_entry": dict(entry)})
+    engine = cfg.conflict.memory.get("engine", "hf")
+    write_run_meta(out_dir, cfg, extra={"model_tag": tag, "model_entry": dict(entry), "engine": engine})
 
-    # Free the model before the next entry (two 7B loads back-to-back otherwise).
-    del model
-    gc.collect()
-    try:
-        import torch
-
-        torch.cuda.empty_cache()
-    except Exception:
-        pass
+    cleanup()
 
     print(f"[M1:{tag}] {len(rows)} items | malformed-rate {report['malformed_rate']:.3f} "
           f"| mean agreement {report['mean_agreement']:.3f} -> {out_dir}/memory_{tag}.jsonl")

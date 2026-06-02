@@ -55,6 +55,9 @@ conflict:
   in_scope_splits: [tempreason_l2_test, tempreason_l3_test, timeqa_easy_test, timeqa_hard_test]
   max_per_split: null            # cap for smoke/dev runs; null = full split
   memory:
+    engine: vllm                           # vllm | hf  (vLLM ~10-50x faster; HF is the baseline path)
+    gpu_memory_utilization: 0.90           # vLLM KV-cache budget (fraction of VRAM)
+    max_model_len: null                    # vLLM context cap; null = model default (closed-book prompts are short)
     closed_book_style: tiser_no_context   # tiser_no_context | tiser_empty_note (D-CB-PROMPT)
     k: 5                                   # self-consistency samples per question
     temperature: 0.7
