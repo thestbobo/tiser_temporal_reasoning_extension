@@ -1,0 +1,71 @@
+run_name: conflict_probe
+
+seed: 42
+
+paths:
+  data_dir: data
+  train_file: data/TISER_train.json
+  test_file: data/TISER_test.json   # git-LFS pointer locally; point at the fetched JSONL
+                                    # (full_data/TISER_test.json) for local CPU runs, or `git lfs pull`
+  model_dir: model
+  output_dir: outputs
+  local_source_dir: "/Users/gabrieleadorni/Documents/POLITO/Magistrale Data Science Engineering/Deep Natural Language Processing/full_data"
+  hf_dataset_id: AmazonScience/TISER
+
+model:
+  name: Qwen/Qwen2.5-7B-Instruct
+  load_in_4bit: false                    # match the frozen baseline run (bf16 base + LoRA)
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
+
+# lora/train kept for load_config's required-key contract (unused by the conflict pipeline).
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+  bias: none
+
+train:
+  subset_size: null
+  max_seq_len: 2048
+  per_device_batch_size: 8
+  gradient_accumulation_steps: 2
+  num_epochs: 3
+  learning_rate: 2.0e-4
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  optim: paged_adamw_8bit
+  gradient_checkpointing: true
+  logging_steps: 20
+  save_strategy: epoch
+
+eval:
+  max_samples_per_split: null
+  batch_size: 32
+  max_new_tokens: 768          # closed-book traces are short, but keep headroom for the 4-tag format
+  do_sample: false             # greedy default; M1 overrides with sampling kwargs for self-consistency
+
+# In-domain splits present in the released test file (informational / load_config contract).
+splits: [tgqa_test, tempreason_l2_test, tempreason_l3_test, timeqa_easy_test, timeqa_hard_test]
+
+# --- Conflict-probe pipeline (M0-M2) -------------------------------------------------
+conflict:
+  in_scope_splits: [tempreason_l2_test, tempreason_l3_test, timeqa_easy_test, timeqa_hard_test]
+  max_per_split: null            # cap for smoke/dev runs; null = full split
+  memory:
+    closed_book_style: tiser_no_context   # tiser_no_context | tiser_empty_note (D-CB-PROMPT)
+    k: 5                                   # self-consistency samples per question
+    temperature: 0.7
+    top_p: 0.9
+    majority_threshold: 3                  # keep m iff the majority answer appears in >= 3/5 samples
+    include_greedy: true                   # also do one greedy pass per item (cheap sanity)
+    models:                                # M1 runs once per entry
+      - {tag: tiser, adapter_dir: model/tiser_qwen7b_full/adapter}
+      - {tag: base,  adapter_dir: null}
+  eligibility:
+    primary_model: tiser         # gate on the experimental subject (D-MEM)
+    agreement_min: 0.6           # >= 3/5
+    target_n_per_class: 150      # D-CLASSN GO/NO-GO bar for C1/C2
+    secondary_classes: [C3]      # judged against a lower bar (L3-only substrate)

@@ -35,8 +35,8 @@ def _load_tokenizer(name: str) -> PreTrainedTokenizer:
 def _load_base(cfg) -> PreTrainedModel:
     """Load the frozen base model.
 
-    `model.load_in_4bit: true` -> QLoRA path (4-bit nf4 base), the smoke-validated
-    default. `false` -> bf16 base (no quantization): faster per step and closer to
+    'model.load_in_4bit: true' -> QLoRA path (4-bit nf4 base), the smoke-validated
+    default. 'false' -> bf16 base (no quantization): faster per step and closer to
     the paper, worth it on an 80GB H100 where the full-precision 7B fits with room.
     """
     if cfg.model.load_in_4bit:
@@ -79,6 +79,17 @@ def build_lora_config(cfg) -> LoraConfig:
     )
 
 
+def _clear_sampling_defaults(model) -> None:
+    # Qwen ships sampling defaults (temperature/top_p/top_k) in its generation
+    # config; with greedy decoding they do nothing but spam warnings. Clear them.
+    # Per-call sampling kwargs (M1 self-consistency) still override these.
+    gen_cfg = model.generation_config
+    gen_cfg.do_sample = False
+    gen_cfg.temperature = None
+    gen_cfg.top_p = None
+    gen_cfg.top_k = None
+
+
 def load_adapter_for_inference(cfg, adapter_dir: str) -> tuple[PeftModel, PreTrainedTokenizer]:
     tokenizer = _load_tokenizer(cfg.model.name)
     tokenizer.padding_side = "left"  # left-pad for batched generation
@@ -86,12 +97,20 @@ def load_adapter_for_inference(cfg, adapter_dir: str) -> tuple[PeftModel, PreTra
     base = _load_base(cfg)
     model = PeftModel.from_pretrained(base, adapter_dir)
     model.eval()
+    _clear_sampling_defaults(model)
+    return model, tokenizer
 
-    # Qwen ships sampling defaults (temperature/top_p/top_k) in its generation
-    # config; with greedy decoding they do nothing but spam warnings. Clear them.
-    gen_cfg = model.generation_config
-    gen_cfg.do_sample = False
-    gen_cfg.temperature = None
-    gen_cfg.top_p = None
-    gen_cfg.top_k = None
+
+def load_base_for_inference(cfg) -> tuple[PreTrainedModel, PreTrainedTokenizer]:
+    """Load the off-the-shelf base model (no adapter) for inference.
+
+    Mirrors 'load_adapter_for_inference' minus the PEFT wrap -- used by M1 to elicit
+    the base model's parametric memory as a cross-check on the fine-tuned subject.
+    """
+    tokenizer = _load_tokenizer(cfg.model.name)
+    tokenizer.padding_side = "left"
+
+    model = _load_base(cfg)
+    model.eval()
+    _clear_sampling_defaults(model)
     return model, tokenizer
