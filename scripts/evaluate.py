@@ -9,11 +9,15 @@ def main() -> None:
     parser.add_argument("--config", required=True)
     parser.add_argument("--adapter-dir", default=None, help="defaults to model/<run_name>/adapter")
     parser.add_argument("--max-samples-per-split", type=int, default=None)
+    parser.add_argument("--eval-engine", choices=["hf", "vllm"], default=None,
+                        help="generation backend; overrides eval.engine (default hf = frozen-baseline repro)")
     args = parser.parse_args()
 
     cfg = load_config(args.config)
     if args.max_samples_per_split is not None:
         cfg.eval.max_samples_per_split = args.max_samples_per_split
+    if args.eval_engine is not None:
+        cfg.eval.engine = args.eval_engine
 
     run_eval(cfg, adapter_dir=args.adapter_dir)
 

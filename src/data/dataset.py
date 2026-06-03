@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 
-from datasets import Dataset
+# `datasets` (HF) is needed only by the training path (build_train_dataset's .map/.filter).
+# It is imported lazily there so the inference/eval path — and any CPU box without the GPU
+# stack — can load the test set without pulling in `datasets`.
 
 TRAIN_KEYS = ("dataset_name", "question_id", "question", "answer", "prompt", "output")
 TEST_KEYS = ("dataset_name", "question_id", "question", "prompt", "answer")
@@ -67,6 +69,8 @@ def build_train_dataset(
     Inference must wrap prompts with the *same* chat template (see
     `src/inference/generate.py`) so the model sees the context it was trained in.
     """
+    from datasets import Dataset
+
     records = _load_records(path)
     if subset_size is not None:
         records = records[:subset_size]
@@ -81,12 +85,17 @@ def build_train_dataset(
     return ds, before - len(ds)
 
 
-def load_tiser_test(path: str, max_samples_per_split: int | None = None) -> Dataset:
+def load_tiser_test(path: str, max_samples_per_split: int | None = None) -> list[dict]:
+    """Test records as a plain list of dicts (no `datasets` dependency).
+
+    run_eval consumes this by row iteration and per-key access, so a list of dicts is
+    sufficient and keeps the eval path off the GPU/`datasets` stack.
+    """
     records = _load_records(path)
     rows = [{k: r[k] for k in TEST_KEYS} for r in records]
     if max_samples_per_split is not None:
         rows = _cap_per_split(rows, max_samples_per_split)
-    return Dataset.from_list(rows)
+    return rows
 
 
 def _cap_per_split(rows: list[dict], n: int) -> list[dict]:

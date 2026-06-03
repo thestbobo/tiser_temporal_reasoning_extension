@@ -49,9 +49,9 @@ def run_eval(cfg, adapter_dir: str | None = None) -> dict:
     generate = _build_generate(cfg, adapter_dir)
 
     test_ds = load_tiser_test(cfg.paths.test_file, cfg.eval.max_samples_per_split)
-    _warn_on_unexpected_splits(test_ds["dataset_name"], cfg.splits)
+    _warn_on_unexpected_splits([r["dataset_name"] for r in test_ds], cfg.splits)
 
-    generations = generate(list(test_ds["prompt"]))
+    generations = generate([r["prompt"] for r in test_ds])
 
     records = []
     n_malformed = 0
