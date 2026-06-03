@@ -3,9 +3,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-_ANSWER_BLOCK = re.compile(r"<answer>(.*?)</answer>", re.DOTALL | re.IGNORECASE)
-_ANSWER_OPEN = re.compile(r"<answer>(.*)", re.DOTALL | re.IGNORECASE)
-
 
 @dataclass
 class ParseResult:
@@ -13,21 +10,40 @@ class ParseResult:
     malformed: bool
 
 
-def parse_answer(text: str) -> ParseResult:
-    """Extract the <answer> content from a (possibly malformed) generation.
+def _parse_tag(text: str, tag: str) -> ParseResult:
+    """Extract the content of an XML-ish tag from a (possibly malformed) generation.
 
-    Real outputs may repeat the template, drop the closing tag, or omit the tag
-    entirely. Prefer the last well-formed block; otherwise take everything after
-    the last opening tag; otherwise return empty (flagged malformed). Never raises.
+    Real outputs may repeat the template, drop the closing tag, or omit the tag entirely.
+    Prefer the last well-formed '<tag>...</tag>' block; otherwise take everything after the
+    last opening tag (flagged malformed); otherwise return empty (flagged malformed). The
+    'answer' field carries the extracted text regardless of tag. Never raises.
     """
-    blocks = _ANSWER_BLOCK.findall(text)
+    block = re.compile(rf"<{tag}>(.*?)</{tag}>", re.DOTALL | re.IGNORECASE)
+    open_re = re.compile(rf"<{tag}>(.*)", re.DOTALL | re.IGNORECASE)
+
+    blocks = block.findall(text)
     if blocks:
         return ParseResult(answer=blocks[-1].strip(), malformed=False)
 
     open_match = None
-    for open_match in _ANSWER_OPEN.finditer(text):
+    for open_match in open_re.finditer(text):
         pass
     if open_match is not None:
         return ParseResult(answer=open_match.group(1).strip(), malformed=True)
 
     return ParseResult(answer="", malformed=True)
+
+
+def parse_answer(text: str) -> ParseResult:
+    """Extract the <answer> content from a (possibly malformed) generation."""
+    return _parse_tag(text, "answer")
+
+
+def parse_reflection(text: str) -> ParseResult:
+    """Extract the <reflection> content (the TISER audit step). Mirrors 'parse_answer'."""
+    return _parse_tag(text, "reflection")
+
+
+def parse_timeline(text: str) -> ParseResult:
+    """Extract the <timeline> content (the TISER timeline step). Mirrors 'parse_answer'."""
+    return _parse_tag(text, "timeline")

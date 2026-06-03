@@ -196,6 +196,104 @@ def parse_context(split: str, ctx: str) -> list[dict]:
     raise ContextParseError(f"no parser for split {split!r}")
 
 
+# --- Serializers (inverse of the parsers above; used by the perturbation engine M3) ---
+# Each serializer renders the exact released template so that an edited event list is
+# re-emitted byte-faithfully. The contract is structural round-trip, asserted by callers:
+#   parse_l2l3(serialize_l2l3(events)) == events   (and the TimeQA equivalent).
+
+
+def serialize_l2l3(events: list[dict]) -> str:
+    """Render TempReason L2/L3 events back into their context string.
+
+    Events are joined by ".. " (each sentence's own "." + the ". " separator) and the
+    whole string ends with a single "."; inverse of 'parse_l2l3'.
+    """
+    if not events:
+        raise ContextParseError("cannot serialize empty L2/L3 event list")
+    sentences = [
+        f"{e['head']} from {e['start_month']}, {e['start_year']} "
+        f"to {e['end_month']}, {e['end_year']}"
+        for e in events
+    ]
+    return ".. ".join(sentences) + "."
+
+
+def _endpoint_str(month: str | None, year: int) -> str:
+    """Render a TimeQA interval endpoint: '<Mon> <YYYY>' or bare '<YYYY>'."""
+    return f"{month} {year}" if month else f"{year}"
+
+
+def _timeqa_event_str(e: dict) -> str:
+    """Render one TimeQA interval; inverse of a single 'parse_timeqa' event."""
+    start = _endpoint_str(e["start_month"], e["start_year"])
+    end = _endpoint_str(e["end_month"], e["end_year"])
+    lhs = f"{e['entity']}'s {e['relation']}" if e["relation"] else e["entity"]
+    verb = "is" if len(e["values"]) == 1 else "are"
+    values = " , ".join(f"( {v} )" for v in e["values"])
+    return f"{start} - {end} : {lhs} {verb} {values}"
+
+
+def serialize_timeqa(events: list[dict]) -> str:
+    """Render TimeQA events back into their context string.
+
+    Events are joined by ". " (closing paren of one event + the ". " separator); unlike
+    L2/L3, the released TimeQA context carries no trailing period. Inverse of 'parse_timeqa'.
+    The verb (are/is) is re-derived from value count since the parser discards it; zero-width
+    point intervals (start == end) round-trip either way.
+    """
+    if not events:
+        raise ContextParseError("cannot serialize empty TimeQA event list")
+    return ". ".join(_timeqa_event_str(e) for e in events)
+
+
+def serialize_context(split: str, events: list[dict]) -> str:
+    """Dispatch to the right serializer for an in-scope split."""
+    if split in ("tempreason_l2_test", "tempreason_l3_test"):
+        return serialize_l2l3(events)
+    if split in ("timeqa_easy_test", "timeqa_hard_test"):
+        return serialize_timeqa(events)
+    raise ContextParseError(f"no serializer for split {split!r}")
+
+
+def _strip_raw(events: list[dict]) -> list[dict]:
+    """Drop the provenance-only 'raw' field for structural comparison.
+
+    'raw' is the verbatim source fragment (stale after any edit, and not byte-recoverable
+    for zero-width TimeQA point intervals which may render as '<Mon> <YYYY>' rather than
+    '<Mon> <YYYY> - <Mon> <YYYY>'); it is not part of the canonical structured event.
+    """
+    return [{k: v for k, v in e.items() if k != "raw"} for e in events]
+
+
+def assert_round_trip(split: str, events: list[dict]) -> str:
+    """Serialize 'events', re-parse, and assert structural equality. Returns the string.
+
+    The safety net for byte-template fidelity: every edited context must survive this
+    before it is emitted by M3. Compares structured fields only (the 'raw' provenance
+    field is excluded — see '_strip_raw').
+    """
+    rendered = serialize_context(split, events)
+    reparsed = parse_context(split, rendered)
+    if _strip_raw(reparsed) != _strip_raw(events):
+        raise ContextParseError(
+            f"round-trip mismatch for split {split!r}:\n"
+            f"  events:   {events!r}\n  reparsed: {reparsed!r}\n  rendered: {rendered!r}"
+        )
+    return rendered
+
+
+def inject_context(prompt_no_context: str, ctx: str) -> str:
+    """Insert a 'Temporal context: <ctx>' block before '### Answer:' in a closed-book prompt.
+
+    Mirrors 'inject_empty_note' exactly but with a real (edited) context, so the verbatim
+    4-tag preamble + question stay byte-identical to training. Used by M4 (tiser style).
+    """
+    head, sep, tail = prompt_no_context.rpartition(_ANS_MARKER)
+    if not sep:
+        raise ContextParseError("closed-book prompt missing '### Answer:' marker")
+    return f"{head.rstrip()}\n    \n    {_CTX_MARKER} {ctx}\n    \n    {sep}{tail}"
+
+
 def applicable_classes(split: str) -> list[str]:
     """Conflict classes applicable to a split's substrate (doc 4.2)."""
     return list(_APPLICABLE[split])

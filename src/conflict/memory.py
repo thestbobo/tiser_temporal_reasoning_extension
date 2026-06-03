@@ -27,7 +27,6 @@ from src.conflict.io import read_jsonl, stage_dir, write_jsonl, write_run_meta
 from src.inference.generate import generate_batch
 from src.inference.parser import parse_answer
 from src.eval.metrics import normalize_answer
-from src.model.loader import load_adapter_for_inference, load_base_for_inference
 from src.utils.config import REPO_ROOT
 from src.utils.io import write_json
 from src.utils.seeding import set_seed
@@ -95,6 +94,10 @@ def _build_generate(cfg, entry):
 
     if engine != "hf":
         raise ValueError(f"unknown inference engine {engine!r} (expected 'hf' or 'vllm')")
+
+    # Imported lazily: the HF loader pulls peft/bitsandbytes, which the vLLM path
+    # must not require (and whose install can disturb the vLLM torch/transformers).
+    from src.model.loader import load_adapter_for_inference, load_base_for_inference
 
     model, tokenizer = (
         load_adapter_for_inference(cfg, adapter) if adapter else load_base_for_inference(cfg)

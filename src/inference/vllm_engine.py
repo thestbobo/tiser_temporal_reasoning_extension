@@ -21,19 +21,30 @@ GPU-only; 'vllm' is an optional dependency (see requirements.txt). Imported lazi
 
 from __future__ import annotations
 
+import os
+
 from transformers import AutoTokenizer
 
 
-def load_vllm(cfg, adapter_dir: str | None):
+def load_vllm(cfg, adapter_dir: str | None, *, engine_cfg=None):
     """Load a vLLM engine for the base model, optionally with a LoRA adapter.
 
     Returns (llm, tokenizer, lora_request); 'lora_request' is None for the base model.
     'adapter_dir' must already be an absolute path (the caller resolves it).
+
+    'engine_cfg' supplies the vLLM knobs (gpu_memory_utilization, max_model_len); it
+    defaults to 'cfg.conflict.memory' (M1) but M5 passes 'cfg.conflict.run'.
     """
+    # bf16 model -> we never use FP8 kernels; recent vLLM otherwise probes DeepGEMM
+    # at warmup and hard-fails if the (FP8-only) 'deep_gemm' lib is absent. Set before
+    # importing vllm so the engine-core subprocess inherits it. 'setdefault' lets an
+    # explicit env override win.
+    os.environ.setdefault("VLLM_USE_DEEP_GEMM", "0")
+
     from vllm import LLM
     from vllm.lora.request import LoRARequest
 
-    mem_cfg = cfg.conflict.memory
+    mem_cfg = engine_cfg if engine_cfg is not None else cfg.conflict.memory
     tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
