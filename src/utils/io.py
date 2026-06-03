@@ -36,17 +36,16 @@ def git_sha() -> str:
 
 
 def _library_versions() -> dict:
-    import torch
-    import transformers
-    import peft
-    import trl
-
-    return {
-        "torch": torch.__version__,
-        "transformers": transformers.__version__,
-        "peft": peft.__version__,
-        "trl": trl.__version__,
-    }
+    """Best-effort version probe. Each lib is recorded if importable, else None — so a
+    run on a leaner env (e.g. the vLLM eval/inference box, which deliberately has no
+    `peft`/`trl`) still writes run_meta instead of hard-failing. vllm is tracked too."""
+    versions: dict[str, str | None] = {}
+    for name in ("torch", "transformers", "peft", "trl", "vllm"):
+        try:
+            versions[name] = __import__(name).__version__
+        except Exception:
+            versions[name] = None
+    return versions
 
 
 def write_run_meta(out_dir: str, resolved_cfg: dict) -> None:
