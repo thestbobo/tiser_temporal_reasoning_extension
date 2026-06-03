@@ -4,9 +4,8 @@ import os
 
 from src.data.dataset import load_tiser_test
 from src.eval.metrics import aggregate, exact_match, token_f1
-from src.inference.generate import generate_batch
 from src.inference.parser import parse_answer
-from src.model.loader import load_adapter_for_inference
+from src.utils.config import REPO_ROOT
 from src.utils.io import ensure_dir, write_json, write_run_meta
 from src.utils.seeding import set_seed
 
@@ -15,18 +14,44 @@ def _default_adapter_dir(cfg) -> str:
     return os.path.join(cfg.paths.model_dir, cfg.run_name, "adapter")
 
 
+def _build_generate(cfg, adapter_dir: str):
+    """Return a greedy `generate(prompts) -> list[str]` for the configured engine.
+
+    `eval.engine` selects the backend; it defaults to 'hf' so the frozen-baseline
+    reproduction stays byte-identical. 'vllm' reuses the validated conflict-pipeline
+    engine (same chat-template wrap + token-id feed -> identical model inputs), giving
+    ~10-50x throughput on the full test set. Greedy in both cases (temperature unset).
+    """
+    engine = cfg.eval.get("engine", "hf")
+    if engine == "vllm":
+        from src.inference.vllm_engine import load_vllm, vllm_generate
+
+        abs_adapter = adapter_dir if os.path.isabs(adapter_dir) else os.path.join(REPO_ROOT, adapter_dir)
+        llm, tokenizer, lora_request = load_vllm(cfg, abs_adapter, engine_cfg=cfg.eval)
+        return lambda prompts: vllm_generate(llm, tokenizer, prompts, cfg.eval, lora_request=lora_request)
+
+    if engine != "hf":
+        raise ValueError(f"unknown eval engine {engine!r} (expected 'hf' or 'vllm')")
+
+    from src.inference.generate import generate_batch
+    from src.model.loader import load_adapter_for_inference
+
+    model, tokenizer = load_adapter_for_inference(cfg, adapter_dir)
+    return lambda prompts: generate_batch(model, tokenizer, prompts, cfg.eval)
+
+
 def run_eval(cfg, adapter_dir: str | None = None) -> dict:
     set_seed(cfg.seed)
     adapter_dir = adapter_dir or _default_adapter_dir(cfg)
     run_dir = os.path.join(cfg.paths.output_dir, cfg.run_name)
     write_run_meta(run_dir, cfg)
 
-    model, tokenizer = load_adapter_for_inference(cfg, adapter_dir)
+    generate = _build_generate(cfg, adapter_dir)
 
     test_ds = load_tiser_test(cfg.paths.test_file, cfg.eval.max_samples_per_split)
     _warn_on_unexpected_splits(test_ds["dataset_name"], cfg.splits)
 
-    generations = generate_batch(model, tokenizer, list(test_ds["prompt"]), cfg.eval)
+    generations = generate(list(test_ds["prompt"]))
 
     records = []
     n_malformed = 0

@@ -42,8 +42,12 @@ train:
   save_strategy: epoch
 
 eval:
+  engine: hf                   # hf | vllm. hf keeps the frozen-baseline repro byte-identical;
+                               #   vllm reuses the validated conflict engine (~10-50x faster) for full eval
+  gpu_memory_utilization: 0.90 # vllm only: KV-cache budget (fraction of VRAM)
+  max_model_len: null          # vllm only: context cap; null = model default
   max_samples_per_split: null  # null = full test split. set e.g. 200 for a T4 sampled eval
-  batch_size: 32               # H100-80GB; drop to 16 if KV-cache OOM, or to 1-2 on T4
+  batch_size: 32               # H100-80GB; drop to 16 if KV-cache OOM, or to 1-2 on T4 (hf path)
   max_new_tokens: 768          # headroom for long TempReason_L3 timelines (EOS stops early, so ~free)
   do_sample: false             # greedy / deterministic
 
