@@ -21,7 +21,7 @@ from __future__ import annotations
 import os
 
 from src.conflict.io import read_jsonl, stage_dir, write_run_meta, write_jsonl
-from src.inference.parser import parse_answer, parse_reflection, parse_timeline
+from src.inference.parser import parse_answer, parse_plain, parse_reflection, parse_timeline
 from src.eval.metrics import exact_match, token_f1
 from src.utils.io import write_json
 
@@ -52,7 +52,9 @@ def score(cfg, model_tag: str, style: str) -> dict:
         if c is None:
             continue  # generation without a matching conflict row (should not happen post-join)
         raw = g["raw_generation"]
-        ans = parse_answer(raw)
+        # tiser-style emits a 4-tag trace (<answer>…</answer>); standard-style emits a bare
+        # direct answer with no tags, so the whole completion is the answer.
+        ans = parse_answer(raw) if is_tiser else parse_plain(raw)
         ctx_prime, m, ao = c["answer_ctx_prime"], c["m"], c["answer_orig"]
 
         row = {

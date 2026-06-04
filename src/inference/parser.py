@@ -39,6 +39,16 @@ def parse_answer(text: str) -> ParseResult:
     return _parse_tag(text, "answer")
 
 
+def parse_plain(text: str) -> ParseResult:
+    """Treat the whole completion as the answer (non-tagged 'standard'-prompt cells).
+
+    The standard prompt (D-STD) asks for a short, direct answer after '### Answer:' and
+    emits no <answer> tag, so the raw completion *is* the answer; malformed only if empty.
+    Scoring normalises before matching, so surrounding whitespace is irrelevant."""
+    stripped = text.strip()
+    return ParseResult(answer=stripped, malformed=not stripped)
+
+
 def parse_reflection(text: str) -> ParseResult:
     """Extract the <reflection> content (the TISER audit step). Mirrors 'parse_answer'."""
     return _parse_tag(text, "reflection")
