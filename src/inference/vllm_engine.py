@@ -71,6 +71,19 @@ def load_vllm(cfg, adapter_dir: str | None, *, engine_cfg=None):
     return llm, tokenizer, lora_request
 
 
+def _engine_max_len(llm, gen_cfg) -> int:
+    """Resolve the engine's context cap (tokens). Prefer an explicit 'max_model_len' in
+    'gen_cfg', else read it off the live engine, else fall back to Qwen2.5's 32768."""
+    cap = gen_cfg.get("max_model_len", None) if hasattr(gen_cfg, "get") else getattr(gen_cfg, "max_model_len", None)
+    if cap:
+        return int(cap)
+    for attr in ("llm_engine", "engine"):
+        mc = getattr(getattr(llm, attr, None), "model_config", None)
+        if mc is not None and getattr(mc, "max_model_len", None):
+            return int(mc.max_model_len)
+    return 32768
+
+
 def vllm_generate(
     llm,
     tokenizer,
@@ -85,15 +98,32 @@ def vllm_generate(
     """vLLM generation matching generate_batch's signature and flat-output contract."""
     from vllm import SamplingParams
 
+    # A prompt longer than (context - max_new_tokens) is unservable: vLLM raises
+    # VLLMValidationError and tears down the WHOLE batch (not just that request). The
+    # full TISER test set has a handful of such items (only the OOD tot_semantic split;
+    # in-domain prompts are <2k tokens), so skip them and emit an empty completion in
+    # their slot -- scored as malformed/EM=0, honest since the model can't ingest them.
+    # No-op for normal prompts, so the conflict-pipeline (M1/M5) output is unchanged.
+    budget = _engine_max_len(llm, gen_cfg) - gen_cfg.max_new_tokens
+
     # Pass token ids as the stable dict form ('{"prompt_token_ids": ids}'), accepted by
     # llm.generate on vLLM >= 0.6 -- avoids the churn in the TokensPrompt import path.
     token_prompts = []
-    for p in prompts:
+    keep_idx: list[int] = []  # original index of each kept prompt, for output alignment
+    n_skipped = 0
+    for i, p in enumerate(prompts):
         text = tokenizer.apply_chat_template(
             [{"role": "user", "content": p}], tokenize=False, add_generation_prompt=True
         )
         ids = tokenizer(text, add_special_tokens=False)["input_ids"]
+        if len(ids) > budget:
+            n_skipped += 1
+            continue
         token_prompts.append({"prompt_token_ids": ids})
+        keep_idx.append(i)
+    if n_skipped:
+        print(f"[vllm] skipping {n_skipped}/{len(prompts)} prompt(s) over the "
+              f"{budget}-token budget; emitting empty completion for those slots")
 
     sampling = temperature is not None
     # Reproducibility comes from the engine-level seed (LLM(seed=cfg.seed)); no
@@ -107,9 +137,11 @@ def vllm_generate(
 
     # vLLM returns RequestOutputs in input order; each carries 'n' CompletionOutputs
     # in sample order -> flatten to the i*k block layout generate_batch produces.
-    req_outputs = llm.generate(token_prompts, sp, lora_request=lora_request)
-    flat: list[str] = []
-    for ro in req_outputs:
-        for comp in ro.outputs:
-            flat.append(comp.text)
+    # Skipped prompts keep their i*k slot as "" so the output stays aligned with input.
+    k = num_return_sequences
+    flat: list[str] = [""] * (len(prompts) * k)
+    req_outputs = llm.generate(token_prompts, sp, lora_request=lora_request) if token_prompts else []
+    for src_i, ro in zip(keep_idx, req_outputs):
+        for j, comp in enumerate(ro.outputs):
+            flat[src_i * k + j] = comp.text
     return flat
