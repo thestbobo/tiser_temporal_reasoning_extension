@@ -54,6 +54,24 @@ EXTRACTION_CASES = [
         False,
     ),
     (
+        "Nadal abruptly stopped his serve mid-toss. The umpire asked the crowd for quiet before the replay.",
+        "immediate_before_after",
+        "Nadal abruptly stopped his serve mid-toss",
+        False,
+    ),
+    (
+        "Sinner won the second set with a blistering return winner.FINAL_ANSWER",
+        "immediate_before_after",
+        "Sinner won the second set with a blistering return winner",
+        False,
+    ),
+    (
+        "Djokovic slipped on the slick baseline and scraped his knee.FINAL_ANSWER",
+        "immediate_before_after",
+        "Djokovic slipped on the slick baseline and scraped his knee",
+        False,
+    ),
+    (
         "**Final Answer: Medvedev saved two break points.**",
         "which_first_last",
         "Medvedev saved two break points",
@@ -76,6 +94,19 @@ def main() -> None:
             malformed,
             expected_malformed,
         )
+
+    tag_artifact_answer, tag_artifact_malformed = extract_tennis_answer(
+        "<serving_out_the_match>FINAL_ANSWER",
+        category="which_first_last",
+        tags=["which_first_last"],
+    )
+    # The artifact contains no subject-bearing natural-language span; keeping it
+    # malformed is preferable to inventing the gold answer.
+    assert (
+        tag_artifact_malformed
+        or tag_artifact_answer.casefold() == "serving out the match"
+    ), (tag_artifact_answer, tag_artifact_malformed)
+    assert tag_artifact_answer != "Djokovic served out the match"
 
     for pred, gold in CASES:
         em = tennis_exact_match(pred, gold)

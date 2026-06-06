@@ -33,6 +33,8 @@ SPAN_FALLBACK_CATEGORIES = {
     "which_first_last",
     "tournament_round_sequence",
 }
+MAX_PLAIN_SPAN_WORDS = 30
+MAX_PLAIN_SPAN_CHARS = 240
 
 
 def load_predictions_jsonl(path: str | Path) -> list[dict[str, Any]]:
@@ -111,8 +113,6 @@ def extract_tennis_answer(
         return "", True
 
     yes_no = is_yes_no_category(category, tags)
-    if not yes_no and normalize_tennis_answer("" if gold is None else str(gold)) in {"yes", "no"}:
-        yes_no = True
     span_fallback = not yes_no and is_span_fallback_category(category, tags)
 
     parsed = parse_answer(text)
@@ -148,6 +148,9 @@ def extract_tennis_answer(
             )
             if answer:
                 return answer, False
+        answer = _plain_span_fallback_answer(text)
+        if answer:
+            return answer, False
 
     return "", True
 
@@ -203,6 +206,48 @@ def _candidate_sentences(text: str) -> list[str]:
     return segments
 
 
+def _plain_span_fallback_answer(text: str) -> str:
+    """Recover concise natural-language span outputs without inventing content."""
+    cleaned = _clean_plain_span_output(text)
+    if not cleaned:
+        return ""
+
+    first_sentence = _first_sentence(cleaned)
+    answer = _finalize_extracted_answer(
+        first_sentence,
+        yes_no=False,
+        span_fallback=True,
+    )
+    if not answer:
+        return ""
+    if _is_concise_plain_span(answer):
+        return answer
+    return ""
+
+
+def _clean_plain_span_output(text: str) -> str:
+    value = _remove_markdown_markers(str(text))
+    value = re.sub(r"\bFINAL_ANSWER\b", " ", value)
+    value = re.sub(r"</?(?!answer\b)[A-Za-z][A-Za-z0-9_-]*(?:\s+[^<>]*)?>", " ", value)
+    value = re.sub(r"</?answer>", " ", value, flags=re.IGNORECASE)
+    value = re.sub(r"\s+", " ", value)
+    return value.strip(" \t\r\n\"'`*_")
+
+
+def _first_sentence(text: str) -> str:
+    match = re.match(r"\s*(.+?[.!?])(?:\s+|$)", text, flags=re.DOTALL)
+    if match:
+        return match.group(1)
+    return text.strip()
+
+
+def _is_concise_plain_span(answer: str) -> bool:
+    if len(answer) > MAX_PLAIN_SPAN_CHARS:
+        return False
+    words = re.findall(r"\b[\w'-]+\b", answer)
+    return 1 <= len(words) <= MAX_PLAIN_SPAN_WORDS
+
+
 def _finalize_extracted_answer(
     candidate: str,
     *,
@@ -225,6 +270,7 @@ def _finalize_extracted_answer(
 def _clean_answer_candidate(candidate: str) -> str:
     value = str(candidate).strip()
     value = _remove_markdown_markers(value)
+    value = re.sub(r"\bFINAL_ANSWER\b", " ", value)
     value = re.sub(r"</?answer>", " ", value, flags=re.IGNORECASE)
     value = value.splitlines()[0].strip()
     value = re.sub(r"\s+", " ", value)

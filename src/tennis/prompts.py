@@ -7,11 +7,16 @@ LEGACY_TISER_FORMAT_INSTRUCTION = "Return the final answer in the required forma
 
 TISER_FORMAT_INSTRUCTION = "\n".join(
     [
-        "Return the final answer exactly in this format:",
-        "<answer>FINAL_ANSWER</answer>",
+        "Return only the final answer inside XML answer tags.",
+        "For yes/no questions:",
+        "<answer>Yes</answer>",
+        "or",
+        "<answer>No</answer>",
         "",
-        "For yes/no questions, write only Yes or No inside <answer>.",
-        "For span questions, write only the exact answer span inside <answer>.",
+        "For span questions:",
+        "<answer>the exact answer span</answer>",
+        "",
+        'Do not output the words "FINAL_ANSWER".',
         "Do not write anything after </answer>.",
     ]
 )
