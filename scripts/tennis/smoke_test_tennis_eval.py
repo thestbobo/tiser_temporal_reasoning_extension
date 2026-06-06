@@ -14,6 +14,7 @@ from src.tennis.eval import extract_tennis_answer, score_prediction_rows
 from src.tennis.normalize import (
     normalize_tennis_answer,
     tennis_exact_match,
+    tennis_exact_match_for_category,
     tennis_token_f1,
 )
 
@@ -28,6 +29,12 @@ CASES = [
 EXTRACTION_CASES = [
     ("<answer>Yes</answer>", "yes_no_before_after", "Yes", False),
     (
+        "<answer>Djokovic served out the match</answer>",
+        "which_first_last",
+        "Djokovic served out the match",
+        False,
+    ),
+    (
         "**Final Answer: Yes, Sinner broke serve before Alcaraz changed rackets.**",
         "yes_no_before_after",
         "Yes",
@@ -35,7 +42,19 @@ EXTRACTION_CASES = [
     ),
     ("The answer is No.", "yes_no_before_after", "No", False),
     (
-        "Final Answer: Medvedev saved two break points.",
+        "The first event was Djokovic served out the match.",
+        "which_first_last",
+        "Djokovic served out the match",
+        False,
+    ),
+    (
+        "The event immediately before that was Nadal abruptly stopped his serve mid-toss.",
+        "immediate_before_after",
+        "Nadal abruptly stopped his serve mid-toss",
+        False,
+    ),
+    (
+        "**Final Answer: Medvedev saved two break points.**",
         "which_first_last",
         "Medvedev saved two break points",
         False,
@@ -68,6 +87,14 @@ def main() -> None:
         )
         assert em == 1 or f1 >= 0.8
 
+    for pred in ("8", "8 minute", "8 minutes"):
+        em = tennis_exact_match_for_category(
+            pred,
+            "8 minutes",
+            category="duration_minutes",
+        )
+        assert em == 1, pred
+
     metrics = score_prediction_rows(
         [
             {
@@ -82,9 +109,15 @@ def main() -> None:
                 "raw_generation": "<reasoning>x</reasoning><answer>#1</answer>",
                 "category": "tennis_ranking_or_date",
             },
+            {
+                "question_id": "smoke_c",
+                "gold": "8 minutes",
+                "pred_answer": "8",
+                "category": "duration_minutes",
+            },
         ]
     )
-    assert metrics["overall"]["n"] == 2
+    assert metrics["overall"]["n"] == 3
     assert metrics["overall"]["em"] == 1.0
     assert metrics["overall"]["malformed_count"] == 0
     print(

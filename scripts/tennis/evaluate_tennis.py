@@ -19,7 +19,7 @@ if str(REPO_ROOT) not in sys.path:
 from src.inference.generate import generate_batch
 from src.model.loader import load_adapter_for_inference, load_base_for_inference
 from src.tennis.eval import extract_tennis_answer, render_markdown_report, score_prediction_rows
-from src.tennis.normalize import tennis_exact_match, tennis_token_f1
+from src.tennis.normalize import tennis_exact_match_for_category, tennis_token_f1_for_category
 from src.tennis.prompts import (
     build_standard_prompt,
     build_tennis_prompt,
@@ -262,8 +262,18 @@ def build_prediction_rows(
                 "raw_generation": raw_generation,
                 "pred_answer": pred_answer,
                 "malformed": malformed,
-                "em": tennis_exact_match(pred_answer, gold),
-                "f1": tennis_token_f1(pred_answer, gold),
+                "em": tennis_exact_match_for_category(
+                    pred_answer,
+                    gold,
+                    category=category,
+                    tags=tags,
+                ),
+                "f1": tennis_token_f1_for_category(
+                    pred_answer,
+                    gold,
+                    category=category,
+                    tags=tags,
+                ),
                 "condition": condition,
             }
         )

@@ -14,16 +14,25 @@ try:
     from src.inference.parser import parse_answer
     from src.tennis.normalize import (
         normalize_tennis_answer,
-        tennis_exact_match,
-        tennis_token_f1,
+        normalize_tennis_answer_for_category,
+        tennis_exact_match_for_category,
+        tennis_token_f1_for_category,
     )
 except ModuleNotFoundError:  # pragma: no cover - supports scripts that add src/ to sys.path.
     from inference.parser import parse_answer
     from tennis.normalize import (
         normalize_tennis_answer,
-        tennis_exact_match,
-        tennis_token_f1,
+        normalize_tennis_answer_for_category,
+        tennis_exact_match_for_category,
+        tennis_token_f1_for_category,
     )
+
+
+SPAN_FALLBACK_CATEGORIES = {
+    "immediate_before_after",
+    "which_first_last",
+    "tournament_round_sequence",
+}
 
 
 def load_predictions_jsonl(path: str | Path) -> list[dict[str, Any]]:
@@ -78,6 +87,17 @@ def is_yes_no_category(category: Any = None, tags: Iterable[Any] | None = None) 
     return any("yes_no" in value.casefold() for value in values)
 
 
+def is_span_fallback_category(category: Any = None, tags: Iterable[Any] | None = None) -> bool:
+    """Return True for tennis categories where event-span fallback is expected."""
+    values = []
+    if category is not None:
+        values.append(str(category))
+    if tags is not None:
+        values.extend(str(tag) for tag in tags if tag is not None)
+    normalized_values = {value.casefold() for value in values}
+    return any(value in SPAN_FALLBACK_CATEGORIES for value in normalized_values)
+
+
 def extract_tennis_answer(
     raw_generation: Any,
     *,
@@ -93,15 +113,24 @@ def extract_tennis_answer(
     yes_no = is_yes_no_category(category, tags)
     if not yes_no and normalize_tennis_answer("" if gold is None else str(gold)) in {"yes", "no"}:
         yes_no = True
+    span_fallback = not yes_no and is_span_fallback_category(category, tags)
 
     parsed = parse_answer(text)
     if parsed.answer:
-        answer = _finalize_extracted_answer(parsed.answer, yes_no=yes_no)
+        answer = _finalize_extracted_answer(
+            parsed.answer,
+            yes_no=yes_no,
+            span_fallback=span_fallback,
+        )
         if answer:
             return answer, False
 
     for candidate in _instruct_answer_candidates(text):
-        answer = _finalize_extracted_answer(candidate, yes_no=yes_no)
+        answer = _finalize_extracted_answer(
+            candidate,
+            yes_no=yes_no,
+            span_fallback=span_fallback,
+        )
         if answer:
             return answer, False
 
@@ -109,6 +138,16 @@ def extract_tennis_answer(
         answer = _extract_last_yes_no(text)
         if answer:
             return answer, False
+
+    if span_fallback:
+        for candidate in _span_answer_candidates(text):
+            answer = _finalize_extracted_answer(
+                candidate,
+                yes_no=False,
+                span_fallback=True,
+            )
+            if answer:
+                return answer, False
 
     return "", True
 
@@ -129,7 +168,47 @@ def _instruct_answer_candidates(text: str) -> list[str]:
     return list(reversed(candidates))
 
 
-def _finalize_extracted_answer(candidate: str, *, yes_no: bool) -> str:
+def _span_answer_candidates(text: str) -> list[str]:
+    """Return concise event-span candidates from common temporal phrasings."""
+    segment_patterns = (
+        r"^(?:the\s+)?event\s+immediately\s+(?:before|after)(?:\s+that)?\s+was\s+(.+)$",
+        r"^(?:the\s+)?(?:first|last)\s+event\s+was\s+(.+)$",
+        r"^(?:therefore|thus|so|hence)\s*,?\s+(.+?)\s+happened\s+(?:first|last)$",
+        r"^(.+?)\s+happened\s+(?:first|last)$",
+    )
+    candidates: list[str] = []
+    for segment in _candidate_sentences(text):
+        cleaned_segment = _clean_answer_candidate(segment)
+        for pattern in segment_patterns:
+            match = re.search(pattern, cleaned_segment, flags=re.IGNORECASE)
+            if match:
+                candidates.append(match.group(1))
+                break
+    return list(reversed(candidates))
+
+
+def _candidate_sentences(text: str) -> list[str]:
+    cleaned = _remove_markdown_markers(str(text))
+    segments: list[str] = []
+    for line in cleaned.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        segments.append(stripped)
+        segments.extend(
+            match.group(0).strip()
+            for match in re.finditer(r"[^.!?\n]+[.!?]?", stripped)
+            if match.group(0).strip()
+        )
+    return segments
+
+
+def _finalize_extracted_answer(
+    candidate: str,
+    *,
+    yes_no: bool,
+    span_fallback: bool = False,
+) -> str:
     cleaned = _clean_answer_candidate(candidate)
     if not cleaned:
         return ""
@@ -138,11 +217,14 @@ def _finalize_extracted_answer(candidate: str, *, yes_no: bool) -> str:
         if not match:
             return ""
         return "Yes" if match.group(1).casefold() == "yes" else "No"
+    if span_fallback:
+        cleaned = _clean_span_answer(cleaned)
     return cleaned
 
 
 def _clean_answer_candidate(candidate: str) -> str:
     value = str(candidate).strip()
+    value = _remove_markdown_markers(value)
     value = re.sub(r"</?answer>", " ", value, flags=re.IGNORECASE)
     value = value.splitlines()[0].strip()
     value = re.sub(r"\s+", " ", value)
@@ -163,6 +245,32 @@ def _clean_answer_candidate(candidate: str) -> str:
     value = re.sub(r"[*_`]+$", "", value).strip()
     value = value.rstrip(".!?:;").strip()
     return value
+
+
+def _remove_markdown_markers(value: str) -> str:
+    return (
+        str(value)
+        .replace("**", "")
+        .replace("__", "")
+        .replace("`", "")
+        .replace("*", "")
+    )
+
+
+def _clean_span_answer(candidate: str) -> str:
+    value = candidate
+    span_patterns = (
+        r"^(?:the\s+)?event\s+immediately\s+(?:before|after)(?:\s+that)?\s+was\s+(.+)$",
+        r"^(?:the\s+)?(?:first|last)\s+event\s+was\s+(.+)$",
+        r"^(?:therefore|thus|so|hence)\s*,?\s+(.+?)\s+happened\s+(?:first|last)$",
+        r"^(.+?)\s+happened\s+(?:first|last)$",
+    )
+    for pattern in span_patterns:
+        match = re.search(pattern, value, flags=re.IGNORECASE)
+        if match:
+            value = match.group(1)
+            break
+    return _clean_answer_candidate(value)
 
 
 def _extract_last_yes_no(text: str) -> str:
@@ -202,6 +310,7 @@ def _prediction_answer_and_malformed(row: dict[str, Any]) -> tuple[str, bool]:
         cleaned_answer = _finalize_extracted_answer(
             pred_answer,
             yes_no=is_yes_no_category(category, tags),
+            span_fallback=is_span_fallback_category(category, tags),
         )
         if cleaned_answer:
             malformed = bool(row["malformed"]) if has_malformed else False
@@ -271,9 +380,20 @@ def score_prediction_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         gold = _gold_answer(row, index)
         pred_answer, malformed = _prediction_answer_and_malformed(row)
         category = str(row.get("category") or "unknown")
+        tags = row.get("tags") if isinstance(row.get("tags"), list) else []
         question_id = str(row.get("question_id") or index)
-        em = tennis_exact_match(pred_answer, gold)
-        f1 = tennis_token_f1(pred_answer, gold)
+        em = tennis_exact_match_for_category(
+            pred_answer,
+            gold,
+            category=category,
+            tags=tags,
+        )
+        f1 = tennis_token_f1_for_category(
+            pred_answer,
+            gold,
+            category=category,
+            tags=tags,
+        )
         gold_type = infer_answer_type(gold)
         pred_type = infer_answer_type(pred_answer)
 
@@ -286,8 +406,16 @@ def score_prediction_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "category": category,
                 "gold": gold,
                 "pred_answer": pred_answer,
-                "normalized_gold": normalize_tennis_answer(gold),
-                "normalized_pred": normalize_tennis_answer(pred_answer),
+                "normalized_gold": normalize_tennis_answer_for_category(
+                    gold,
+                    category=category,
+                    tags=tags,
+                ),
+                "normalized_pred": normalize_tennis_answer_for_category(
+                    pred_answer,
+                    category=category,
+                    tags=tags,
+                ),
                 "gold_answer_type": gold_type,
                 "pred_answer_type": pred_type,
                 "malformed": malformed,
@@ -326,6 +454,7 @@ def score_prediction_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "normalize curly apostrophes and dash variants",
                 "normalize No. 1 / no 1 / #1 / number 1 ranking answers to 1",
                 "normalize numeric minute/minutes durations to singular minute",
+                "normalize duration_minutes whole-answer numbers/minute units to bare numbers",
                 "remove punctuation and English articles, then collapse whitespace",
             ],
         },
