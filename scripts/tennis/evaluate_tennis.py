@@ -17,11 +17,14 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from src.inference.generate import generate_batch
-from src.inference.parser import parse_answer
 from src.model.loader import load_adapter_for_inference, load_base_for_inference
-from src.tennis.eval import render_markdown_report, score_prediction_rows
+from src.tennis.eval import extract_tennis_answer, render_markdown_report, score_prediction_rows
 from src.tennis.normalize import tennis_exact_match, tennis_token_f1
-from src.tennis.prompts import build_standard_prompt, build_tennis_prompt
+from src.tennis.prompts import (
+    build_standard_prompt,
+    build_tennis_prompt,
+    ensure_tiser_format_instruction,
+)
 from src.utils.config import load_config
 from src.utils.io import git_sha
 from src.utils.seeding import set_seed
@@ -189,7 +192,7 @@ def prompt_for_row(row: dict[str, Any], prompt_style: str) -> str:
     if prompt_style == "tiser":
         prompt = row.get("prompt")
         if isinstance(prompt, str) and prompt.strip():
-            return prompt
+            return ensure_tiser_format_instruction(prompt)
         context = row.get("context")
         question = row.get("question")
         if isinstance(context, str) and isinstance(question, str):
@@ -239,13 +242,21 @@ def build_prediction_rows(
         zip(rows, prompts, generations), start=1
     ):
         gold = str(row.get("answer") or row.get("gold") or "")
-        pred_answer, malformed = extract_prediction(raw_generation, prompt_style)
+        category = str(row.get("category") or "unknown")
+        tags = row.get("tags") if isinstance(row.get("tags"), list) else []
+        pred_answer, malformed = extract_prediction(
+            raw_generation,
+            prompt_style,
+            category=category,
+            tags=tags,
+            gold=gold,
+        )
         predictions.append(
             {
                 "question_id": str(row.get("question_id") or index),
                 "dataset_name": str(row.get("dataset_name") or "tennis_temporal"),
-                "category": str(row.get("category") or "unknown"),
-                "tags": row.get("tags") if isinstance(row.get("tags"), list) else [],
+                "category": category,
+                "tags": tags,
                 "prompt": prompt,
                 "gold": gold,
                 "raw_generation": raw_generation,
@@ -259,10 +270,22 @@ def build_prediction_rows(
     return predictions
 
 
-def extract_prediction(raw_generation: str, prompt_style: str) -> tuple[str, bool]:
-    parsed = parse_answer(raw_generation)
-    if prompt_style == "tiser" or parsed.answer:
-        return parsed.answer, parsed.malformed
+def extract_prediction(
+    raw_generation: str,
+    prompt_style: str,
+    *,
+    category: str | None = None,
+    tags: list[str] | None = None,
+    gold: str | None = None,
+) -> tuple[str, bool]:
+    answer, malformed = extract_tennis_answer(
+        raw_generation,
+        category=category,
+        tags=tags,
+        gold=gold,
+    )
+    if prompt_style == "tiser" or answer:
+        return answer, malformed
 
     direct = raw_generation.strip()
     if not direct:

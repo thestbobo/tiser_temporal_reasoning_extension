@@ -10,7 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from src.tennis.eval import score_prediction_rows
+from src.tennis.eval import extract_tennis_answer, score_prediction_rows
 from src.tennis.normalize import (
     normalize_tennis_answer,
     tennis_exact_match,
@@ -25,8 +25,39 @@ CASES = [
     ("Yes", "yes."),
 ]
 
+EXTRACTION_CASES = [
+    ("<answer>Yes</answer>", "yes_no_before_after", "Yes", False),
+    (
+        "**Final Answer: Yes, Sinner broke serve before Alcaraz changed rackets.**",
+        "yes_no_before_after",
+        "Yes",
+        False,
+    ),
+    ("The answer is No.", "yes_no_before_after", "No", False),
+    (
+        "Final Answer: Medvedev saved two break points.",
+        "which_first_last",
+        "Medvedev saved two break points",
+        False,
+    ),
+    ("", "which_first_last", "", True),
+]
+
 
 def main() -> None:
+    for raw_generation, category, expected_answer, expected_malformed in EXTRACTION_CASES:
+        pred_answer, malformed = extract_tennis_answer(
+            raw_generation,
+            category=category,
+            tags=[category],
+        )
+        assert pred_answer == expected_answer, (raw_generation, pred_answer, expected_answer)
+        assert malformed is expected_malformed, (
+            raw_generation,
+            malformed,
+            expected_malformed,
+        )
+
     for pred, gold in CASES:
         em = tennis_exact_match(pred, gold)
         f1 = tennis_token_f1(pred, gold)

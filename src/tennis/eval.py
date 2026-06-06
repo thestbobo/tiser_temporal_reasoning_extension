@@ -6,6 +6,7 @@ import argparse
 import json
 import re
 from collections import Counter, defaultdict
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -67,21 +68,146 @@ def _gold_answer(row: dict[str, Any], row_index: int) -> str:
     )
 
 
+def is_yes_no_category(category: Any = None, tags: Iterable[Any] | None = None) -> bool:
+    """Return True for tennis categories that should collapse answers to Yes/No."""
+    values = []
+    if category is not None:
+        values.append(str(category))
+    if tags is not None:
+        values.extend(str(tag) for tag in tags if tag is not None)
+    return any("yes_no" in value.casefold() for value in values)
+
+
+def extract_tennis_answer(
+    raw_generation: Any,
+    *,
+    category: Any = None,
+    tags: Iterable[Any] | None = None,
+    gold: Any = None,
+) -> tuple[str, bool]:
+    """Extract a usable tennis answer from strict TISER or instruct-style output."""
+    text = "" if raw_generation is None else str(raw_generation)
+    if not text.strip():
+        return "", True
+
+    yes_no = is_yes_no_category(category, tags)
+    if not yes_no and normalize_tennis_answer("" if gold is None else str(gold)) in {"yes", "no"}:
+        yes_no = True
+
+    parsed = parse_answer(text)
+    if parsed.answer:
+        answer = _finalize_extracted_answer(parsed.answer, yes_no=yes_no)
+        if answer:
+            return answer, False
+
+    for candidate in _instruct_answer_candidates(text):
+        answer = _finalize_extracted_answer(candidate, yes_no=yes_no)
+        if answer:
+            return answer, False
+
+    if yes_no:
+        answer = _extract_last_yes_no(text)
+        if answer:
+            return answer, False
+
+    return "", True
+
+
+def _instruct_answer_candidates(text: str) -> list[str]:
+    """Return fallback answer spans from common instruct model phrasings."""
+    patterns = (
+        r"(?:^|\n)\s*(?:[*_`]+\s*)?final\s+answer\s*(?:[:\-]\s*|\bis\s+)(.+)",
+        r"(?:^|\n)\s*(?:[*_`]+\s*)?answer\s*[:\-]\s*(.+)",
+        r"(?<!final\s)\b(?:therefore|thus|so|hence|in conclusion|given this)?\s*,?\s*(?:the\s+)?answer\s+is\s+(.+)",
+    )
+    candidates: list[str] = []
+    for pattern in patterns:
+        candidates.extend(
+            match.group(1)
+            for match in re.finditer(pattern, text, flags=re.IGNORECASE | re.DOTALL)
+        )
+    return list(reversed(candidates))
+
+
+def _finalize_extracted_answer(candidate: str, *, yes_no: bool) -> str:
+    cleaned = _clean_answer_candidate(candidate)
+    if not cleaned:
+        return ""
+    if yes_no:
+        match = re.search(r"\b(yes|no)\b", cleaned, flags=re.IGNORECASE)
+        if not match:
+            return ""
+        return "Yes" if match.group(1).casefold() == "yes" else "No"
+    return cleaned
+
+
+def _clean_answer_candidate(candidate: str) -> str:
+    value = str(candidate).strip()
+    value = re.sub(r"</?answer>", " ", value, flags=re.IGNORECASE)
+    value = value.splitlines()[0].strip()
+    value = re.sub(r"\s+", " ", value)
+    value = re.sub(
+        r"^(?:[*_`]+\s*)?(?:final\s+answer|answer)\s*(?:[:\-]\s*|\bis\s+)",
+        "",
+        value,
+        flags=re.IGNORECASE,
+    )
+    value = re.sub(
+        r"^(?:therefore|thus|so|hence|in conclusion|given this)\s*,?\s*",
+        "",
+        value,
+        flags=re.IGNORECASE,
+    )
+    value = re.sub(r"^(?:the\s+)?answer\s+is\s+", "", value, flags=re.IGNORECASE)
+    value = value.strip(" \t\r\n\"'`*_")
+    value = re.sub(r"[*_`]+$", "", value).strip()
+    value = value.rstrip(".!?:;").strip()
+    return value
+
+
+def _extract_last_yes_no(text: str) -> str:
+    tail = text[-1200:]
+    matches = list(re.finditer(r"\b(yes|no)\b", tail, flags=re.IGNORECASE))
+    if not matches:
+        return ""
+    value = matches[-1].group(1).casefold()
+    return "Yes" if value == "yes" else "No"
+
+
 def _prediction_answer_and_malformed(row: dict[str, Any]) -> tuple[str, bool]:
     has_pred_answer = "pred_answer" in row and row["pred_answer"] is not None
     has_raw_generation = "raw_generation" in row and row["raw_generation"] is not None
     has_malformed = "malformed" in row and row["malformed"] is not None
 
-    parsed_malformed = False
+    category = row.get("category")
+    tags = row.get("tags") if isinstance(row.get("tags"), list) else []
+    gold = row.get("gold", row.get("answer"))
+    parsed_malformed = True
     parsed_answer = ""
     if has_raw_generation:
-        parsed = parse_answer(str(row["raw_generation"]))
-        parsed_answer = parsed.answer
-        parsed_malformed = parsed.malformed
+        parsed_answer, parsed_malformed = extract_tennis_answer(
+            row["raw_generation"],
+            category=category,
+            tags=tags,
+            gold=gold,
+        )
 
     if has_pred_answer:
+        pred_answer = str(row["pred_answer"])
+        should_reparse = has_raw_generation and (
+            not pred_answer.strip() or (has_malformed and bool(row["malformed"]))
+        )
+        if should_reparse:
+            return parsed_answer, parsed_malformed
+        cleaned_answer = _finalize_extracted_answer(
+            pred_answer,
+            yes_no=is_yes_no_category(category, tags),
+        )
+        if cleaned_answer:
+            malformed = bool(row["malformed"]) if has_malformed else False
+            return cleaned_answer, malformed
         malformed = bool(row["malformed"]) if has_malformed else parsed_malformed
-        return str(row["pred_answer"]), malformed
+        return pred_answer, malformed
     if has_raw_generation:
         return parsed_answer, parsed_malformed
     return "", True
