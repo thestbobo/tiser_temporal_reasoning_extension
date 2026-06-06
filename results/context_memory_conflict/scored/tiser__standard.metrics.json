@@ -1,0 +1,51 @@
+{
+  "model_tag": "tiser",
+  "style": "standard",
+  "overall": {
+    "n": 1176,
+    "faithful_em": 0.5739795918367347,
+    "faithful_f1": 0.7713197877109578,
+    "memorised_em": 0.2967687074829932,
+    "memorised_f1": 0.4848387752765632,
+    "guardrail_em": 0.2967687074829932,
+    "malformed_rate": 0.0
+  },
+  "per_class": {
+    "C1": {
+      "n": 203,
+      "faithful_em": 0.7487684729064039,
+      "faithful_f1": 0.8097716422281044,
+      "memorised_em": 0.059113300492610835,
+      "memorised_f1": 0.1572956882216157,
+      "guardrail_em": 0.059113300492610835,
+      "malformed_rate": 0.0
+    },
+    "C2": {
+      "n": 520,
+      "faithful_em": 0.7576923076923077,
+      "faithful_f1": 0.8042027492649894,
+      "memorised_em": 0.013461538461538462,
+      "memorised_f1": 0.2841658910593498,
+      "guardrail_em": 0.013461538461538462,
+      "malformed_rate": 0.0
+    },
+    "C3": {
+      "n": 333,
+      "faithful_em": 0.13513513513513514,
+      "faithful_f1": 0.6586612578115859,
+      "memorised_em": 0.7387387387387387,
+      "memorised_f1": 0.8567697091851681,
+      "guardrail_em": 0.7387387387387387,
+      "malformed_rate": 0.0
+    },
+    "control": {
+      "n": 120,
+      "faithful_em": 0.7,
+      "faithful_f1": 0.8764066542227462,
+      "memorised_em": 0.7,
+      "memorised_f1": 0.8764066542227462,
+      "guardrail_em": 0.7,
+      "malformed_rate": 0.0
+    }
+  }
+}

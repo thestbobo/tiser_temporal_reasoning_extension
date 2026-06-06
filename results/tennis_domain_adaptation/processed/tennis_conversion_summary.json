@@ -1,0 +1,28 @@
+{
+  "input_count": 1122,
+  "converted_count": 1122,
+  "standard_prompt_count": 1122,
+  "deterministic_output": true,
+  "validation_error_count": 0,
+  "validation_errors": [],
+  "source_defaulted_count": 1122,
+  "category_distribution": {
+    "duration_minutes": 147,
+    "immediate_before_after": 196,
+    "other_temporal": 17,
+    "overlap_while_during": 115,
+    "tennis_injury_or_medical": 3,
+    "tournament_round_sequence": 19,
+    "which_first_last": 235,
+    "yes_no_before_after": 390
+  },
+  "source_distribution": {
+    "unknown": 1122
+  },
+  "all_outputs_have_matching_answer": true,
+  "input_path": "data\\tennis\\processed\\tennis_raw_audited.json",
+  "tiser_output_path": "data\\tennis\\processed\\tennis_all_tiser.json",
+  "standard_prompt_output_path": "data\\tennis\\processed\\tennis_all_standard_prompt.json",
+  "summary_path": "results\\tennis_domain_adaptation\\processed\\tennis_conversion_summary.json",
+  "dataset_name": "tennis_temporal"
+}

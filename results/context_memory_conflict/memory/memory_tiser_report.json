@@ -1,0 +1,30 @@
+{
+  "model_tag": "tiser",
+  "closed_book_style": "tiser_no_context",
+  "k": 5,
+  "n_total": 15898,
+  "malformed_rate": 0.0012831802742483331,
+  "mean_agreement": 0.3389734557805489,
+  "per_split": {
+    "tempreason_l2_test": {
+      "n": 5397,
+      "malformed_rate": 0.0007782101167315176,
+      "mean_agreement": 0.3149898091532561
+    },
+    "tempreason_l3_test": {
+      "n": 4426,
+      "malformed_rate": 0.0028016267510167195,
+      "mean_agreement": 0.3598282873926976
+    },
+    "timeqa_easy_test": {
+      "n": 2997,
+      "malformed_rate": 0.000667334000667334,
+      "mean_agreement": 0.3522188855522259
+    },
+    "timeqa_hard_test": {
+      "n": 3078,
+      "malformed_rate": 0.0005847953216374269,
+      "mean_agreement": 0.3381416504223603
+    }
+  }
+}

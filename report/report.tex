@@ -1,0 +1,242 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\title{Reproducing Timeline Self-Reflection for Temporal Reasoning with LoRA Fine-Tuning}
+
+\author{
+\IEEEauthorblockN{
+Gabriele Adorni s349308,
+Berk Calisir s347896
+Alessandro Casadei s349386, \\
+Taha Atabay Cetin s349501,
+Elias Noorzad s314515
+}
+\IEEEauthorblockA{
+Politecnico di Torino\\
+Deep Natural Language Processing\\
+}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Temporal reasoning---tracking event order, duration, and overlap across a textual context---remains a difficult capability for large language models. This project reproduces the TISER framework proposed by Bazaga et al.~\cite{bazaga2025tiser}, which trains a model to generate an explicit structured trace (reasoning, timeline, reflection, answer) before producing its final response. We reproduce this setup using \texttt{Qwen2.5-7B-Instruct} with LoRA~\cite{hu2022lora} on the released TISER data: frozen base weights, LoRA adapters on attention projections ($r{=}16$, $\alpha{=}32$), bf16 precision, completion-only loss masking, and consistent Qwen chat-template formatting at both training and inference. On the full in-domain test set our reproduction achieves macro-EM~0.878 / macro-F1~0.949, placing it in the same performance regime as the original paper's reported macro-EM~0.911 / macro-F1~0.944 for the comparable Qwen2.5-7B + TISER configuration. Beyond reproduction, we propose a \emph{Context--Memory Conflict} probe: we select temporal-QA items the model provably knows from parametric memory, then deterministically edit the context so the context-implied answer contradicts that memory. Evaluating a $2{\times}2$ matrix of \{fine-tuned vs.\ vanilla\}${\times}$\{TISER prompt vs.\ standard prompt\}, we find that the TISER pipeline raises context-faithfulness from 0.380 to 0.787 (faithful-EM), but the \texttt{<reflection>} step almost never explicitly detects the contradiction (mention rate 3.8\%, comparable to the 2.3\% baseline null). TISER thus turns the model into a grounded reader, but not a genuine conflict auditor. Order-reversal conflicts remain a blind spot where memorised answers dominate.
+The project repository is at \url{https://github.com/thestbobo/tiser_temporal_reasoning_extension}.
+\end{abstract}
+
+\section{Introduction}
+
+Temporal reasoning is the ability to interpret and manipulate time-related information, including event ordering, temporal overlap, duration, and relations between events. In natural language processing, this capability is central to temporal question answering, narrative understanding, scheduling, and retrieval-augmented generation. Despite the strong general performance of recent large language models (LLMs), temporal reasoning remains fragile: models may identify the relevant events but fail to align them correctly in time, confuse start and end points, or produce answers that are semantically correct but not formatted as expected by exact-match metrics.
+
+The paper \emph{Learning to Reason Over Time: Timeline Self-Reflection for Improved Temporal Reasoning in Language Models} introduces TISER, a framework for improving temporal reasoning through explicit timeline self-reflection~\cite{bazaga2025tiser}. Instead of asking a model to directly output an answer, the model is trained to produce a structured trace containing an initial reasoning step, an explicit timeline of relevant events, a reflection step that checks the reasoning against the timeline, and a final concise answer, delimited by \texttt{<reasoning>}, \texttt{<timeline>}, \texttt{<reflection>}, and \texttt{<answer>} tags.
+
+Our project reproduces the TISER baseline using \texttt{Qwen2.5-7B-Instruct} with LoRA fine-tuning on the released TISER data. We then extend the evaluation with a \emph{Context--Memory Conflict} probe that is not part of the original paper. The extension asks whether the model follows the provided temporal context or its parametric memory when they disagree, and whether the \texttt{<reflection>} step explicitly detects the contradiction. This is relevant because TISER presents reflection as a mechanism for checking reasoning---our probe tests whether it also functions as an auditing mechanism under adversarial conflict.
+
+A key engineering lesson from the project is that template consistency between training and inference is critical. In our initial smoke test, training and inference used different prompt formats, producing malformed outputs. After enforcing byte-consistent Qwen chat template construction and completion-only loss masking, the pipeline became stable.
+
+\section{Problem Statement}
+
+\subsection{TISER Formulation}
+
+We address temporal question answering over a textual or semi-structured temporal context. Each example consists of a question $q$, a temporal context $c$, and a gold answer $a$. The model is trained to generate a structured trace $z$ followed by the final answer:
+\[
+y = (r, t, s, a),
+\]
+where $r$ is the initial reasoning, $t$ is the explicit timeline, $s$ is the self-reflection, and $a$ is the final answer, serialized with XML-like delimiters (\texttt{<reasoning>}, \texttt{<timeline>}, \texttt{<reflection>}, \texttt{<answer>}). During evaluation, only the extracted \texttt{<answer>} span is scored.
+
+The reproduction evaluates on five in-domain splits: TGQA~\cite{xiong2024tgqa}, TempReason L2 and L3~\cite{tan2023tempreason}, and TimeQA easy and hard~\cite{chen2021timeqa}. Out-of-distribution ToT-semantic examples are reported separately.
+
+\subsection{Context--Memory Conflict Probe}
+
+The extension probes whether the model follows a provided context or its memorised knowledge when they disagree. Given a real-entity temporal-QA item:
+\begin{enumerate}
+\item \textbf{Memory elicitation.} Remove the temporal context and elicit the model's closed-book answer $m$ via $k{=}5$ samples at temperature ${\approx}0.7$; accept the majority answer if it appears in ${\geq}3/5$ samples.
+\item \textbf{Eligibility.} Keep only items where $m$ is confident and equals the original gold answer, ensuring a genuine memorised belief.
+\item \textbf{Counterfactual construction.} Deterministically edit the context to produce $c'$ such that $\text{answer}(c') \neq m$.
+\item \textbf{Evaluation.} Run the model on $(q, c')$ and score whether the prediction follows $c'$ or $m$.
+\end{enumerate}
+
+We define:
+\emph{context-faithfulness} = prediction matches $\text{answer}(c')$;
+\emph{memorisation} = prediction matches $m$;
+\emph{conflict-detection} = \texttt{<reflection>} explicitly mentions the contradiction (lexical proxy);
+\emph{silent override} = faithful answer without explicit conflict detection.
+
+\section{Methodology}
+
+\subsection{Baseline TISER Reproduction}
+
+TISER decomposes temporal reasoning into four stages~\cite{bazaga2025tiser}: reasoning, timeline construction, reflection, and answer generation, all produced autoregressively in a single pass. The target supervision format teaches the model to externalize temporal structure before answering.
+
+We use the Amazon-released TISER JSONL data. After a 2,048-token length filter, the training set contains 54,488 examples. The test set contains 22,014 examples (19,214 in-domain, 2,800 OOD ToT-semantic).
+
+The base model is \texttt{Qwen2.5-7B-Instruct}, fine-tuned with LoRA~\cite{hu2022lora}: frozen base weights, trainable low-rank adapters on $q$/$k$/$v$/$o$ attention projections, rank $r{=}16$, scaling $\alpha{=}32$, dropout~0.05. Training uses bf16 precision without base quantization, 3 epochs, learning rate $2{\times}10^{-4}$, cosine schedule, warmup ratio~0.03, effective batch size~16, seed~42, and \texttt{paged\_adamw\_8bit}. Each training sample is converted into a Qwen chat-formatted prompt; the instruction/question/context tokens are masked with label $-100$ (completion-only loss). At inference, the model generates the full trace greedily (\texttt{max\_new\_tokens=768}), the \texttt{<answer>} span is extracted by regex, and the prediction is normalized using SQuAD-style normalization before computing Exact Match (EM) and token-level F1.
+
+\subsection{Extension: Context--Memory Conflict Probe}
+
+The extension is inference-only: no new fine-tuning is performed. The subject model is the frozen \texttt{Qwen2.5-7B-Instruct} + TISER LoRA adapter.
+
+\paragraph{M0: Subset construction.}
+We select in-scope real-entity splits: TempReason L2/L3 and TimeQA easy/hard (15,898 items). TGQA is excluded because its synthetic/fictional entities lack the parametric memory needed for a knowledge-conflict probe.
+
+\paragraph{M1--M2: Memory elicitation and eligibility.}
+For each item, the temporal context is removed and the model answers closed-book with $k{=}5$ samples at $T{\approx}0.7$. The majority answer $m$ is accepted if it appears in ${\geq}3/5$ samples. Items are eligible if $m$ is confident and matches the original gold answer. This yields 571 eligible items.
+
+\paragraph{M3: Deterministic perturbation.}
+Each eligible item is perturbed into one or more conflict classes:
+\textbf{C1 (date-shift):} move date ranges so a different entity covers the queried time-point;
+\textbf{C2 (entity-swap):} replace the answer entity with a same-type distractor;
+\textbf{C3 (order-reversal):} swap intervals so a before/after relation flips.
+A control arm reorders rows without changing the answer. Each edit satisfies the invariant $\text{answer}(c') \neq m$, yielding 1,176 conflict rows (C1: 203, C2: 520, C3: 333, control: 120) at 100\% per-class construction validity.
+
+\paragraph{M4--M5: Run matrix.}
+We evaluate a $2{\times}2$ matrix crossing two axes:
+\emph{model}~$\in$~\{vanilla Qwen (\texttt{base}), TISER fine-tuned (\texttt{tiser})\};
+\emph{prompt}~$\in$~\{standard direct-answer, TISER 4-tag prompt\}.
+Only TISER-prompt cells produce a \texttt{<reflection>} trace.
+
+\paragraph{M6: Scoring.}
+Each prediction is scored for faithful-EM/F1 (matches $\text{answer}(c')$), memorised-EM (matches $m$), malformed rate, and reflection-mention rate (TISER-prompt cells only).
+
+\section{Experiments and Results}
+
+\subsection{Baseline Reproduction}
+
+Table~\ref{tab:baseline} reports our full in-domain test results. Our reproduction achieves macro-EM~0.878 / macro-F1~0.949 across the five in-domain splits. The original paper reports Qwen2.5-7B + TISER at macro-EM~0.911 / macro-F1~0.944 for the comparable in-domain configuration. Our result is in the same performance regime; remaining differences may stem from training infrastructure, data preprocessing, or stochastic variation.
+
+\begin{table}[t]
+\centering
+\caption{Baseline reproduction: full in-domain test results.}
+\label{tab:baseline}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Split} & \textbf{EM} & \textbf{F1} \\
+\midrule
+TempReason L2  & 0.907 & --- \\
+TempReason L3  & 0.961 & --- \\
+TimeQA easy    & 0.980 & --- \\
+TimeQA hard    & 0.970 & --- \\
+\midrule
+\textbf{Macro (5 splits)} & \textbf{0.878} & \textbf{0.949} \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+
+{\footnotesize Per-split F1 and TGQA split omitted for space; see repo artifacts for full breakdown. ToT-semantic (OOD) is excluded from the macro.}
+\end{table}
+
+\subsection{Context--Memory Conflict: Run Matrix}
+
+Table~\ref{tab:conflict} reports faithfulness and memorisation rates across all four cells of the run matrix ($n{=}1{,}176$ conflict rows per cell).
+
+\begin{table}[t]
+\centering
+\caption{Context--Memory Conflict run matrix. All metrics are rates over $n{=}1{,}176$ counterfactual items. Reflection-mention is reported only for TISER-prompt cells.}
+\label{tab:conflict}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Model} & \textbf{Prompt} & \textbf{faith-EM} & \textbf{faith-F1} & \textbf{mem-EM} & \textbf{malf.} & \textbf{refl.} \\
+\midrule
+tiser  & tiser    & \textbf{0.787} & \textbf{0.917} & 0.230 & 0.002 & 0.038 \\
+tiser  & standard & 0.574 & 0.771 & 0.297 & 0.000 & ---   \\
+base   & tiser    & 0.561 & 0.739 & 0.295 & 0.003 & 0.121 \\
+base   & standard & 0.380 & 0.605 & 0.332 & 0.000 & ---   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The TISER prompt raises faithful-EM by $+0.213$ on the fine-tuned model (0.787 vs.\ 0.574). Fine-tuning raises faithful-EM by $+0.226$ under the TISER prompt (0.787 vs.\ 0.561). Both axes contribute substantially: the structured trace and the LoRA adaptation each independently improve context-faithfulness. The base model mentions conflicts in its reflection more often than the TISER fine-tune (12.1\% vs.\ 3.8\%) but is less faithful, showing that mention rate is not the same as successful conflict resolution.
+
+\subsection{Per-Conflict-Class Results (Star Cell)}
+
+Table~\ref{tab:perclass} breaks down the star cell (\texttt{tiser}$\times$\texttt{tiser}) by conflict type.
+
+\begin{table}[t]
+\centering
+\caption{Per-conflict-class faithfulness for the star cell (tiser$\times$tiser).}
+\label{tab:perclass}
+\begin{tabular}{lrccc}
+\toprule
+\textbf{Class} & \textbf{$n$} & \textbf{faith-EM} & \textbf{mem-EM} & \textbf{Interpretation} \\
+\midrule
+C1 date-shift      & 203 & 0.936 & 0.010 & follows text \\
+C2 entity-swap     & 520 & 0.971 & 0.002 & follows text \\
+C3 order-reversal  & 333 & 0.366 & 0.477 & memory wins  \\
+control            & 120 & 0.900 & 0.900 & sanity floor \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+C1 (date-shift) and C2 (entity-swap) are largely solved by the TISER fine-tuned model: the model reliably follows the edited context text. C3 (order-reversal) is the blind spot: faithfulness collapses to 0.366 and memorised answers become more frequent than faithful answers (0.477 vs.\ 0.366). The control arm validates that the deterministic edits did not simply break the context (0.900 floor).
+
+\section{Analysis}
+
+\subsection{Baseline}
+
+Our reproduction reaches the same general performance regime as the original TISER paper. The biggest practical reproducibility lesson is prompt-template consistency: training and inference must use the identical Qwen chat template, otherwise the model emits malformed outputs. EM is also brittle for free-form temporal QA, especially when answers differ only by units, punctuation, or symmetric phrasing; F1 and qualitative inspection are useful complements.
+
+\subsection{Extension}
+
+\textbf{H1 (context-faithfulness) is supported.} Both the TISER prompt and TISER fine-tuning independently increase context-faithfulness under conflict. The combined effect raises faithful-EM from the base-standard floor of 0.380 to 0.787.
+
+\textbf{H2 reveals silent override.} The TISER fine-tuned model often follows the edited context (78.7\%) but almost never explicitly notices that the context contradicts its memorised belief: the reflection-mention rate is 3.8\%, essentially the 2.3\% ``rubber-stamp'' rate measured on normal (non-conflict) data. TISER turns Qwen into a grounded reader, but not a genuine auditor.
+
+\textbf{H4 (conflict-type dependence) is supported.} Date-shift and entity-swap conflicts are nearly solved (faithful-EM $\geq$~0.936), while order-reversal causes a collapse in faithfulness where the model reverts to its memorised event ordering. This is the only conflict class where memorised-EM exceeds faithful-EM.
+
+\textbf{H3 (entity fame) is deferred.} Testing whether more famous entities are harder to override requires an entity-fame signal (e.g., Wikidata pageviews) that was not collected for this deliverable. The eligible set is already biased toward well-known entities by construction, so the current results represent the hardest case for context-faithfulness.
+
+\subsection{Caveats}
+
+Conflict-detection is measured via a lexical proxy over the \texttt{<reflection>} text, not a human or LLM judge---the qualitative inspection supports the proxy but it remains brittle. The eligible set is biased toward facts the model already knows confidently, so 0.787 faithful-EM characterises performance on strong memory conflicts, not a random sample of all temporal QA. The extension uses deterministic perturbations and greedy single-decode evaluation with no confidence intervals. H3 (entity fame) and LLM-judge validation of conflict detection are future work. The reflection text should not be interpreted as mechanistically faithful reasoning.
+
+\section{Conclusions}
+
+Our reproduction of TISER under a single-GPU LoRA setup succeeds, reaching macro-EM~0.878 / macro-F1~0.949 on the full in-domain test set. TISER's structured trace (reasoning, timeline, reflection, answer) improves temporal QA performance, and the main engineering lesson is that byte-consistent prompt formatting and completion-only masking are essential for reliable reproduction.
+
+The Context--Memory Conflict extension shows that TISER substantially improves context-faithfulness under counterfactual contexts: faithful-EM rises from 0.380 (vanilla baseline) to 0.787 (TISER fine-tune + TISER prompt). However, the reflection stage mostly rubber-stamps the answer rather than explicitly detecting contradictions between the context and memorised knowledge (3.8\% mention rate vs.\ a 2.3\% null). Event-ordering conflicts (C3) remain a weakness where the model reverts to memorised temporal order despite contradictory context.
+
+Future work includes a stronger LLM-based conflict-detection judge to replace the lexical proxy, entity-fame analysis to test whether more famous entities are harder to override, human validation of edit quality, and a GPT-4o ceiling cell as a closed-model reference.
+
+\section{Reproducibility}
+
+The pipeline is config-driven (\texttt{config/config.yaml}, \texttt{config/conflict.yaml}) with fixed seed~42. Each baseline and extension run saves \texttt{run\_meta.json} recording the git SHA, library versions, and resolved configuration. Predictions and per-example EM/F1 scores are saved for error analysis. Extension artifacts are organized under \texttt{outputs/conflict/<stage>/}; each pipeline stage (M0 subset, M1 memory, M2 eligibility, M3 conflicts, M4 prompts, M5 generations, M6 scoring) writes a JSON/JSONL artifact and its own \texttt{run\_meta.json}. Source code and this report are in the project repository at \url{https://github.com/thestbobo/tiser_temporal_reasoning_extension}.
+
+\begin{thebibliography}{00}
+
+\bibitem{bazaga2025tiser}
+A. Bazaga, R. Blloshmi, B. Byrne, and A. de Gispert,
+``Learning to Reason Over Time: Timeline Self-Reflection for Improved Temporal Reasoning in Language Models,''
+in \emph{Proceedings of ACL}, 2025.
+
+\bibitem{xiong2024tgqa}
+S. Xiong, A. Payani, R. Kompella, and F. Fekri,
+``Large Language Models Can Learn Temporal Reasoning,''
+in \emph{Proceedings of ACL}, 2024.
+
+\bibitem{tan2023tempreason}
+Q. Tan, H. T. Ng, and L. Bing,
+``Towards Benchmarking and Improving the Temporal Reasoning Capability of Large Language Models,''
+in \emph{Proceedings of ACL}, 2023.
+
+\bibitem{chen2021timeqa}
+W. Chen, X. Wang, and W. Y. Wang,
+``A Dataset for Answering Time-Sensitive Questions,''
+in \emph{NeurIPS Datasets and Benchmarks}, 2021.
+
+\bibitem{hu2022lora}
+E. J. Hu et al.,
+``LoRA: Low-Rank Adaptation of Large Language Models,''
+in \emph{International Conference on Learning Representations}, 2022.
+
+\end{thebibliography}
+
+\end{document}

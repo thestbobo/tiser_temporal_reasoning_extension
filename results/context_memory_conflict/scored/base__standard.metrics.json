@@ -1,0 +1,51 @@
+{
+  "model_tag": "base",
+  "style": "standard",
+  "overall": {
+    "n": 1176,
+    "faithful_em": 0.38010204081632654,
+    "faithful_f1": 0.604849450374772,
+    "memorised_em": 0.33163265306122447,
+    "memorised_f1": 0.5091670129255964,
+    "guardrail_em": 0.33163265306122447,
+    "malformed_rate": 0.0
+  },
+  "per_class": {
+    "C1": {
+      "n": 203,
+      "faithful_em": 0.5123152709359606,
+      "faithful_f1": 0.5832362247738208,
+      "memorised_em": 0.1330049261083744,
+      "memorised_f1": 0.22290397080654234,
+      "guardrail_em": 0.1330049261083744,
+      "malformed_rate": 0.0
+    },
+    "C2": {
+      "n": 520,
+      "faithful_em": 0.3923076923076923,
+      "faithful_f1": 0.5100126484850488,
+      "memorised_em": 0.13653846153846153,
+      "memorised_f1": 0.3699555067264172,
+      "guardrail_em": 0.13653846153846153,
+      "malformed_rate": 0.0
+    },
+    "C3": {
+      "n": 333,
+      "faithful_em": 0.18018018018018017,
+      "faithful_f1": 0.6852714186047533,
+      "memorised_em": 0.6396396396396397,
+      "memorised_f1": 0.7857357274023942,
+      "guardrail_em": 0.6396396396396397,
+      "malformed_rate": 0.0
+    },
+    "control": {
+      "n": 120,
+      "faithful_em": 0.6583333333333333,
+      "faithful_f1": 0.8292003367003369,
+      "memorised_em": 0.6583333333333333,
+      "memorised_f1": 0.8292003367003369,
+      "guardrail_em": 0.6583333333333333,
+      "malformed_rate": 0.0
+    }
+  }
+}
