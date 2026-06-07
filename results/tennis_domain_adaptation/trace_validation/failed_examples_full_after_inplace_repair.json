@@ -1,0 +1,17 @@
+{
+  "total_records": 600,
+  "valid_records": 600,
+  "invalid_records": 0,
+  "category_counts": {
+    "duration_minutes": 83,
+    "immediate_before_after": 107,
+    "other_temporal": 7,
+    "overlap_while_during": 60,
+    "tennis_injury_or_medical": 1,
+    "tournament_round_sequence": 11,
+    "which_first_last": 123,
+    "yes_no_before_after": 208
+  },
+  "error_counts": {},
+  "failed_examples": []
+}

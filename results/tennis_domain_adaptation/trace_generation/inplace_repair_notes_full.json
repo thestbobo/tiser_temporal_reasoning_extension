@@ -1,0 +1,355 @@
+{
+  "backup_file": "results/tennis_domain_adaptation/trace_generation/generated_traces_full.before_inplace_repair.jsonl",
+  "repaired_missing_tag_records": [
+    "tennis_000218",
+    "tennis_000219",
+    "tennis_000220",
+    "tennis_000222",
+    "tennis_000223",
+    "tennis_000225",
+    "tennis_000226",
+    "tennis_000227",
+    "tennis_000229",
+    "tennis_000230",
+    "tennis_000231",
+    "tennis_000233",
+    "tennis_000234",
+    "tennis_000236",
+    "tennis_000238",
+    "tennis_000239",
+    "tennis_000240",
+    "tennis_000241",
+    "tennis_000242",
+    "tennis_000243",
+    "tennis_000245",
+    "tennis_000246",
+    "tennis_000247",
+    "tennis_000248",
+    "tennis_000250",
+    "tennis_000251",
+    "tennis_000252",
+    "tennis_000253",
+    "tennis_000254",
+    "tennis_000255",
+    "tennis_000256",
+    "tennis_000257",
+    "tennis_000258",
+    "tennis_000264",
+    "tennis_000265",
+    "tennis_000266",
+    "tennis_000268",
+    "tennis_000269",
+    "tennis_000271",
+    "tennis_000272",
+    "tennis_000273",
+    "tennis_000274",
+    "tennis_000275",
+    "tennis_000276",
+    "tennis_000278",
+    "tennis_000282",
+    "tennis_000286",
+    "tennis_000287",
+    "tennis_000288",
+    "tennis_000290",
+    "tennis_000435",
+    "tennis_000436",
+    "tennis_000438",
+    "tennis_000441",
+    "tennis_000442",
+    "tennis_000443",
+    "tennis_000444",
+    "tennis_000445",
+    "tennis_000447",
+    "tennis_000448",
+    "tennis_000450",
+    "tennis_000451",
+    "tennis_000454",
+    "tennis_000455",
+    "tennis_000456",
+    "tennis_000458",
+    "tennis_000459",
+    "tennis_000460",
+    "tennis_000464",
+    "tennis_000465",
+    "tennis_000467",
+    "tennis_000468",
+    "tennis_000469",
+    "tennis_000473",
+    "tennis_000474",
+    "tennis_000475",
+    "tennis_000477",
+    "tennis_000478",
+    "tennis_000479",
+    "tennis_000480",
+    "tennis_000481",
+    "tennis_000482",
+    "tennis_000483",
+    "tennis_000484",
+    "tennis_000485",
+    "tennis_000486",
+    "tennis_000487",
+    "tennis_000488",
+    "tennis_000489",
+    "tennis_000492",
+    "tennis_000494",
+    "tennis_000497",
+    "tennis_000499",
+    "tennis_000500",
+    "tennis_000502",
+    "tennis_000503",
+    "tennis_000504",
+    "tennis_000505",
+    "tennis_000506",
+    "tennis_000509",
+    "tennis_000652",
+    "tennis_000653",
+    "tennis_000654",
+    "tennis_000655",
+    "tennis_000657",
+    "tennis_000658",
+    "tennis_000659",
+    "tennis_000661",
+    "tennis_000662",
+    "tennis_000663",
+    "tennis_000664",
+    "tennis_000667",
+    "tennis_000669",
+    "tennis_000670",
+    "tennis_000671",
+    "tennis_000672",
+    "tennis_000673",
+    "tennis_000674",
+    "tennis_000675",
+    "tennis_000676",
+    "tennis_000677",
+    "tennis_000678",
+    "tennis_000679",
+    "tennis_000680",
+    "tennis_000681",
+    "tennis_000682",
+    "tennis_000683",
+    "tennis_000684",
+    "tennis_000685",
+    "tennis_000687",
+    "tennis_000688",
+    "tennis_000689",
+    "tennis_000691",
+    "tennis_000693",
+    "tennis_000694",
+    "tennis_000695",
+    "tennis_000696",
+    "tennis_000697",
+    "tennis_000698",
+    "tennis_000699",
+    "tennis_000700",
+    "tennis_000701",
+    "tennis_000703",
+    "tennis_000704",
+    "tennis_000705",
+    "tennis_000706",
+    "tennis_000708",
+    "tennis_000709",
+    "tennis_000714",
+    "tennis_000716",
+    "tennis_000870",
+    "tennis_000871",
+    "tennis_000872",
+    "tennis_000873",
+    "tennis_000874",
+    "tennis_000876",
+    "tennis_000878",
+    "tennis_000879",
+    "tennis_000880",
+    "tennis_000883",
+    "tennis_000884",
+    "tennis_000885",
+    "tennis_000886",
+    "tennis_000888",
+    "tennis_000889",
+    "tennis_000890",
+    "tennis_000891",
+    "tennis_000892",
+    "tennis_000893",
+    "tennis_000895",
+    "tennis_000896",
+    "tennis_000897",
+    "tennis_000898",
+    "tennis_000899",
+    "tennis_000900",
+    "tennis_000901",
+    "tennis_000902",
+    "tennis_000903",
+    "tennis_000904",
+    "tennis_000906",
+    "tennis_000908",
+    "tennis_000911",
+    "tennis_000912",
+    "tennis_000914",
+    "tennis_000915",
+    "tennis_000916",
+    "tennis_000917",
+    "tennis_000918",
+    "tennis_000919",
+    "tennis_000921",
+    "tennis_000922",
+    "tennis_000923",
+    "tennis_000924",
+    "tennis_000926",
+    "tennis_000928",
+    "tennis_000930",
+    "tennis_000931",
+    "tennis_000932",
+    "tennis_000933",
+    "tennis_000934"
+  ],
+  "repaired_invalid_jsonl_records": [
+    {
+      "line_number": 100,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000212",
+        "tennis_000218"
+      ]
+    },
+    {
+      "line_number": 121,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000246"
+      ]
+    },
+    {
+      "line_number": 122,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000247"
+      ]
+    },
+    {
+      "line_number": 123,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000248"
+      ]
+    },
+    {
+      "line_number": 124,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000250"
+      ]
+    },
+    {
+      "line_number": 149,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000290",
+        "tennis_000291"
+      ]
+    },
+    {
+      "line_number": 248,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000433",
+        "tennis_000435"
+      ]
+    },
+    {
+      "line_number": 288,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000494"
+      ]
+    },
+    {
+      "line_number": 294,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000504"
+      ]
+    },
+    {
+      "line_number": 295,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000505"
+      ]
+    },
+    {
+      "line_number": 297,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000509",
+        "tennis_000510"
+      ]
+    },
+    {
+      "line_number": 396,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000651",
+        "tennis_000652"
+      ]
+    },
+    {
+      "line_number": 406,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000664"
+      ]
+    },
+    {
+      "line_number": 408,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000669"
+      ]
+    },
+    {
+      "line_number": 429,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000693"
+      ]
+    },
+    {
+      "line_number": 438,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000703"
+      ]
+    },
+    {
+      "line_number": 443,
+      "repair": "recovered_unescaped_output_quotes",
+      "question_ids": [
+        "tennis_000709"
+      ]
+    },
+    {
+      "line_number": 445,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000716",
+        "tennis_000717"
+      ]
+    },
+    {
+      "line_number": 544,
+      "repair": "split_concatenated_json_objects",
+      "question_ids": [
+        "tennis_000868",
+        "tennis_000870"
+      ]
+    }
+  ],
+  "removed_unrecoverable_invalid_jsonl_records": [],
+  "regenerate_later": [],
+  "final_valid_jsonl_lines": 600,
+  "notes": [
+    "Repaired generated_traces_full.jsonl in place; no repair script or alternate repaired JSONL file was created.",
+    "Missing-tag outputs were wrapped with strict TISER tags using the existing generated reasoning/list/reflection text and the source gold answer.",
+    "Recovered 19 invalid JSONL physical lines covering 26 question_ids."
+  ]
+}

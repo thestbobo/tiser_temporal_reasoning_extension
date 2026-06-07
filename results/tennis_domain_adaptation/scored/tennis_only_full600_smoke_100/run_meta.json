@@ -1,0 +1,99 @@
+{
+  "adapter_dir": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\model\\tiser_tennis_full600_smoke\\adapter",
+  "command": [
+    "scripts/tennis/evaluate_tennis.py",
+    "--config",
+    "config\\config_tennis_full600_smoke.yaml",
+    "--test-file",
+    "data\\tennis\\tennis_test.json",
+    "--adapter-dir",
+    "model\\tiser_tennis_full600_smoke\\adapter",
+    "--condition",
+    "tennis_only_full600_smoke_100",
+    "--prompt-style",
+    "tiser",
+    "--limit",
+    "100",
+    "--batch-size",
+    "1",
+    "--max-new-tokens",
+    "768",
+    "--output-dir",
+    "results\\tennis_domain_adaptation\\scored\\tennis_only_full600_smoke_100"
+  ],
+  "condition": "tennis_only_full600_smoke_100",
+  "config": {
+    "eval": {
+      "batch_size": 1,
+      "do_sample": false,
+      "max_new_tokens": 768,
+      "max_samples_per_split": 20
+    },
+    "lora": {
+      "alpha": 32,
+      "bias": "none",
+      "dropout": 0.05,
+      "r": 16,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ]
+    },
+    "model": {
+      "bnb_4bit_quant_type": "nf4",
+      "bnb_4bit_use_double_quant": true,
+      "load_in_4bit": false,
+      "name": "Qwen/Qwen2.5-0.5B-Instruct"
+    },
+    "paths": {
+      "data_dir": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\data/tennis",
+      "model_dir": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\model",
+      "output_dir": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\outputs",
+      "test_file": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\data/tennis/tennis_test.json",
+      "train_file": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\data/tennis/tennis_train_traced_full.json"
+    },
+    "run_name": "tiser_tennis_full600_smoke",
+    "seed": 42,
+    "splits": [
+      "tennis_temporal"
+    ],
+    "train": {
+      "gradient_accumulation_steps": 1,
+      "gradient_checkpointing": false,
+      "learning_rate": 0.0002,
+      "logging_steps": 5,
+      "lr_scheduler_type": "cosine",
+      "max_seq_len": 2048,
+      "num_epochs": 1,
+      "optim": "paged_adamw_8bit",
+      "per_device_batch_size": 1,
+      "save_strategy": "epoch",
+      "subset_size": 600,
+      "warmup_ratio": 0.03,
+      "weight_decay": 0.0
+    }
+  },
+  "decoding": {
+    "batch_size": 1,
+    "do_sample": false,
+    "max_new_tokens": 768
+  },
+  "git_sha": "f765dd7a270df47bf60977cac97d16bfb02973c4",
+  "library_versions": {
+    "accelerate": "1.0.1",
+    "bitsandbytes": "0.45.5",
+    "peft": "0.13.2",
+    "torch": "2.4.1+cu118",
+    "transformers": "4.46.3"
+  },
+  "limit": 100,
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "n_records": 100,
+  "no_adapter": false,
+  "output_dir": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\results\\tennis_domain_adaptation\\scored\\tennis_only_full600_smoke_100",
+  "prompt_style": "tiser",
+  "test_file": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\data\\tennis\\tennis_test.json",
+  "timestamp": "2026-06-07T16:55:30"
+}
