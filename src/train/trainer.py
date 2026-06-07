@@ -48,7 +48,7 @@ def build_trainer(cfg, model, tokenizer, train_ds) -> SFTTrainer:
         model=model,
         args=_sft_config(cfg),
         train_dataset=train_ds,
-        processing_class=tokenizer,
+        tokenizer=tokenizer,
         peft_config=build_lora_config(cfg),
         data_collator=collator,
     )

@@ -1,0 +1,14 @@
+{
+  "total_records": 50,
+  "valid_records": 50,
+  "invalid_records": 0,
+  "category_counts": {
+    "duration_minutes": 6,
+    "immediate_before_after": 5,
+    "overlap_while_during": 3,
+    "which_first_last": 11,
+    "yes_no_before_after": 25
+  },
+  "error_counts": {},
+  "failed_examples": []
+}

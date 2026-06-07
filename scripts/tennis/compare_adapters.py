@@ -30,16 +30,34 @@ DEFAULT_EXPECTED_CONDITIONS = (
     "tennis_only",
     "mixed_replay",
 )
+OVERALL_FIELDS = (
+    "condition",
+    "status",
+    "model_name",
+    "prompt_style",
+    "no_adapter",
+    "adapter_dir",
+    "n",
+    "em",
+    "f1",
+    "malformed_count",
+    "malformed_rate",
+    "delta_em_vs_baseline",
+    "delta_f1_vs_baseline",
+    "metrics_path",
+)
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     results_dir = resolve_repo_path(args.results_dir)
-    condition_dirs = [
-        resolve_repo_path(path) for path in args.condition_dirs
-    ] if args.condition_dirs else discover_condition_dirs(
-        results_dir / "scored",
-        expected_conditions=args.expected_conditions,
+    condition_dirs = (
+        [resolve_repo_path(path) for path in args.condition_dirs]
+        if args.condition_dirs
+        else discover_condition_dirs(
+            results_dir / "scored",
+            expected_conditions=planned_expected_conditions(args),
+        )
     )
 
     metrics_by_condition = load_condition_metrics(condition_dirs)
@@ -50,14 +68,16 @@ def main(argv: list[str] | None = None) -> None:
 
     json_path = output_dir / "adapter_comparison.json"
     md_path = output_dir / "adapter_comparison.md"
-    csv_path = output_dir / "per_category_comparison.csv"
+    csv_path = output_dir / "adapter_comparison.csv"
+    per_category_csv_path = output_dir / "per_category_comparison.csv"
 
     write_json(json_path, comparison)
     write_text(md_path, render_markdown(comparison))
-    write_per_category_csv(csv_path, comparison["per_category"])
+    write_overall_csv(csv_path, comparison["conditions"])
+    write_per_category_csv(per_category_csv_path, comparison["per_category"])
 
     print(f"[tennis-compare] compared {len(comparison['conditions'])} conditions")
-    print(f"[tennis-compare] wrote {json_path}, {md_path}, {csv_path}")
+    print(f"[tennis-compare] wrote {json_path}, {md_path}, {csv_path}, {per_category_csv_path}")
 
 
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
@@ -84,15 +104,33 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
         help="Condition name used for delta columns when present.",
     )
     parser.add_argument(
+        "--dynamic",
+        action="store_true",
+        default=True,
+        help=(
+            "Discover every scored/*/metrics.json file. This is the default; "
+            "the flag is accepted for explicit scripts."
+        ),
+    )
+    parser.add_argument(
         "--expected-conditions",
         nargs="*",
-        default=list(DEFAULT_EXPECTED_CONDITIONS),
+        default=None,
         help=(
             "Condition directory names expected under scored/. Missing metrics "
-            "are reported as MISSING instead of raising."
+            "are reported as MISSING instead of raising. If the flag is supplied "
+            "without values, the default expected tennis plan is used."
         ),
     )
     return parser.parse_args(argv)
+
+
+def planned_expected_conditions(args: argparse.Namespace) -> list[str] | tuple[str, ...] | None:
+    if args.expected_conditions is None:
+        return None
+    if args.expected_conditions:
+        return args.expected_conditions
+    return DEFAULT_EXPECTED_CONDITIONS
 
 
 def resolve_repo_path(path: str | Path) -> Path:
@@ -108,13 +146,17 @@ def discover_condition_dirs(
     paths_by_name: dict[str, Path] = {}
     if scored_dir.exists():
         paths_by_name.update(
-            {path.name: path for path in scored_dir.iterdir() if path.is_dir()}
+            {
+                path.parent.name: path.parent
+                for path in scored_dir.glob("*/metrics.json")
+                if path.is_file()
+            }
         )
     for condition in expected_conditions or []:
         paths_by_name.setdefault(condition, scored_dir / condition)
     return sorted(
         paths_by_name.values(),
-        key=lambda path: (DEFAULT_ORDER.get(path.name, 100), path.name),
+        key=lambda path: (condition_order(path.name), path.name),
     )
 
 
@@ -133,8 +175,17 @@ def load_condition_metrics(condition_dirs: list[Path]) -> dict[str, dict[str, An
         metrics["_metrics_path"] = str(metrics_path)
         loaded[condition] = metrics
     return dict(
-        sorted(loaded.items(), key=lambda item: (DEFAULT_ORDER.get(item[0], 100), item[0]))
+        sorted(loaded.items(), key=lambda item: (condition_order(item[0]), item[0]))
     )
+
+
+def condition_order(condition: str) -> int:
+    if condition in DEFAULT_ORDER:
+        return DEFAULT_ORDER[condition]
+    for prefix, order in DEFAULT_ORDER.items():
+        if condition.startswith(f"{prefix}_"):
+            return order
+    return 100
 
 
 def missing_metrics(condition_dir: Path, metrics_path: Path) -> dict[str, Any]:
@@ -167,6 +218,7 @@ def build_comparison(
                 "status": metrics.get("status", "AVAILABLE"),
                 "prompt_style": metrics.get("prompt_style"),
                 "model_name": metrics.get("model_name"),
+                "no_adapter": metrics.get("no_adapter"),
                 "adapter_dir": metrics.get("adapter_dir"),
                 "n": int(overall.get("n", 0)),
                 "em": float(overall.get("em", 0.0)),
@@ -231,18 +283,21 @@ def render_markdown(comparison: dict[str, Any]) -> str:
         "",
         "## Overall",
         "",
-        "| Condition | Prompt | N | EM | F1 | Malformed | Malformed Rate | Delta EM | Delta F1 |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Condition | Model | Prompt | No Adapter | Adapter | N | EM | F1 | Malformed | Malformed Rate | Delta EM | Delta F1 |",
+        "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in comparison["conditions"]:
         condition = md_code(row["condition"])
         if row.get("status") == "MISSING":
             condition = f"{condition} MISSING"
         lines.append(
-            "| {condition} | {prompt} | {n} | {em:.4f} | {f1:.4f} | {bad} | "
-            "{bad_rate:.4f} | {delta_em} | {delta_f1} |".format(
+            "| {condition} | {model} | {prompt} | {no_adapter} | {adapter} | {n} | "
+            "{em:.4f} | {f1:.4f} | {bad} | {bad_rate:.4f} | {delta_em} | {delta_f1} |".format(
                 condition=condition,
+                model=md_code(row.get("model_name") or ""),
                 prompt=md_code(row.get("prompt_style") or ""),
+                no_adapter=format_bool(row.get("no_adapter")),
+                adapter=md_code(row.get("adapter_dir") or ""),
                 n=row["n"],
                 em=row["em"],
                 f1=row["f1"],
@@ -286,6 +341,20 @@ def md_code(value: str) -> str:
 
 def format_optional(value: float | None) -> str:
     return "" if value is None else f"{value:+.4f}"
+
+
+def format_bool(value: Any) -> str:
+    if value is None:
+        return ""
+    return str(bool(value)).lower()
+
+
+def write_overall_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(OVERALL_FIELDS))
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({key: row.get(key) for key in OVERALL_FIELDS})
 
 
 def write_per_category_csv(path: Path, rows: list[dict[str, Any]]) -> None:
