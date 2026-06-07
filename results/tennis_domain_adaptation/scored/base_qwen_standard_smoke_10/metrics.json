@@ -1,0 +1,105 @@
+{
+  "adapter_dir": null,
+  "answer_type_confusion": {
+    "duration_minutes": {
+      "number": 1
+    },
+    "span": {
+      "span": 4
+    },
+    "yes_no": {
+      "yes_no": 5
+    }
+  },
+  "batch_size": 1,
+  "category_answer_type_confusion": {
+    "duration_minutes": {
+      "duration_minutes": {
+        "number": 1
+      }
+    },
+    "immediate_before_after": {
+      "span": {
+        "span": 2
+      }
+    },
+    "overlap_while_during": {
+      "yes_no": {
+        "yes_no": 1
+      }
+    },
+    "which_first_last": {
+      "span": {
+        "span": 2
+      }
+    },
+    "yes_no_before_after": {
+      "yes_no": {
+        "yes_no": 4
+      }
+    }
+  },
+  "condition": "base_qwen_standard_smoke_10",
+  "limit": 10,
+  "malformed_examples": [],
+  "max_new_tokens": 128,
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "no_adapter": true,
+  "normalization": {
+    "function": "src.tennis.normalize.normalize_tennis_answer",
+    "notes": [
+      "lowercase with NFKC Unicode normalization",
+      "normalize curly apostrophes and dash variants",
+      "normalize No. 1 / no 1 / #1 / number 1 ranking answers to 1",
+      "normalize numeric minute/minutes durations to singular minute",
+      "normalize duration_minutes whole-answer numbers/minute units to bare numbers",
+      "remove punctuation and English articles, then collapse whitespace"
+    ]
+  },
+  "overall": {
+    "em": 0.6,
+    "f1": 0.6820512820512821,
+    "malformed_count": 0,
+    "malformed_rate": 0.0,
+    "n": 10
+  },
+  "per_category": {
+    "duration_minutes": {
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 1
+    },
+    "immediate_before_after": {
+      "em": 0.5,
+      "f1": 0.8333333333333333,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 2
+    },
+    "overlap_while_during": {
+      "em": 1.0,
+      "f1": 1.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 1
+    },
+    "which_first_last": {
+      "em": 0.0,
+      "f1": 0.07692307692307691,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 2
+    },
+    "yes_no_before_after": {
+      "em": 1.0,
+      "f1": 1.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 4
+    }
+  },
+  "prompt_style": "standard",
+  "test_file": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\data\\tennis\\tennis_test.json"
+}

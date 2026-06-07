@@ -1,0 +1,82 @@
+{
+  "baseline": "original_tiser",
+  "conditions": [
+    {
+      "adapter_dir": null,
+      "condition": "base_qwen_standard",
+      "delta_em_vs_baseline": null,
+      "delta_f1_vs_baseline": null,
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "metrics_path": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\results\\tennis_domain_adaptation\\scored\\scored\\base_qwen_standard\\metrics.json",
+      "model_name": null,
+      "n": 0,
+      "prompt_style": null,
+      "status": "MISSING"
+    },
+    {
+      "adapter_dir": null,
+      "condition": "base_qwen_tiser",
+      "delta_em_vs_baseline": null,
+      "delta_f1_vs_baseline": null,
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "metrics_path": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\results\\tennis_domain_adaptation\\scored\\scored\\base_qwen_tiser\\metrics.json",
+      "model_name": null,
+      "n": 0,
+      "prompt_style": null,
+      "status": "MISSING"
+    },
+    {
+      "adapter_dir": null,
+      "condition": "original_tiser",
+      "delta_em_vs_baseline": null,
+      "delta_f1_vs_baseline": null,
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "metrics_path": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\results\\tennis_domain_adaptation\\scored\\scored\\original_tiser\\metrics.json",
+      "model_name": null,
+      "n": 0,
+      "prompt_style": null,
+      "status": "MISSING"
+    },
+    {
+      "adapter_dir": null,
+      "condition": "tennis_only",
+      "delta_em_vs_baseline": null,
+      "delta_f1_vs_baseline": null,
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "metrics_path": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\results\\tennis_domain_adaptation\\scored\\scored\\tennis_only\\metrics.json",
+      "model_name": null,
+      "n": 0,
+      "prompt_style": null,
+      "status": "MISSING"
+    },
+    {
+      "adapter_dir": null,
+      "condition": "mixed_replay",
+      "delta_em_vs_baseline": null,
+      "delta_f1_vs_baseline": null,
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "metrics_path": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\results\\tennis_domain_adaptation\\scored\\scored\\mixed_replay\\metrics.json",
+      "model_name": null,
+      "n": 0,
+      "prompt_style": null,
+      "status": "MISSING"
+    }
+  ],
+  "generated_at": "2026-06-07T14:19:46",
+  "per_category": []
+}
