@@ -8,7 +8,8 @@ This extension prepares two adapter conditions:
 Do not treat results from placeholder tennis traces as scientific evidence. The
 preferred train file is `data/tennis/tennis_train_traced.json`. If it is absent,
 `scripts/tennis/train_tennis.py` falls back to `data/tennis/tennis_train.json`
-and warns when placeholder-style outputs are detected.
+for inspection, detects the placeholder-style outputs, and aborts by default.
+Use `--allow-placeholder-traces` only for plumbing checks.
 
 ## E2 Tennis-Only Smoke Training
 
@@ -79,8 +80,9 @@ python scripts/tennis/build_mixed_replay_data.py \
   --summary results/tennis_domain_adaptation/processed/mixed_replay_summary.json
 ```
 
-If `data/tennis/tennis_train_traced.json` is not available yet, build from the
-fallback only as a plumbing check:
+Do not build mixed replay from `data/tennis/tennis_train.json` for scientific
+training. If `data/tennis/tennis_train_traced.json` is unavailable, the fallback
+command below is only a plumbing check and still requires `data/TISER_train.json`:
 
 ```bash
 python scripts/tennis/build_mixed_replay_data.py \
@@ -160,5 +162,6 @@ python scripts/tennis/evaluate_tennis.py \
 - Every `output` contains `<answer>`.
 - The extracted `<answer>` matches `answer`, `gold_answer`, or `gold` for at
   least 95% of records by default.
-- Placeholder-style traces are counted and warned about.
-
+- Placeholder-style traces abort training by default.
+- `--allow-placeholder-traces` permits placeholder traces only for
+  plumbing/smoke checks; those runs are not scientifically valid.

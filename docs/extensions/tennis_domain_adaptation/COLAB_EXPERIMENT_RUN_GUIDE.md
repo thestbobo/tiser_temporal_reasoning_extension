@@ -124,12 +124,12 @@ Run the notebook preflight cell before any evaluation. It checks the main files 
 | Path | Required for | If missing | How to generate or fix |
 | --- | --- | --- | --- |
 | `data/tennis/tennis_test.json` | E0, E1, E2, E3 tennis-test evaluation | Full evaluation cannot run. | Rebuild tennis data with the data preparation pipeline, or restore the file from Drive/Git. |
-| `data/tennis/tennis_train_traced.json` | Meaningful tennis-only and mixed-replay training | Do not train yet. The training wrapper may fall back to `tennis_train.json`, but those results are not scientifically meaningful if traces are placeholders. | Use `scripts/tennis/generate_tennis_traces.py` prepare and validate modes. |
+| `data/tennis/tennis_train_traced.json` | Meaningful tennis-only and mixed-replay training | Do not train yet. The training wrapper may inspect `tennis_train.json`, but placeholder traces abort training by default. | Use `scripts/tennis/generate_tennis_traces.py` prepare and validate modes. |
 | `config/config_tennis.yaml` | Full 7B evaluation and full training | Full commands cannot run. | Restore the config. It should use `Qwen/Qwen2.5-7B-Instruct`. |
 | `config/config_tennis_smoke.yaml` | Smoke training or 0.5B plumbing checks | Smoke training cannot run. | Restore the config. It uses `Qwen/Qwen2.5-0.5B-Instruct` and is not compatible with 7B adapters. |
 | `model/tiser_qwen7b_full/adapter` | E1 original TISER adapter evaluation and forgetting baseline | E1 cannot run. | Copy the adapter into Colab/Drive, or update `ORIGINAL_TISER_ADAPTER` to the correct existing path. |
-| `model/tennis_only_qwen7b/adapter` | E2 tennis-only evaluation if using notebook defaults | E2 cannot run with the default notebook path. | Train E2, copy the adapter, or update `TENNIS_ONLY_ADAPTER`. The repo training wrapper commonly writes `model/tiser_tennis_only_qwen7b/adapter`. |
-| `model/mixed_tennis_tiser_replay_qwen7b/adapter` | E3 mixed replay evaluation if using notebook defaults | E3 cannot run with the default notebook path. | Train E3, copy the adapter, or update `MIXED_REPLAY_ADAPTER`. Existing training docs commonly use `model/tiser_tennis_mixed_replay_qwen7b/adapter`. |
+| `model/tiser_tennis_only_qwen7b/adapter` | E2 tennis-only evaluation | E2 cannot run. | Train E2 from validated tennis traces, copy the adapter, or update `TENNIS_ONLY_ADAPTER`. |
+| `model/tiser_tennis_mixed_replay_qwen7b/adapter` | E3 mixed replay evaluation | E3 cannot run. | Train E3 after validated tennis traces and original TISER replay data exist, copy the adapter, or update `MIXED_REPLAY_ADAPTER`. |
 
 Additional files used by optional steps:
 
@@ -137,25 +137,25 @@ Additional files used by optional steps:
 - `data/tennis/original_tiser_eval_sample.json`: required for forgetting evaluation on the original TISER sample.
 - `data/tennis/tennis_mixed_replay_train.json`: output of the mixed replay dataset build step.
 
-Current script note: `scripts/tennis/aggregate_tennis_results.py` expects the E3 final aggregation folder to be `results/tennis_domain_adaptation/scored/mixed_replay`, while the notebook's direct E3 cell uses `mixed_tennis_tiser_replay`. For final aggregation with the current script, either evaluate E3 into `scored/mixed_replay` or copy the completed E3 metrics folder there before running final aggregation.
+Current script note: use `results/tennis_domain_adaptation/scored/mixed_replay` for the E3 final aggregation folder.
 
 ## 6. Execution Order
 
 Step 0, mandatory: Preflight checks.
 
-Step 1, mandatory first run: Smoke base model evaluation.
+Step 1, mandatory first run: Smoke Base Qwen evaluation with standard and TISER-style prompts.
 
-Step 2, mandatory for final tennis comparison: Full base model evaluation, E0.
+Step 2, optional after smoke passes: Full Base Qwen tennis evaluation, E0.
 
-Step 3, mandatory for adapter baseline: Original TISER adapter evaluation, E1.
+Step 3, blocked until `model/tiser_qwen7b_full/adapter` is restored: Original TISER adapter evaluation, E1.
 
 Step 4, optional unless training adapters: Generate and validate traces if `tennis_train_traced.json` is missing.
 
-Step 5, optional if E2 adapter already exists: Train tennis-only adapter if missing.
+Step 5, blocked until traced tennis data exists: Train tennis-only adapter if missing.
 
-Step 6, optional if E3 adapter already exists: Build mixed replay dataset if missing.
+Step 6, blocked until traced tennis data and `data/TISER_train.json` exist: Build mixed replay dataset if missing.
 
-Step 7, optional if E3 adapter already exists: Train mixed replay adapter if missing.
+Step 7, blocked until mixed replay data exists: Train mixed replay adapter if missing.
 
 Step 8, mandatory for E2 comparison: Evaluate tennis-only adapter.
 
@@ -176,8 +176,8 @@ python scripts/tennis/run_experiment_plan.py \
   --config config/config_tennis.yaml \
   --tennis-test data/tennis/tennis_test.json \
   --original-tiser-adapter model/tiser_qwen7b_full/adapter \
-  --tennis-adapter model/tennis_only_qwen7b/adapter \
-  --mixed-adapter model/mixed_tennis_tiser_replay_qwen7b/adapter \
+  --tennis-adapter model/tiser_tennis_only_qwen7b/adapter \
+  --mixed-adapter model/tiser_tennis_mixed_replay_qwen7b/adapter \
   --limit 5
 ```
 
@@ -249,7 +249,7 @@ E2, tennis-only adapter:
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/tennis_only_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_only_qwen7b/adapter \
   --condition tennis_only \
   --batch-size 1 \
   --max-new-tokens 256 \
@@ -262,17 +262,17 @@ If your E2 adapter was produced by `train_tennis.py` with the existing training 
 model/tiser_tennis_only_qwen7b/adapter
 ```
 
-E3, mixed tennis plus TISER replay adapter, using the notebook condition name:
+E3, mixed tennis plus TISER replay adapter:
 
 ```bash
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/mixed_tennis_tiser_replay_qwen7b/adapter \
-  --condition mixed_tennis_tiser_replay \
+  --adapter-dir model/tiser_tennis_mixed_replay_qwen7b/adapter \
+  --condition mixed_replay \
   --batch-size 1 \
   --max-new-tokens 256 \
-  --output-dir results/tennis_domain_adaptation/scored/mixed_tennis_tiser_replay
+  --output-dir results/tennis_domain_adaptation/scored/mixed_replay
 ```
 
 For `aggregate_tennis_results.py` in the current repo, E3 must also be available as `mixed_replay`:
@@ -281,7 +281,7 @@ For `aggregate_tennis_results.py` in the current repo, E3 must also be available
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/mixed_tennis_tiser_replay_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_mixed_replay_qwen7b/adapter \
   --condition mixed_replay \
   --batch-size 1 \
   --max-new-tokens 256 \
@@ -311,7 +311,7 @@ python scripts/tennis/evaluate_tennis.py \
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/original_tiser_eval_sample.json \
-  --adapter-dir model/tennis_only_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_only_qwen7b/adapter \
   --condition tennis_only \
   --batch-size 1 \
   --max-new-tokens 256 \
@@ -322,7 +322,7 @@ python scripts/tennis/evaluate_tennis.py \
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/original_tiser_eval_sample.json \
-  --adapter-dir model/mixed_tennis_tiser_replay_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_mixed_replay_qwen7b/adapter \
   --condition mixed_replay \
   --batch-size 1 \
   --max-new-tokens 256 \
@@ -506,7 +506,7 @@ results/tennis_domain_adaptation/scored/base_qwen/predictions.jsonl
 results/tennis_domain_adaptation/scored/base_qwen/metrics.json
 results/tennis_domain_adaptation/scored/original_tiser/metrics.json
 results/tennis_domain_adaptation/scored/tennis_only/metrics.json
-results/tennis_domain_adaptation/scored/mixed_tennis_tiser_replay/metrics.json
+results/tennis_domain_adaptation/scored/mixed_replay/metrics.json
 results/tennis_domain_adaptation/scored/mixed_replay/metrics.json
 results/tennis_domain_adaptation/comparisons/adapter_comparison.md
 ```
@@ -590,7 +590,7 @@ Results not saved to Drive:
 Final aggregation missing E3:
 
 - Ensure `results/tennis_domain_adaptation/scored/mixed_replay/metrics.json` exists.
-- If you evaluated E3 only as `mixed_tennis_tiser_replay`, either rerun E3 with `--condition mixed_replay --output-dir results/tennis_domain_adaptation/scored/mixed_replay` or copy the completed E3 folder to `scored/mixed_replay` before aggregation.
+- Evaluate E3 with `--condition mixed_replay --output-dir results/tennis_domain_adaptation/scored/mixed_replay` before aggregation.
 
 ## 15. What Results to Put in the Report
 
@@ -607,7 +607,7 @@ Report the main conditions:
 - E0: `base_qwen`
 - E1: `original_tiser`
 - E2: `tennis_only`
-- E3: `mixed_tennis_tiser_replay` or `mixed_replay`, depending on the result file naming used for aggregation
+- E3: `mixed_replay`
 
 Use these metrics:
 

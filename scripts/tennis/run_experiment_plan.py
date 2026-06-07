@@ -1,4 +1,4 @@
-"""Plan and optionally run the final tennis domain-adaptation evaluations."""
+"""Plan and optionally run tennis domain-adaptation evaluations."""
 
 from __future__ import annotations
 
@@ -24,6 +24,7 @@ class Experiment:
     adapter_dir: Path | None
     no_adapter: bool
     prompt_style: str = "tiser"
+    blocked_note: str | None = None
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -62,10 +63,23 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
         "--tennis-adapter", default="model/tiser_tennis_only_qwen7b/adapter"
     )
     parser.add_argument(
-        "--mixed-adapter", default="model/tiser_tennis_mixed_qwen7b/adapter"
+        "--mixed-adapter", default="model/tiser_tennis_mixed_replay_qwen7b/adapter"
     )
     parser.add_argument("--config", default="config/config_tennis.yaml")
-    parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=100,
+        help="Sample limit for smoke evaluations. Defaults to 100.",
+    )
+    parser.add_argument(
+        "--include-blocked-adapter-experiments",
+        action="store_true",
+        help=(
+            "Also print original TISER, tennis-only, and mixed-replay adapter "
+            "commands. These require artifacts that are not present by default."
+        ),
+    )
     parser.add_argument(
         "--execute",
         action="store_true",
@@ -89,83 +103,117 @@ def build_experiments(args: argparse.Namespace) -> list[Experiment]:
     tennis_scored = RESULTS_ROOT / "scored"
     tiser_scored = RESULTS_ROOT / "scored_original_tiser_sample"
 
-    return [
+    experiments = [
         Experiment(
-            experiment_id="E0",
-            condition="base_qwen",
+            experiment_id="E0-standard",
+            condition="base_qwen_standard",
             eval_set="tennis_test",
             test_file=tennis_test,
-            output_dir=tennis_scored / "base_qwen",
+            output_dir=tennis_scored / "base_qwen_standard_smoke_100",
             adapter_dir=None,
             no_adapter=True,
+            prompt_style="standard",
         ),
         Experiment(
-            experiment_id="E1",
-            condition="original_tiser",
+            experiment_id="E0-tiser",
+            condition="base_qwen_tiser",
             eval_set="tennis_test",
             test_file=tennis_test,
-            output_dir=tennis_scored / "original_tiser",
-            adapter_dir=original_adapter,
-            no_adapter=False,
-        ),
-        Experiment(
-            experiment_id="E2",
-            condition="tennis_only",
-            eval_set="tennis_test",
-            test_file=tennis_test,
-            output_dir=tennis_scored / "tennis_only",
-            adapter_dir=tennis_adapter,
-            no_adapter=False,
-        ),
-        Experiment(
-            experiment_id="E3",
-            condition="mixed_replay",
-            eval_set="tennis_test",
-            test_file=tennis_test,
-            output_dir=tennis_scored / "mixed_replay",
-            adapter_dir=mixed_adapter,
-            no_adapter=False,
-        ),
-        Experiment(
-            experiment_id="E1-forgetting",
-            condition="original_tiser",
-            eval_set="original_tiser_sample",
-            test_file=tiser_sample,
-            output_dir=tiser_scored / "original_tiser",
-            adapter_dir=original_adapter,
-            no_adapter=False,
-        ),
-        Experiment(
-            experiment_id="E2-forgetting",
-            condition="tennis_only",
-            eval_set="original_tiser_sample",
-            test_file=tiser_sample,
-            output_dir=tiser_scored / "tennis_only",
-            adapter_dir=tennis_adapter,
-            no_adapter=False,
-        ),
-        Experiment(
-            experiment_id="E3-forgetting",
-            condition="mixed_replay",
-            eval_set="original_tiser_sample",
-            test_file=tiser_sample,
-            output_dir=tiser_scored / "mixed_replay",
-            adapter_dir=mixed_adapter,
-            no_adapter=False,
+            output_dir=tennis_scored / "base_qwen_tiser_smoke_100",
+            adapter_dir=None,
+            no_adapter=True,
+            prompt_style="tiser",
         ),
     ]
+
+    if not args.include_blocked_adapter_experiments:
+        return experiments
+
+    experiments.extend(
+        [
+            Experiment(
+                experiment_id="E1",
+                condition="original_tiser",
+                eval_set="tennis_test",
+                test_file=tennis_test,
+                output_dir=tennis_scored / "original_tiser",
+                adapter_dir=original_adapter,
+                no_adapter=False,
+                blocked_note="requires model/tiser_qwen7b_full/adapter",
+            ),
+            Experiment(
+                experiment_id="E2",
+                condition="tennis_only",
+                eval_set="tennis_test",
+                test_file=tennis_test,
+                output_dir=tennis_scored / "tennis_only",
+                adapter_dir=tennis_adapter,
+                no_adapter=False,
+                blocked_note="requires validated tennis traced data and a trained adapter",
+            ),
+            Experiment(
+                experiment_id="E3",
+                condition="mixed_replay",
+                eval_set="tennis_test",
+                test_file=tennis_test,
+                output_dir=tennis_scored / "mixed_replay",
+                adapter_dir=mixed_adapter,
+                no_adapter=False,
+                blocked_note="requires original TISER data plus a trained mixed-replay adapter",
+            ),
+            Experiment(
+                experiment_id="E1-forgetting",
+                condition="original_tiser",
+                eval_set="original_tiser_sample",
+                test_file=tiser_sample,
+                output_dir=tiser_scored / "original_tiser",
+                adapter_dir=original_adapter,
+                no_adapter=False,
+                blocked_note="requires original TISER eval sample and adapter",
+            ),
+            Experiment(
+                experiment_id="E2-forgetting",
+                condition="tennis_only",
+                eval_set="original_tiser_sample",
+                test_file=tiser_sample,
+                output_dir=tiser_scored / "tennis_only",
+                adapter_dir=tennis_adapter,
+                no_adapter=False,
+                blocked_note="requires original TISER eval sample and tennis-only adapter",
+            ),
+            Experiment(
+                experiment_id="E3-forgetting",
+                condition="mixed_replay",
+                eval_set="original_tiser_sample",
+                test_file=tiser_sample,
+                output_dir=tiser_scored / "mixed_replay",
+                adapter_dir=mixed_adapter,
+                no_adapter=False,
+                blocked_note="requires original TISER eval sample and mixed-replay adapter",
+            ),
+        ]
+    )
+    return experiments
 
 
 def collect_missing_prerequisites(
     args: argparse.Namespace, experiments: list[Experiment]
 ) -> list[str]:
     missing: list[str] = []
-    required_files = {
-        "config": Path(args.config),
-        "tennis_test": Path(args.tennis_test),
-        "original_tiser_sample": Path(args.tiser_sample),
-    }
-    for label, path in required_files.items():
+    required_files = {"config": Path(args.config)}
+    for exp in experiments:
+        required_files[f"{exp.eval_set} for {exp.experiment_id}"] = exp.test_file
+    if any(exp.condition == "tennis_only" for exp in experiments):
+        required_files["tennis traced train data"] = Path(
+            "data/tennis/tennis_train_traced.json"
+        )
+    if any(exp.condition == "mixed_replay" for exp in experiments):
+        required_files["original TISER train data"] = Path("data/TISER_train.json")
+        required_files["mixed replay train data"] = Path(
+            "data/tennis/tennis_mixed_replay_train.json"
+        )
+
+    for label, path in sorted(required_files.items()):
         if not resolve_repo_path(path).exists():
             missing.append(f"{label}: {path.as_posix()}")
 
@@ -267,6 +315,12 @@ def print_plan(
     print("\n## Expected result folders")
     for exp in experiments:
         print(f"- {exp.output_dir.as_posix()}")
+
+    blocked = [exp for exp in experiments if exp.blocked_note]
+    if blocked:
+        print("\n## Blocked experiment notes")
+        for exp in blocked:
+            print(f"- {exp.experiment_id}: {exp.blocked_note}")
 
     print("\n## Missing prerequisites")
     if missing:

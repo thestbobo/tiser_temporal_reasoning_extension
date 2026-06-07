@@ -53,6 +53,7 @@ def main() -> None:
 
     validation = validate_training_file(train_file, min_match_rate=args.min_answer_match_rate)
     print_validation_summary(train_file, validation)
+    enforce_placeholder_policy(validation, allow_placeholder_traces=args.allow_placeholder_traces)
     print_resolved_outputs(cfg)
 
     from src.train.trainer import run_training
@@ -84,6 +85,14 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=0.95,
         help="Abort if extracted <answer> matches gold for less than this fraction.",
+    )
+    parser.add_argument(
+        "--allow-placeholder-traces",
+        action="store_true",
+        help=(
+            "Allow training on placeholder-style traces. This is only suitable for "
+            "plumbing/smoke checks and is not scientifically valid."
+        ),
     )
     return parser.parse_args()
 
@@ -264,6 +273,29 @@ def print_validation_summary(path: Path, validation: dict[str, Any]) -> None:
             "Use this only for plumbing/smoke checks; results are not scientifically "
             "meaningful until high-quality traces replace them."
         )
+
+
+def enforce_placeholder_policy(
+    validation: dict[str, Any], *, allow_placeholder_traces: bool
+) -> None:
+    if not validation["placeholder_count"]:
+        return
+
+    warning = (
+        "Placeholder traces are not scientifically valid training targets. They "
+        "can only verify trainer plumbing and must not be used for adapter-quality "
+        "or transfer claims."
+    )
+    if allow_placeholder_traces:
+        print(f"[tennis-train][warning] --allow-placeholder-traces set. {warning}")
+        return
+
+    raise ValueError(
+        "[tennis-train] refusing to train on placeholder-style traces by default. "
+        f"{warning} Regenerate validated traces at "
+        "data/tennis/tennis_train_traced.json, or pass "
+        "--allow-placeholder-traces for a plumbing-only smoke run."
+    )
 
 
 def print_resolved_outputs(cfg: Any) -> None:

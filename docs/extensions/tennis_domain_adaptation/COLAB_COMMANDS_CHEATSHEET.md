@@ -43,8 +43,8 @@ python scripts/tennis/run_experiment_plan.py \
   --config config/config_tennis.yaml \
   --tennis-test data/tennis/tennis_test.json \
   --original-tiser-adapter model/tiser_qwen7b_full/adapter \
-  --tennis-adapter model/tennis_only_qwen7b/adapter \
-  --mixed-adapter model/mixed_tennis_tiser_replay_qwen7b/adapter \
+  --tennis-adapter model/tiser_tennis_only_qwen7b/adapter \
+  --mixed-adapter model/tiser_tennis_mixed_replay_qwen7b/adapter \
   --limit 5
 ```
 
@@ -128,7 +128,7 @@ python scripts/tennis/train_tennis.py \
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/tennis_only_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_only_qwen7b/adapter \
   --condition tennis_only \
   --batch-size 1 \
   --max-new-tokens 256 \
@@ -139,18 +139,18 @@ python scripts/tennis/evaluate_tennis.py \
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/mixed_tennis_tiser_replay_qwen7b/adapter \
-  --condition mixed_tennis_tiser_replay \
+  --adapter-dir model/tiser_tennis_mixed_replay_qwen7b/adapter \
+  --condition mixed_replay \
   --batch-size 1 \
   --max-new-tokens 256 \
-  --output-dir results/tennis_domain_adaptation/scored/mixed_tennis_tiser_replay
+  --output-dir results/tennis_domain_adaptation/scored/mixed_replay
 ```
 
 ```bash
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/mixed_tennis_tiser_replay_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_mixed_replay_qwen7b/adapter \
   --condition mixed_replay \
   --batch-size 1 \
   --max-new-tokens 256 \

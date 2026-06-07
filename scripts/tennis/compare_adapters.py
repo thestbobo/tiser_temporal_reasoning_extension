@@ -15,10 +15,21 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 DEFAULT_ORDER = {
     "base_qwen": 0,
-    "original_tiser": 1,
-    "tennis_only": 2,
-    "mixed_tennis_tiser_replay": 3,
+    "base_qwen_standard": 0,
+    "base_qwen_tiser": 1,
+    "original_tiser": 2,
+    "tennis_only": 3,
+    "mixed_replay": 4,
+    "mixed_tennis_tiser_replay": 4,
 }
+
+DEFAULT_EXPECTED_CONDITIONS = (
+    "base_qwen_standard",
+    "base_qwen_tiser",
+    "original_tiser",
+    "tennis_only",
+    "mixed_replay",
+)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -26,9 +37,10 @@ def main(argv: list[str] | None = None) -> None:
     results_dir = resolve_repo_path(args.results_dir)
     condition_dirs = [
         resolve_repo_path(path) for path in args.condition_dirs
-    ] if args.condition_dirs else discover_condition_dirs(results_dir / "scored")
-    if not condition_dirs:
-        raise ValueError(f"No condition metrics found under {results_dir / 'scored'}")
+    ] if args.condition_dirs else discover_condition_dirs(
+        results_dir / "scored",
+        expected_conditions=args.expected_conditions,
+    )
 
     metrics_by_condition = load_condition_metrics(condition_dirs)
     comparison = build_comparison(metrics_by_condition, baseline=args.baseline)
@@ -71,6 +83,15 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
         default="original_tiser",
         help="Condition name used for delta columns when present.",
     )
+    parser.add_argument(
+        "--expected-conditions",
+        nargs="*",
+        default=list(DEFAULT_EXPECTED_CONDITIONS),
+        help=(
+            "Condition directory names expected under scored/. Missing metrics "
+            "are reported as MISSING instead of raising."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -81,15 +102,18 @@ def resolve_repo_path(path: str | Path) -> Path:
     return REPO_ROOT / value
 
 
-def discover_condition_dirs(scored_dir: Path) -> list[Path]:
-    if not scored_dir.exists():
-        return []
+def discover_condition_dirs(
+    scored_dir: Path, *, expected_conditions: list[str] | tuple[str, ...] | None = None
+) -> list[Path]:
+    paths_by_name: dict[str, Path] = {}
+    if scored_dir.exists():
+        paths_by_name.update(
+            {path.name: path for path in scored_dir.iterdir() if path.is_dir()}
+        )
+    for condition in expected_conditions or []:
+        paths_by_name.setdefault(condition, scored_dir / condition)
     return sorted(
-        [
-            path
-            for path in scored_dir.iterdir()
-            if path.is_dir() and (path / "metrics.json").exists()
-        ],
+        paths_by_name.values(),
         key=lambda path: (DEFAULT_ORDER.get(path.name, 100), path.name),
     )
 
@@ -99,15 +123,30 @@ def load_condition_metrics(condition_dirs: list[Path]) -> dict[str, dict[str, An
     for condition_dir in condition_dirs:
         metrics_path = condition_dir / "metrics.json"
         if not metrics_path.exists():
-            raise FileNotFoundError(f"Missing metrics.json in {condition_dir}")
-        metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
-        condition = str(metrics.get("condition") or condition_dir.name)
+            condition = condition_dir.name
+            metrics = missing_metrics(condition_dir, metrics_path)
+        else:
+            metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+            condition = str(metrics.get("condition") or condition_dir.name)
+            metrics["status"] = str(metrics.get("status") or "AVAILABLE")
         metrics["_condition_dir"] = str(condition_dir)
         metrics["_metrics_path"] = str(metrics_path)
         loaded[condition] = metrics
     return dict(
         sorted(loaded.items(), key=lambda item: (DEFAULT_ORDER.get(item[0], 100), item[0]))
     )
+
+
+def missing_metrics(condition_dir: Path, metrics_path: Path) -> dict[str, Any]:
+    return {
+        "condition": condition_dir.name,
+        "status": "MISSING",
+        "overall": {},
+        "per_category": {},
+        "adapter_dir": None,
+        "_condition_dir": str(condition_dir),
+        "_metrics_path": str(metrics_path),
+    }
 
 
 def build_comparison(
@@ -125,6 +164,7 @@ def build_comparison(
         conditions.append(
             {
                 "condition": condition,
+                "status": metrics.get("status", "AVAILABLE"),
                 "prompt_style": metrics.get("prompt_style"),
                 "model_name": metrics.get("model_name"),
                 "adapter_dir": metrics.get("adapter_dir"),
@@ -195,10 +235,13 @@ def render_markdown(comparison: dict[str, Any]) -> str:
         "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in comparison["conditions"]:
+        condition = md_code(row["condition"])
+        if row.get("status") == "MISSING":
+            condition = f"{condition} MISSING"
         lines.append(
             "| {condition} | {prompt} | {n} | {em:.4f} | {f1:.4f} | {bad} | "
             "{bad_rate:.4f} | {delta_em} | {delta_f1} |".format(
-                condition=md_code(row["condition"]),
+                condition=condition,
                 prompt=md_code(row.get("prompt_style") or ""),
                 n=row["n"],
                 em=row["em"],

@@ -5,9 +5,9 @@ set -euo pipefail
 # Set FORCE=1 or regenerate with --force to overwrite existing metrics.json files.
 FORCE=${FORCE:-0}
 
-echo "[tennis-plan] E0 base_qwen on tennis_test"
-if [ -f "results/tennis_domain_adaptation/scored/base_qwen/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored/base_qwen/metrics.json (set FORCE=1 to overwrite)"
+echo "[tennis-plan] E0-standard base_qwen_standard on tennis_test"
+if [ -f "results/tennis_domain_adaptation/scored/base_qwen_standard_smoke_100/metrics.json" ] && [ "$FORCE" != "1" ]; then
+  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored/base_qwen_standard_smoke_100/metrics.json (set FORCE=1 to overwrite)"
 else
   python \
     scripts/tennis/evaluate_tennis.py \
@@ -16,17 +16,19 @@ else
     --test-file \
     data/tennis/tennis_test.json \
     --condition \
-    base_qwen \
+    base_qwen_standard \
     --prompt-style \
-    tiser \
+    standard \
     --output-dir \
-    results/tennis_domain_adaptation/scored/base_qwen \
-    --no-adapter
+    results/tennis_domain_adaptation/scored/base_qwen_standard_smoke_100 \
+    --no-adapter \
+    --limit \
+    100
 fi
 
-echo "[tennis-plan] E1 original_tiser on tennis_test"
-if [ -f "results/tennis_domain_adaptation/scored/original_tiser/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored/original_tiser/metrics.json (set FORCE=1 to overwrite)"
+echo "[tennis-plan] E0-tiser base_qwen_tiser on tennis_test"
+if [ -f "results/tennis_domain_adaptation/scored/base_qwen_tiser_smoke_100/metrics.json" ] && [ "$FORCE" != "1" ]; then
+  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored/base_qwen_tiser_smoke_100/metrics.json (set FORCE=1 to overwrite)"
 else
   python \
     scripts/tennis/evaluate_tennis.py \
@@ -35,111 +37,12 @@ else
     --test-file \
     data/tennis/tennis_test.json \
     --condition \
-    original_tiser \
+    base_qwen_tiser \
     --prompt-style \
     tiser \
     --output-dir \
-    results/tennis_domain_adaptation/scored/original_tiser \
-    --adapter-dir \
-    model/tiser_qwen7b_full/adapter
-fi
-
-echo "[tennis-plan] E2 tennis_only on tennis_test"
-if [ -f "results/tennis_domain_adaptation/scored/tennis_only/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored/tennis_only/metrics.json (set FORCE=1 to overwrite)"
-else
-  python \
-    scripts/tennis/evaluate_tennis.py \
-    --config \
-    config/config_tennis.yaml \
-    --test-file \
-    data/tennis/tennis_test.json \
-    --condition \
-    tennis_only \
-    --prompt-style \
-    tiser \
-    --output-dir \
-    results/tennis_domain_adaptation/scored/tennis_only \
-    --adapter-dir \
-    model/tiser_tennis_only_qwen7b/adapter
-fi
-
-echo "[tennis-plan] E3 mixed_replay on tennis_test"
-if [ -f "results/tennis_domain_adaptation/scored/mixed_replay/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored/mixed_replay/metrics.json (set FORCE=1 to overwrite)"
-else
-  python \
-    scripts/tennis/evaluate_tennis.py \
-    --config \
-    config/config_tennis.yaml \
-    --test-file \
-    data/tennis/tennis_test.json \
-    --condition \
-    mixed_replay \
-    --prompt-style \
-    tiser \
-    --output-dir \
-    results/tennis_domain_adaptation/scored/mixed_replay \
-    --adapter-dir \
-    model/tiser_tennis_mixed_qwen7b/adapter
-fi
-
-echo "[tennis-plan] E1-forgetting original_tiser on original_tiser_sample"
-if [ -f "results/tennis_domain_adaptation/scored_original_tiser_sample/original_tiser/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored_original_tiser_sample/original_tiser/metrics.json (set FORCE=1 to overwrite)"
-else
-  python \
-    scripts/tennis/evaluate_tennis.py \
-    --config \
-    config/config_tennis.yaml \
-    --test-file \
-    data/tennis/original_tiser_eval_sample.json \
-    --condition \
-    original_tiser \
-    --prompt-style \
-    tiser \
-    --output-dir \
-    results/tennis_domain_adaptation/scored_original_tiser_sample/original_tiser \
-    --adapter-dir \
-    model/tiser_qwen7b_full/adapter
-fi
-
-echo "[tennis-plan] E2-forgetting tennis_only on original_tiser_sample"
-if [ -f "results/tennis_domain_adaptation/scored_original_tiser_sample/tennis_only/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored_original_tiser_sample/tennis_only/metrics.json (set FORCE=1 to overwrite)"
-else
-  python \
-    scripts/tennis/evaluate_tennis.py \
-    --config \
-    config/config_tennis.yaml \
-    --test-file \
-    data/tennis/original_tiser_eval_sample.json \
-    --condition \
-    tennis_only \
-    --prompt-style \
-    tiser \
-    --output-dir \
-    results/tennis_domain_adaptation/scored_original_tiser_sample/tennis_only \
-    --adapter-dir \
-    model/tiser_tennis_only_qwen7b/adapter
-fi
-
-echo "[tennis-plan] E3-forgetting mixed_replay on original_tiser_sample"
-if [ -f "results/tennis_domain_adaptation/scored_original_tiser_sample/mixed_replay/metrics.json" ] && [ "$FORCE" != "1" ]; then
-  echo "[tennis-plan] SKIP existing results/tennis_domain_adaptation/scored_original_tiser_sample/mixed_replay/metrics.json (set FORCE=1 to overwrite)"
-else
-  python \
-    scripts/tennis/evaluate_tennis.py \
-    --config \
-    config/config_tennis.yaml \
-    --test-file \
-    data/tennis/original_tiser_eval_sample.json \
-    --condition \
-    mixed_replay \
-    --prompt-style \
-    tiser \
-    --output-dir \
-    results/tennis_domain_adaptation/scored_original_tiser_sample/mixed_replay \
-    --adapter-dir \
-    model/tiser_tennis_mixed_qwen7b/adapter
+    results/tennis_domain_adaptation/scored/base_qwen_tiser_smoke_100 \
+    --no-adapter \
+    --limit \
+    100
 fi

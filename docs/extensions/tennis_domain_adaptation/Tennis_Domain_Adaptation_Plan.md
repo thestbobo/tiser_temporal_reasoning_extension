@@ -210,15 +210,15 @@ Evaluate the base instruct model with no LoRA adapter. This estimates tennis tem
 
 ### E1: Original TISER Adapter
 
-Evaluate the original TISER LoRA adapter on tennis temporal QA. This tests whether general TISER temporal SFT transfers to tennis-domain contexts without tennis-specific adaptation.
+Blocked until `model/tiser_qwen7b_full/adapter` is restored. After that adapter exists, evaluate the original TISER LoRA adapter on tennis temporal QA to test whether general TISER temporal SFT transfers to tennis-domain contexts without tennis-specific adaptation.
 
 ### E2: Tennis-Only LoRA Adapter
 
-Train a LoRA adapter on tennis train examples only, using TISER-style prompts and completions. Compare against E1 on tennis test/dev to test H1 and per-category improvements for H2.
+Blocked until `data/tennis/tennis_train_traced.json` exists with validated non-placeholder traces. After traced data exists, train a LoRA adapter on tennis train examples only, using TISER-style prompts and completions.
 
 ### E3: Mixed Adapter Trained on Tennis + TISER Replay
 
-Train a LoRA adapter on tennis train examples plus a replay subset of original TISER training data. The replay subset should be documented by size, sampling seed, source split, and category/dataset composition where available. This condition tests whether replay reduces forgetting relative to E2.
+Blocked until traced tennis data and `data/TISER_train.json` exist. After both exist, train a LoRA adapter on tennis train examples plus a replay subset of original TISER training data. The replay subset should be documented by size, sampling seed, source split, and category/dataset composition where available.
 
 ### E4: Standard Prompt vs TISER Prompt Comparison
 
@@ -343,7 +343,7 @@ python scripts/tennis/run_experiment_plan.py \
   --tiser-sample data/tennis/original_tiser_eval_sample.json \
   --original-tiser-adapter model/tiser_qwen7b_full/adapter \
   --tennis-adapter model/tiser_tennis_only_qwen7b/adapter \
-  --mixed-adapter model/tiser_tennis_mixed_qwen7b/adapter \
+  --mixed-adapter model/tiser_tennis_mixed_replay_qwen7b/adapter \
   --config config/config_tennis.yaml
 ```
 
@@ -506,16 +506,16 @@ python scripts/tennis/evaluate_tennis.py \
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/tennis_only_qwen7b/adapter \
+  --adapter-dir model/tiser_tennis_only_qwen7b/adapter \
   --condition tennis_only \
   --output-dir results/tennis_domain_adaptation/scored/tennis_only
 
 python scripts/tennis/evaluate_tennis.py \
   --config config/config_tennis.yaml \
   --test-file data/tennis/tennis_test.json \
-  --adapter-dir model/mixed_tennis_tiser_replay_qwen7b/adapter \
-  --condition mixed_tennis_tiser_replay \
-  --output-dir results/tennis_domain_adaptation/scored/mixed_tennis_tiser_replay
+  --adapter-dir model/tiser_tennis_mixed_replay_qwen7b/adapter \
+  --condition mixed_replay \
+  --output-dir results/tennis_domain_adaptation/scored/mixed_replay
 ```
 
 Adapter comparison aggregation after at least two condition folders contain `metrics.json`:
