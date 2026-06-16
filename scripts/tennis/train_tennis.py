@@ -44,6 +44,11 @@ def main() -> None:
 
     train_file = select_train_file(args.train_file or cfg.paths.train_file)
     cfg.paths.train_file = str(train_file)
+    base_adapter = args.base_adapter or cfg.model.get("base_adapter")
+    if base_adapter is not None:
+        cfg.model.base_adapter = str(
+            validate_base_adapter(base_adapter, expected_base_model=cfg.model.name)
+        )
     if args.test_file is not None:
         cfg.paths.test_file = str(resolve_repo_path(args.test_file))
     if args.output_dir is not None:
@@ -78,6 +83,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-name", default=None)
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--model-dir", default=None)
+    parser.add_argument(
+        "--base-adapter",
+        default=None,
+        help=(
+            "Existing PEFT/LoRA adapter to continue training from, e.g. "
+            "checkpoints/adapter for the TISER-fine-tuned Qwen 7B adapter."
+        ),
+    )
     parser.add_argument("--subset", type=int, default=None, help="Cap training examples.")
     parser.add_argument("--epochs", type=float, default=None)
     parser.add_argument(
@@ -140,6 +153,30 @@ def select_train_file(requested_path: str | Path) -> Path:
         return fallback
 
     raise FileNotFoundError(f"Training file does not exist: {requested}")
+
+
+def validate_base_adapter(path: str | Path, *, expected_base_model: str) -> Path:
+    adapter_dir = resolve_repo_path(path)
+    if not adapter_dir.is_dir():
+        raise FileNotFoundError(f"Base adapter directory does not exist: {adapter_dir}")
+
+    config_path = adapter_dir / "adapter_config.json"
+    weights_path = adapter_dir / "adapter_model.safetensors"
+    if not config_path.is_file():
+        raise FileNotFoundError(f"Base adapter is missing adapter_config.json: {adapter_dir}")
+    if not weights_path.is_file():
+        raise FileNotFoundError(f"Base adapter is missing adapter_model.safetensors: {adapter_dir}")
+
+    with config_path.open(encoding="utf-8") as f:
+        adapter_config = json.load(f)
+    actual_base = adapter_config.get("base_model_name_or_path")
+    if actual_base != expected_base_model:
+        raise ValueError(
+            "Base adapter/model mismatch: "
+            f"adapter was trained from {actual_base!r}, but config model.name is "
+            f"{expected_base_model!r}."
+        )
+    return adapter_dir
 
 
 def load_records(path: Path) -> list[dict[str, Any]]:
@@ -301,8 +338,11 @@ def enforce_placeholder_policy(
 def print_resolved_outputs(cfg: Any) -> None:
     output_run_dir = Path(cfg.paths.output_dir) / cfg.run_name
     adapter_dir = Path(cfg.paths.model_dir) / cfg.run_name / "adapter"
+    base_adapter = cfg.model.get("base_adapter")
     print(f"[tennis-train] run_name: {cfg.run_name}")
     print(f"[tennis-train] train_file: {relative_or_absolute(Path(cfg.paths.train_file))}")
+    if base_adapter:
+        print(f"[tennis-train] base_adapter: {relative_or_absolute(Path(base_adapter))}")
     print(f"[tennis-train] output_run_dir: {relative_or_absolute(output_run_dir)}")
     print(f"[tennis-train] adapter_dir: {relative_or_absolute(adapter_dir)}")
 
