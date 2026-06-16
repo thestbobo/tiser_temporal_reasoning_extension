@@ -10,6 +10,8 @@ wandb/
 *.egg-info/
 .idea/
 .vscode/
-
-# Large datasets - not versioned in git
+# Large files and datasets - not versioned in git
 data/*.json
+checkpoints/
+*.zip
+*.tgz
