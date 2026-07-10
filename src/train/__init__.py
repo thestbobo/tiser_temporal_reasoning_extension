@@ -1,5 +1,7 @@
 ﻿from __future__ import annotations
 
+from dataclasses import asdict, is_dataclass
+import json
 import os
 
 import torch
@@ -8,7 +10,7 @@ from trl import SFTConfig, SFTTrainer
 
 from src.data.dataset import build_train_dataset
 from src.model.loader import build_lora_config, load_model_and_tokenizer
-from src.utils.io import write_run_meta
+from src.utils.io import read_json, write_json, write_run_meta
 from src.utils.seeding import set_seed
 
 
@@ -44,14 +46,51 @@ def build_trainer(cfg, model, tokenizer, train_ds) -> SFTTrainer:
     # seq2seq collator pads input_ids and pads our -100 labels (so completion-only
     # masking is preserved) -- the default LM collator would overwrite labels.
     collator = DataCollatorForSeq2Seq(tokenizer, padding=True, label_pad_token_id=-100)
-    return SFTTrainer(
-        model=model,
-        args=_sft_config(cfg),
-        train_dataset=train_ds,
-        processing_class=tokenizer,
-        peft_config=build_lora_config(cfg),
-        data_collator=collator,
-    )
+    kwargs = {
+        "model": model,
+        "args": _sft_config(cfg),
+        "train_dataset": train_ds,
+        "processing_class": tokenizer,
+        "data_collator": collator,
+    }
+    # If training starts from an existing PEFT adapter, it is already attached
+    # as trainable. Passing a fresh peft_config would create a second adapter.
+    if not getattr(model, "peft_config", None):
+        kwargs["peft_config"] = build_lora_config(cfg)
+    return SFTTrainer(**kwargs)
+
+
+def _json_safe(obj):
+    return json.loads(json.dumps(obj, default=str))
+
+
+def _trainer_state_dict(trainer: SFTTrainer) -> dict:
+    state = trainer.state
+    if hasattr(state, "to_json_string"):
+        return json.loads(state.to_json_string())
+    if hasattr(state, "to_dict"):
+        return _json_safe(state.to_dict())
+    if is_dataclass(state):
+        return _json_safe(asdict(state))
+    return _json_safe(vars(state))
+
+
+def _save_training_artifacts(
+    trainer: SFTTrainer,
+    train_metrics: dict,
+    *,
+    run_dir: str,
+    adapter_dir: str,
+) -> None:
+    trainer_state = _trainer_state_dict(trainer)
+    log_history = trainer_state.get("log_history", [])
+    run_meta = read_json(os.path.join(run_dir, "run_meta.json"))
+
+    for target_dir in (run_dir, adapter_dir):
+        write_json(os.path.join(target_dir, "train_metrics.json"), train_metrics)
+        write_json(os.path.join(target_dir, "train_log_history.json"), log_history)
+        write_json(os.path.join(target_dir, "trainer_state.json"), trainer_state)
+        write_json(os.path.join(target_dir, "run_meta.json"), run_meta)
 
 
 def run_training(cfg) -> str:
@@ -70,9 +109,20 @@ def run_training(cfg) -> str:
     )
 
     trainer = build_trainer(cfg, model, tokenizer, train_ds)
-    trainer.train()
+    train_result = trainer.train()
+    train_metrics = dict(train_result.metrics)
+    train_metrics["train_examples_after_filter"] = len(train_ds)
+    train_metrics["dropped_long_examples"] = n_dropped
+    train_metrics["max_seq_len"] = cfg.train.max_seq_len
 
     adapter_dir = os.path.join(cfg.paths.model_dir, cfg.run_name, "adapter")
     trainer.save_model(adapter_dir)
+    _save_training_artifacts(
+        trainer,
+        train_metrics,
+        run_dir=run_dir,
+        adapter_dir=adapter_dir,
+    )
     print(f"[train] saved LoRA adapter to {adapter_dir}")
+    print(f"[train] saved training metrics to {os.path.join(adapter_dir, 'train_metrics.json')}")
     return adapter_dir

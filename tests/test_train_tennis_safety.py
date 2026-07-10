@@ -95,6 +95,16 @@ def write_config(path: Path, train_file: Path, test_file: Path) -> Path:
     return path
 
 
+def write_adapter(path: Path, *, base_model: str = "fake-model") -> Path:
+    path.mkdir(parents=True)
+    (path / "adapter_model.safetensors").write_bytes(b"fake adapter")
+    (path / "adapter_config.json").write_text(
+        json.dumps({"base_model_name_or_path": base_model}),
+        encoding="utf-8",
+    )
+    return path
+
+
 def test_placeholder_traces_abort_without_override(tmp_path: Path) -> None:
     train = load_train_module()
     train_path = write_records(tmp_path / "train.json", [valid_record(placeholder_output())])
@@ -119,6 +129,14 @@ def test_missing_train_file_is_reported_clearly(tmp_path: Path) -> None:
 
     with pytest.raises(FileNotFoundError, match="Training file does not exist"):
         train.select_train_file(tmp_path / "missing.json")
+
+
+def test_base_adapter_validation_rejects_model_mismatch(tmp_path: Path) -> None:
+    train = load_train_module()
+    adapter = write_adapter(tmp_path / "adapter", base_model="other-model")
+
+    with pytest.raises(ValueError, match="Base adapter/model mismatch"):
+        train.validate_base_adapter(adapter, expected_base_model="fake-model")
 
 
 def test_records_without_prompt_or_output_are_rejected(tmp_path: Path) -> None:
@@ -195,3 +213,38 @@ def test_allow_placeholder_reaches_mocked_training_only_after_validation(
 
     assert len(calls) == 1
     assert Path(calls[0].paths.train_file) == train_file
+
+
+def test_base_adapter_reaches_mocked_training_after_validation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    train = load_train_module()
+    train_file = write_records(tmp_path / "train.json", [valid_record()])
+    test_file = write_records(tmp_path / "test.json", [valid_record()])
+    config = write_config(tmp_path / "config.yaml", train_file, test_file)
+    adapter = write_adapter(tmp_path / "adapter")
+    calls = []
+
+    fake_train_pkg = types.ModuleType("src.train")
+    fake_train_pkg.__path__ = []
+    fake_trainer = types.ModuleType("src.train.trainer")
+    fake_trainer.run_training = lambda cfg: calls.append(cfg)
+
+    monkeypatch.setitem(sys.modules, "src.train", fake_train_pkg)
+    monkeypatch.setitem(sys.modules, "src.train.trainer", fake_trainer)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "train_tennis.py",
+            "--config",
+            str(config),
+            "--base-adapter",
+            str(adapter),
+        ],
+    )
+
+    train.main()
+
+    assert len(calls) == 1
+    assert Path(calls[0].model.base_adapter) == adapter

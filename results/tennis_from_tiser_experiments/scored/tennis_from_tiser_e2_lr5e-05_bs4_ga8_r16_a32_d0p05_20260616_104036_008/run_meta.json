@@ -1,0 +1,95 @@
+{
+  "adapter_dir": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/model/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008/adapter",
+  "command": [
+    "scripts/tennis/evaluate_tennis.py",
+    "--config",
+    "config/config_tennis.yaml",
+    "--test-file",
+    "data/tennis/tennis_test.json",
+    "--adapter-dir",
+    "model/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008/adapter",
+    "--condition",
+    "tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008",
+    "--batch-size",
+    "8",
+    "--max-new-tokens",
+    "256",
+    "--output-dir",
+    "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008"
+  ],
+  "condition": "tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008",
+  "config": {
+    "eval": {
+      "batch_size": 8,
+      "do_sample": false,
+      "max_new_tokens": 256,
+      "max_samples_per_split": null
+    },
+    "lora": {
+      "alpha": 32,
+      "bias": "none",
+      "dropout": 0.05,
+      "r": 16,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ]
+    },
+    "model": {
+      "bnb_4bit_quant_type": "nf4",
+      "bnb_4bit_use_double_quant": true,
+      "load_in_4bit": true,
+      "name": "Qwen/Qwen2.5-7B-Instruct"
+    },
+    "paths": {
+      "data_dir": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/data/tennis",
+      "model_dir": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/model",
+      "output_dir": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/outputs",
+      "test_file": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/data/tennis/tennis_test.json",
+      "train_file": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/data/tennis/tennis_train_traced.json"
+    },
+    "run_name": "tiser_tennis_only_qwen7b",
+    "seed": 42,
+    "splits": [
+      "tennis_temporal"
+    ],
+    "train": {
+      "gradient_accumulation_steps": 4,
+      "gradient_checkpointing": true,
+      "learning_rate": 0.0002,
+      "logging_steps": 20,
+      "lr_scheduler_type": "cosine",
+      "max_seq_len": 2048,
+      "num_epochs": 3,
+      "optim": "paged_adamw_8bit",
+      "per_device_batch_size": 4,
+      "save_strategy": "epoch",
+      "subset_size": null,
+      "warmup_ratio": 0.03,
+      "weight_decay": 0.0
+    }
+  },
+  "decoding": {
+    "batch_size": 8,
+    "do_sample": false,
+    "max_new_tokens": 256
+  },
+  "git_sha": "65d0eb483d7512a3480e40f705b47ad319a10d9d",
+  "library_versions": {
+    "accelerate": "1.1.1",
+    "bitsandbytes": "0.49.2",
+    "peft": "0.13.2",
+    "torch": "2.11.0+cu128",
+    "transformers": "4.46.3"
+  },
+  "limit": null,
+  "model_name": "Qwen/Qwen2.5-7B-Instruct",
+  "n_records": 224,
+  "no_adapter": false,
+  "output_dir": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008",
+  "prompt_style": "tiser",
+  "test_file": "/content/drive/Othercomputers/My Mac/Desktop/Folders/Documents n Stuff/Polito/DNLP/Project/tiser_temporal_reasoning_extension/data/tennis/tennis_test.json",
+  "timestamp": "2026-06-16T12:46:06"
+}
