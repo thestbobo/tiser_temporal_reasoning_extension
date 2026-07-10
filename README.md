@@ -62,3 +62,37 @@ To scale back up on an A100, set `train.subset_size: null`, `eval.max_samples_pe
 | TimeQA_easy | 97.9 | 98.3 |
 | TimeQA_hard | 96.1 | 97.2 |
 | **Macro** | **91.1** | **94.4** |
+
+## Extensions
+
+### Context-memory conflict
+
+Artifacts are stored under:
+
+```text
+results/context_memory_conflict/
+docs/extensions/context_memory_conflict/
+```
+
+### Tennis domain adaptation
+
+Work-in-progress extension.
+
+Planned code:
+
+```text
+src/tennis/
+scripts/tennis/
+```
+
+Planned data:
+
+```text
+data/tennis/
+```
+
+Planned results:
+
+```text
+results/tennis_domain_adaptation/
+```

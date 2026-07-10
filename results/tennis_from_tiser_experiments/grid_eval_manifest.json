@@ -1,0 +1,227 @@
+[
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p0_20260616_095331_001",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p0_20260616_095331_001/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p0_20260616_095331_001",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p0_20260616_095331_001",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p0_20260616_095331_001/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p0_20260616_095331_003",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p0_20260616_095331_003/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p0_20260616_095331_003",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p0_20260616_095331_003",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p0_20260616_095331_003/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p0_20260616_095331_005",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p0_20260616_095331_005/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p0_20260616_095331_005",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p0_20260616_095331_005",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p0_20260616_095331_005/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p0_20260616_095331_007",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p0_20260616_095331_007/adapter",
+    "combo_key": null,
+    "condition": "tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p0_20260616_095331_007",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p0_20260616_095331_007",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p0_20260616_095331_007/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001/adapter",
+    "combo_key": "e=1|lr=5e-05|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002/adapter",
+    "combo_key": "e=1|lr=5e-05|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002/adapter",
+    "combo_key": "e=1|lr=0.0001|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004/adapter",
+    "combo_key": "e=1|lr=0.0001|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006/adapter",
+    "combo_key": "e=1|lr=0.0002|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006/metrics.json",
+    "status": "skipped_existing"
+  },
+  {
+    "run_name": "tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006",
+    "adapter_dir": "model/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006/adapter",
+    "combo_key": "e=1|lr=0.0002|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007",
+    "adapter_dir": "model/tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007/adapter",
+    "combo_key": "e=2|lr=5e-05|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008",
+    "adapter_dir": "model/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008/adapter",
+    "combo_key": "e=2|lr=5e-05|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009",
+    "adapter_dir": "model/tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009/adapter",
+    "combo_key": "e=2|lr=0.0001|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010",
+    "adapter_dir": "model/tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010/adapter",
+    "combo_key": "e=2|lr=0.0001|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011",
+    "adapter_dir": "model/tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011/adapter",
+    "combo_key": "e=2|lr=0.0002|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012",
+    "adapter_dir": "model/tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012/adapter",
+    "combo_key": "e=2|lr=0.0002|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013",
+    "adapter_dir": "model/tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013/adapter",
+    "combo_key": "e=3|lr=5e-05|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014",
+    "adapter_dir": "model/tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014/adapter",
+    "combo_key": "e=3|lr=5e-05|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015",
+    "adapter_dir": "model/tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015/adapter",
+    "combo_key": "e=3|lr=0.0001|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016",
+    "adapter_dir": "model/tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016/adapter",
+    "combo_key": "e=3|lr=0.0001|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_qwen7b_20260616_093822",
+    "adapter_dir": "model/tennis_from_tiser_qwen7b_20260616_093822/adapter",
+    "combo_key": "e=3|lr=0.0002|bs=4|ga=4|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_qwen7b_20260616_093822",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_qwen7b_20260616_093822",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_qwen7b_20260616_093822/metrics.json",
+    "status": "ok"
+  },
+  {
+    "run_name": "tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018",
+    "adapter_dir": "model/tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018/adapter",
+    "combo_key": "e=3|lr=0.0002|bs=4|ga=8|r=16|alpha=32|dropout=0.05",
+    "condition": "tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018",
+    "output_dir": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018",
+    "metrics_path": "results/tennis_domain_adaptation/scored/tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018/metrics.json",
+    "status": "ok"
+  }
+]

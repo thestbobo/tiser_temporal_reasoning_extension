@@ -1,0 +1,671 @@
+[
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000002",
+    "question": "Did Djokovic call the trainer before Medvedev broke serve?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nDjokovic lost the opening game on serve. After holding twice in the first set, he called the trainer at 3-4. Medvedev broke serve later, immediately before serving out the set.\n\nQuestion:\nDid Djokovic call the trainer before Medvedev broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context states that Djokovic called the trainer at 3-4, and Medvedev broke serve later. Therefore, the trainer call happened before Medvedev's break of serve.\n<timeline>\n1. Djokovic lost the opening game on serve.\n2. Djokovic held twice in the first set.\n3. Djokovic called the trainer at 3-4.\n4. Medvedev broke serve later, immediately before serving out the set.\n</timeline>\n<reflection>\nThe ordered events show Djokovic called the trainer before Medvedev broke serve, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000003",
+    "question": "Did Rune request the medical timeout before Zverev saved a set point?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nZverev saved a set point during the first-set tie-break. After the tie-break ended, Rune requested a medical timeout. Zverev broke serve in the first game of the second set.\n\nQuestion:\nDid Rune request the medical timeout before Zverev saved a set point?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context states that Zverev saved a set point during the first-set tie-break, and Rune requested a medical timeout after the tie-break ended. Therefore, Rune did not request the timeout before Zverev saved the set point.\n<timeline>\n1. Zverev saved a set point during the first-set tie-break.\n2. The tie-break ended.\n3. Rune requested a medical timeout.\n4. Zverev broke serve in the first game of the second set.\n</timeline>\n<reflection>\nThe timeline places Rune's medical timeout after Zverev saved the set point, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000004",
+    "question": "Did Fritz challenge a line call before Rublev broke serve?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRublev argued with the umpire after receiving a time violation. Before the next point began, Fritz challenged a line call. Minutes later, Rublev broke serve for 5-3.\n\nQuestion:\nDid Fritz challenge a line call before Rublev broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context says Fritz challenged a line call before the next point began, and Rublev broke serve minutes later. Therefore, Fritz's challenge happened before Rublev's break of serve.\n<timeline>\n1. Rublev received a time violation.\n2. Rublev argued with the umpire.\n3. Fritz challenged a line call before the next point began.\n4. Rublev broke serve for 5-3 minutes later.\n</timeline>\n<reflection>\nThe timeline shows Fritz's line-call challenge before Rublev broke serve, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000005",
+    "question": "Did the crowd interruption happen after Federer broke serve?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal slipped near the baseline during the second game. After he held serve, the chair umpire paused play because of noise from the crowd. Later in the set, Federer won four straight points to break serve.\n\nQuestion:\nDid the crowd interruption happen after Federer broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe crowd interruption occurred after Nadal held serve, while Federer broke serve later in the set. Therefore, the interruption did not happen after Federer's break of serve.\n<timeline>\n1. Nadal slipped near the baseline during the second game.\n2. Nadal held serve.\n3. The chair umpire paused play because of crowd noise.\n4. Federer later won four straight points to break serve.\n</timeline>\n<reflection>\nThe timeline places the crowd interruption before Federer's break, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000007",
+    "question": "Did Shelton ask for new shoes before De Minaur broke serve?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nShelton hit three aces in his opening service game. De Minaur broke serve later in the first set. Before the second set began, Shelton asked for new shoes.\n\nQuestion:\nDid Shelton ask for new shoes before De Minaur broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context states that De Minaur broke serve later in the first set, and Shelton asked for new shoes before the second set began. Therefore, Shelton's request came after De Minaur's break, not before it.\n<timeline>\n1. Shelton hit three aces in his opening service game.\n2. De Minaur broke serve later in the first set.\n3. Shelton asked for new shoes before the second set began.\n</timeline>\n<reflection>\nThe timeline shows Shelton asked for new shoes after De Minaur broke serve, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000008",
+    "question": "Did Alcaraz save a break point before the roof was closed?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz saved a break point in the third game. After that hold, the roof was closed because of light rain. Sinner won the next two games after the roof closure.\n\nQuestion:\nDid Alcaraz save a break point before the roof was closed?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context says Alcaraz saved a break point in the third game, and after that hold the roof was closed. Therefore, Alcaraz saved the break point before the roof closure.\n<timeline>\n1. Alcaraz saved a break point in the third game.\n2. Alcaraz completed that hold.\n3. The roof was closed because of light rain.\n4. Sinner won the next two games after the roof closure.\n</timeline>\n<reflection>\nThe timeline places Alcaraz's saved break point before the roof was closed, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000009",
+    "question": "Did Djokovic win the tie-break before Medvedev held serve?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nDjokovic received a warning during the first-set changeover. Medvedev held serve immediately after the warning. Later, Djokovic won the tie-break 7-5.\n\nQuestion:\nDid Djokovic win the tie-break before Medvedev held serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context states that Medvedev held serve immediately after Djokovic's warning, while Djokovic won the tie-break later. Therefore, Djokovic did not win the tie-break before Medvedev held serve.\n<timeline>\n1. Djokovic received a warning during the first-set changeover.\n2. Medvedev held serve immediately after the warning.\n3. Djokovic later won the tie-break 7-5.\n</timeline>\n<reflection>\nThe timeline shows Medvedev's hold came before Djokovic won the tie-break, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000010",
+    "question": "Did Zverev request treatment after Rune broke serve?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRune broke Zverev in the fourth game of the opening set. After the break, Zverev requested treatment for his shoulder. Rune then held serve to move ahead 4-1.\n\nQuestion:\nDid Zverev request treatment after Rune broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context states that Rune broke Zverev in the fourth game, and after the break Zverev requested treatment for his shoulder. Therefore, Zverev requested treatment after Rune broke serve.\n<timeline>\n1. Rune broke Zverev in the fourth game of the opening set.\n2. Zverev requested treatment for his shoulder after the break.\n3. Rune held serve to move ahead 4-1.\n</timeline>\n<reflection>\nThe timeline places Zverev's treatment request after Rune's break of serve, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000011",
+    "question": "Did Rublev win the long rally before Fritz converted set point?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFritz served for the first set at 5-4. Before he reached set point, Rublev won a long rally at deuce. Fritz converted the set point minutes later.\n\nQuestion:\nDid Rublev win the long rally before Fritz converted set point?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context says Rublev won a long rally at deuce before Fritz reached set point, and Fritz converted the set point minutes later. Therefore, Rublev won the long rally before Fritz converted set point.\n<timeline>\n1. Fritz served for the first set at 5-4.\n2. Rublev won a long rally at deuce before Fritz reached set point.\n3. Fritz converted the set point minutes later.\n</timeline>\n<reflection>\nThe timeline shows Rublev's long-rally win happened before Fritz converted set point, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000012",
+    "question": "Did Nadal break serve before Federer changed his racket?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFederer held serve in the opening game. Nadal broke serve at 2-1 after a long baseline exchange. Earlier, Federer had already changed his racket during the first changeover.\n\nQuestion:\nDid Nadal break serve before Federer changed his racket?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context states that Federer changed his racket during the first changeover, and Nadal broke serve later at 2-1. Therefore, Nadal did not break serve before Federer changed his racket.\n<timeline>\n1. Federer held serve in the opening game.\n2. Federer changed his racket during the first changeover.\n3. Nadal broke serve at 2-1 after a long baseline exchange.\n</timeline>\n<reflection>\nThe timeline places Federer's racket change before Nadal's break of serve, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000013",
+    "question": "Did Tsitsipas take a bathroom break before Ruud broke serve?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRuud lost the first set in a tie-break. After the tie-break, Tsitsipas took a bathroom break. Ruud broke serve in the second game of the second set.\n\nQuestion:\nDid Tsitsipas take a bathroom break before Ruud broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context says Tsitsipas took a bathroom break after the tie-break, and Ruud broke serve later in the second game of the second set.\n<timeline>\n1. Ruud lost the first set in a tie-break.\n2. Tsitsipas took a bathroom break after the tie-break.\n3. Ruud broke serve in the second game of the second set.\n</timeline>\n<reflection>\nThe timeline places Tsitsipas's bathroom break before Ruud broke serve, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000017",
+    "question": "Which happened first: Sinner called a medical timeout or Alcaraz won the opening set?",
+    "answer": "Alcaraz won the opening set",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz won the opening set with a forehand winner. During the second set, Sinner called a medical timeout. After the timeout, Sinner broke serve and later forced a deciding set.\n\nQuestion:\nWhich happened first: Sinner called a medical timeout or Alcaraz won the opening set?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nAlcaraz won the opening set before the second set began, while Sinner's medical timeout occurred during the second set.\n<timeline>\n1. Alcaraz won the opening set with a forehand winner.\n2. During the second set, Sinner called a medical timeout.\n3. After the timeout, Sinner broke serve and later forced a deciding set.\n</timeline>\n<reflection>\nThe timeline shows Alcaraz won the opening set before Sinner called the medical timeout.\n</reflection>\n</reasoning>\n<answer>Alcaraz won the opening set</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000018",
+    "question": "Which event happened last?",
+    "answer": "Rublev won the tie-break",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRublev broke Fritz early in the second set. Fritz broke back at 3-4. After both players held serve, Rublev won the tie-break.\n\nQuestion:\nWhich event happened last?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nRublev broke early, Fritz broke back later, both players then held serve, and Rublev won the tie-break after those holds.\n<timeline>\n1. Rublev broke Fritz early in the second set.\n2. Fritz broke back at 3-4.\n3. Both players held serve.\n4. Rublev won the tie-break.\n</timeline>\n<reflection>\nThe final listed event is Rublev winning the tie-break, matching the gold answer.\n</reflection>\n</reasoning>\n<answer>Rublev won the tie-break</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000019",
+    "question": "Which happened first: Zverev saved a set point or Rune received a code violation?",
+    "answer": "Rune received a code violation",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRune received a code violation during the first set. Zverev saved a set point later in the same set. After the set ended, the players left the court for a rain delay.\n\nQuestion:\nWhich happened first: Zverev saved a set point or Rune received a code violation?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nRune's code violation occurred during the first set, and Zverev saved a set point later in that same set.\n<timeline>\n1. Rune received a code violation during the first set.\n2. Zverev saved a set point later in the same set.\n3. After the set ended, the players left the court for a rain delay.\n</timeline>\n<reflection>\nThe timeline places Rune's code violation before Zverev saved the set point.\n</reflection>\n</reasoning>\n<answer>Rune received a code violation</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000020",
+    "question": "Which event happened last?",
+    "answer": "Nadal won the tie-break",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal broke Federer in the first game of the match. Federer recovered the break at 4-3. After that, Nadal won the tie-break with a backhand pass.\n\nQuestion:\nWhich event happened last?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nNadal broke first, Federer recovered the break later, and Nadal won the tie-break after that.\n<timeline>\n1. Nadal broke Federer in the first game of the match.\n2. Federer recovered the break at 4-3.\n3. After that, Nadal won the tie-break with a backhand pass.\n</timeline>\n<reflection>\nThe last event in the timeline is Nadal winning the tie-break.\n</reflection>\n</reasoning>\n<answer>Nadal won the tie-break</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000021",
+    "question": "Which happened first: Ruud broke serve or Tsitsipas asked for treatment?",
+    "answer": "Ruud broke serve",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nTsitsipas held serve after a ten-minute opening game. Ruud broke serve later in the first set. Before the second set began, Tsitsipas asked for treatment on his wrist.\n\nQuestion:\nWhich happened first: Ruud broke serve or Tsitsipas asked for treatment?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nRuud broke serve during the first set, while Tsitsipas asked for treatment before the second set began.\n<timeline>\n1. Tsitsipas held serve after a ten-minute opening game.\n2. Ruud broke serve later in the first set.\n3. Before the second set began, Tsitsipas asked for treatment on his wrist.\n</timeline>\n<reflection>\nThe timeline shows Ruud broke serve before Tsitsipas asked for treatment.\n</reflection>\n</reasoning>\n<answer>Ruud broke serve</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000026",
+    "question": "What happened immediately before the rain delay?",
+    "answer": "Fritz held serve",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFritz challenged a baseline call during the first set. After the challenge was upheld, Rublev saved a break point. Immediately before the rain delay, Fritz held serve for 4-4.\n\nQuestion:\nWhat happened immediately before the rain delay?\n\nReturn the final answer in the required format.",
+    "category": "immediate_before_after",
+    "tags": [
+      "immediate_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe context explicitly states that Fritz held serve for 4-4 immediately before the rain delay.\n<timeline>\n1. Fritz challenged a baseline call during the first set.\n2. The challenge was upheld.\n3. Rublev saved a break point.\n4. Fritz held serve for 4-4 immediately before the rain delay.\n</timeline>\n<reflection>\nThe immediately preceding event to the rain delay is Fritz holding serve.\n</reflection>\n</reasoning>\n<answer>Fritz held serve</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000027",
+    "question": "What happened immediately after the medical timeout?",
+    "answer": "Alcaraz held serve",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz broke Sinner in the fifth game of the first set. After the break, Sinner called for the trainer. Immediately after the medical timeout, Alcaraz held serve for 4-2.\n\nQuestion:\nWhat happened immediately after the medical timeout?\n\nReturn the final answer in the required format.",
+    "category": "immediate_before_after",
+    "tags": [
+      "immediate_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nAfter Alcaraz broke Sinner, Sinner called for the trainer, and the context says Alcaraz held serve immediately after the medical timeout.\n<timeline>\n1. Alcaraz broke Sinner in the fifth game of the first set.\n2. After the break, Sinner called for the trainer.\n3. Immediately after the medical timeout, Alcaraz held serve for 4-2.\n</timeline>\n<reflection>\nThe event immediately after the medical timeout is Alcaraz holding serve.\n</reflection>\n</reasoning>\n<answer>Alcaraz held serve</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000029",
+    "question": "What happened immediately after Federer held serve?",
+    "answer": "Nadal broke serve",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal received treatment during the changeover at 2-3. After the treatment, Federer held serve easily. Immediately after that hold, Nadal broke serve to level the set.\n\nQuestion:\nWhat happened immediately after Federer held serve?\n\nReturn the final answer in the required format.",
+    "category": "immediate_before_after",
+    "tags": [
+      "immediate_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nAfter Nadal received treatment, Federer held serve, and the context says Nadal broke serve immediately after that hold.\n<timeline>\n1. Nadal received treatment during the changeover at 2-3.\n2. After the treatment, Federer held serve easily.\n3. Immediately after that hold, Nadal broke serve to level the set.\n</timeline>\n<reflection>\nThe event immediately after Federer's hold is Nadal breaking serve.\n</reflection>\n</reasoning>\n<answer>Nadal broke serve</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000030",
+    "question": "What happened immediately before Tsitsipas held serve?",
+    "answer": "Ruud returned",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nTsitsipas lost the first set after a double fault. Before the second set started, Ruud left the court for a bathroom break. Immediately after Ruud returned, Tsitsipas held serve.\n\nQuestion:\nWhat happened immediately before Tsitsipas held serve?\n\nReturn the final answer in the required format.",
+    "category": "immediate_before_after",
+    "tags": [
+      "immediate_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nRuud left the court before the second set, then returned, and Tsitsipas held serve immediately after Ruud returned.\n<timeline>\n1. Tsitsipas lost the first set after a double fault.\n2. Before the second set started, Ruud left the court for a bathroom break.\n3. Ruud returned.\n4. Immediately after Ruud returned, Tsitsipas held serve.\n</timeline>\n<reflection>\nThe event immediately before Tsitsipas held serve is Ruud's return.\n</reflection>\n</reasoning>\n<answer>Ruud returned</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000034",
+    "question": "How many minutes after the match started did the rain delay begin?",
+    "answer": "45 minutes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nThe match between Sinner and Medvedev started at 1:00 p.m. Sinner held serve after eight minutes. Rain stopped play at 1:45 p.m., before Medvedev could serve at 4-4.\n\nQuestion:\nHow many minutes after the match started did the rain delay begin?\n\nReturn the final answer in the required format.",
+    "category": "duration_minutes",
+    "tags": [
+      "duration_minutes"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe match started at 1:00 p.m. and rain stopped play at 1:45 p.m., so the delay began 45 minutes after the start.\n<timeline>\n1. The match between Sinner and Medvedev started at 1:00 p.m.\n2. Sinner held serve after eight minutes.\n3. Rain stopped play at 1:45 p.m.\n</timeline>\n<reflection>\nThe elapsed time from 1:00 p.m. to 1:45 p.m. is 45 minutes, matching the gold answer.\n</reflection>\n</reasoning>\n<answer>45 minutes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000035",
+    "question": "How long did the medical timeout last?",
+    "answer": "9 minutes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz called the trainer at 2:20 p.m. during the second set. Play resumed at 2:29 p.m. After resumption, Djokovic broke serve in the next game.\n\nQuestion:\nHow long did the medical timeout last?\n\nReturn the final answer in the required format.",
+    "category": "duration_minutes",
+    "tags": [
+      "duration_minutes",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nAlcaraz called the trainer at 2:20 p.m. and play resumed at 2:29 p.m., so the medical timeout lasted 9 minutes.\n<timeline>\n1. Alcaraz called the trainer at 2:20 p.m.\n2. Play resumed at 2:29 p.m.\n3. Djokovic broke serve in the next game after resumption.\n</timeline>\n<reflection>\nThe time between 2:20 p.m. and 2:29 p.m. is 9 minutes, so the timeline supports the answer.\n</reflection>\n</reasoning>\n<answer>9 minutes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000036",
+    "question": "How many minutes after Zverev broke serve did Rune break back?",
+    "answer": "14 minutes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nZverev broke Rune at 3:10 p.m. in the first set. Rune broke back at 3:24 p.m. Later, Zverev won the set in a tie-break.\n\nQuestion:\nHow many minutes after Zverev broke serve did Rune break back?\n\nReturn the final answer in the required format.",
+    "category": "duration_minutes",
+    "tags": [
+      "duration_minutes"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nZverev broke Rune at 3:10 p.m. and Rune broke back at 3:24 p.m., which is 14 minutes later.\n<timeline>\n1. Zverev broke Rune at 3:10 p.m.\n2. Rune broke back at 3:24 p.m.\n3. Later, Zverev won the set in a tie-break.\n</timeline>\n<reflection>\nThe elapsed time from 3:10 p.m. to 3:24 p.m. is 14 minutes, matching the gold answer.\n</reflection>\n</reasoning>\n<answer>14 minutes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000037",
+    "question": "How many minutes passed between Fritz winning the first set and Rublev beginning the second set?",
+    "answer": "7 minutes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFritz won the first set at 4:05 p.m. After a short break, Rublev began serving the second set at 4:12 p.m. Rublev held serve before the next changeover.\n\nQuestion:\nHow many minutes passed between Fritz winning the first set and Rublev beginning the second set?\n\nReturn the final answer in the required format.",
+    "category": "duration_minutes",
+    "tags": [
+      "duration_minutes"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nFritz won the first set at 4:05 p.m. and Rublev began serving the second set at 4:12 p.m., so 7 minutes passed.\n<timeline>\n1. Fritz won the first set at 4:05 p.m.\n2. Rublev began serving the second set at 4:12 p.m.\n3. Rublev held serve before the next changeover.\n</timeline>\n<reflection>\nThe interval from 4:05 p.m. to 4:12 p.m. is 7 minutes, so the answer follows directly.\n</reflection>\n</reasoning>\n<answer>7 minutes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000038",
+    "question": "How many minutes after Nadal slipped did the trainer arrive?",
+    "answer": "4 minutes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal slipped at 5:18 p.m. during a rally. The trainer arrived at 5:22 p.m. Federer held serve after play resumed later in the set.\n\nQuestion:\nHow many minutes after Nadal slipped did the trainer arrive?\n\nReturn the final answer in the required format.",
+    "category": "duration_minutes",
+    "tags": [
+      "duration_minutes",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nNadal slipped at 5:18 p.m. and the trainer arrived at 5:22 p.m., so the trainer arrived 4 minutes after the slip.\n<timeline>\n1. Nadal slipped at 5:18 p.m.\n2. The trainer arrived at 5:22 p.m.\n3. Federer held serve after play resumed later in the set.\n</timeline>\n<reflection>\nThe elapsed time from 5:18 p.m. to 5:22 p.m. is 4 minutes, supporting the gold answer.\n</reflection>\n</reasoning>\n<answer>4 minutes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000040",
+    "question": "How many minutes after De Minaur broke back did the tie-break start?",
+    "answer": "9 minutes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nShelton served for the set at 7:30 p.m. De Minaur broke back at 7:38 p.m. The tie-break started at 7:47 p.m. after both players held serve.\n\nQuestion:\nHow many minutes after De Minaur broke back did the tie-break start?\n\nReturn the final answer in the required format.",
+    "category": "duration_minutes",
+    "tags": [
+      "duration_minutes"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nDe Minaur broke back at 7:38 p.m. and the tie-break started at 7:47 p.m., so the tie-break began 9 minutes later.\n<timeline>\n1. Shelton served for the set at 7:30 p.m.\n2. De Minaur broke back at 7:38 p.m.\n3. The tie-break started at 7:47 p.m. after both players held serve.\n</timeline>\n<reflection>\nThe time from 7:38 p.m. to 7:47 p.m. is 9 minutes, which verifies the answer.\n</reflection>\n</reasoning>\n<answer>9 minutes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000041",
+    "question": "Was the roof being closed while the players were off court?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nDuring the rain delay, Sinner and Alcaraz left the court. While the players were off court, the tournament staff closed the roof. After the roof was closed, the players returned for a short warm-up.\n\nQuestion:\nWas the roof being closed while the players were off court?\n\nReturn the final answer in the required format.",
+    "category": "overlap_while_during",
+    "tags": [
+      "overlap_while_during"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe players left the court during the rain delay, and while they were off court the staff closed the roof. Therefore, the roof was being closed while the players were off court.\n<timeline>\n1. During the rain delay, Sinner and Alcaraz left the court.\n2. While the players were off court, the tournament staff closed the roof.\n3. After the roof was closed, the players returned for a short warm-up.\n</timeline>\n<reflection>\nThe context explicitly states that the roof was closed while the players were off court, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000044",
+    "question": "Was Rublev complaining about the crowd while Fritz waited to serve?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFritz waited near the baseline before serving at 4-5. During that pause, Rublev complained about movement in the crowd. After the complaint, Fritz served an ace.\n\nQuestion:\nWas Rublev complaining about the crowd while Fritz waited to serve?\n\nReturn the final answer in the required format.",
+    "category": "overlap_while_during",
+    "tags": [
+      "overlap_while_during"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nFritz waited near the baseline before serving, and during that pause Rublev complained about crowd movement. Therefore, the complaint happened while Fritz waited to serve.\n<timeline>\n1. Fritz waited near the baseline before serving at 4-5.\n2. During that pause, Rublev complained about movement in the crowd.\n3. After the complaint, Fritz served an ace.\n</timeline>\n<reflection>\nThe timeline shows Rublev complained during Fritz's waiting pause, so the answer is Yes.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000045",
+    "question": "Was Federer speaking with the chair umpire while Nadal was stretching his leg?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal was stretching his leg during the changeover. At the same time, Federer spoke briefly with the chair umpire. After the changeover, Nadal broke serve.\n\nQuestion:\nWas Federer speaking with the chair umpire while Nadal was stretching his leg?\n\nReturn the final answer in the required format.",
+    "category": "overlap_while_during",
+    "tags": [
+      "overlap_while_during",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nNadal was stretching his leg during the changeover, and at the same time Federer spoke with the chair umpire. Therefore, Federer was speaking while Nadal was stretching.\n<timeline>\n1. Nadal was stretching his leg during the changeover.\n2. At the same time, Federer spoke briefly with the chair umpire.\n3. After the changeover, Nadal broke serve.\n</timeline>\n<reflection>\nThe context explicitly says the two actions happened at the same time, so the timeline supports the answer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000046",
+    "question": "Did Sinner play the semifinal before reaching the final?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nSinner beat Rune in the quarterfinal on Friday. After that win, he played Alcaraz in the semifinal on Saturday. Sinner reached the final only after defeating Alcaraz.\n\nQuestion:\nDid Sinner play the semifinal before reaching the final?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tournament_round_sequence"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nSinner played the semifinal after the quarterfinal and reached the final only after defeating Alcaraz in that semifinal.\n<timeline>\n1. Sinner beat Rune in the quarterfinal on Friday.\n2. Sinner played Alcaraz in the semifinal on Saturday.\n3. Sinner reached the final after defeating Alcaraz.\n</timeline>\n<reflection>\nThe semifinal occurred before Sinner reached the final, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000047",
+    "question": "Did Zverev advance to the semifinal before playing the final?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nMedvedev withdrew before his scheduled quarterfinal against Zverev. Because of the withdrawal, Zverev advanced directly to the semifinal. After the semifinal, Zverev lost the final to Djokovic.\n\nQuestion:\nDid Zverev advance to the semifinal before playing the final?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tournament_round_sequence"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nZverev advanced to the semifinal because of Medvedev's withdrawal, and the final happened after the semifinal.\n<timeline>\n1. Medvedev withdrew before the scheduled quarterfinal against Zverev.\n2. Zverev advanced directly to the semifinal.\n3. After the semifinal, Zverev played and lost the final to Djokovic.\n</timeline>\n<reflection>\nThe timeline shows Zverev advanced to the semifinal before playing the final.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000048",
+    "question": "Did Ruud reach the semifinal before losing the quarterfinal?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRuud defeated Shelton in the round of 16. After that, he lost to Tsitsipas in the quarterfinal. Tsitsipas later reached the semifinal.\n\nQuestion:\nDid Ruud reach the semifinal before losing the quarterfinal?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tournament_round_sequence"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nRuud won in the round of 16 but then lost in the quarterfinal; the semifinal was reached later by Tsitsipas, not Ruud.\n<timeline>\n1. Ruud defeated Shelton in the round of 16.\n2. Ruud lost to Tsitsipas in the quarterfinal.\n3. Tsitsipas later reached the semifinal.\n</timeline>\n<reflection>\nRuud did not reach the semifinal before losing the quarterfinal, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000049",
+    "question": "Which round did Alcaraz play immediately before the final?",
+    "answer": "The semifinal",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz won his quarterfinal before Djokovic finished his late-night quarterfinal. The next day, Alcaraz defeated Djokovic in the semifinal. After the semifinal, Alcaraz played Sinner in the final.\n\nQuestion:\nWhich round did Alcaraz play immediately before the final?\n\nReturn the final answer in the required format.",
+    "category": "immediate_before_after",
+    "tags": [
+      "immediate_before_after",
+      "tournament_round_sequence"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nAlcaraz played the quarterfinal, then the semifinal, and only after the semifinal did he play the final.\n<timeline>\n1. Alcaraz won his quarterfinal.\n2. The next day, Alcaraz defeated Djokovic in the semifinal.\n3. After the semifinal, Alcaraz played Sinner in the final.\n</timeline>\n<reflection>\nThe event immediately before the final was Alcaraz's semifinal.\n</reflection>\n</reasoning>\n<answer>The semifinal</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000050",
+    "question": "Did Fritz play the second round before the quarterfinal?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFritz won his first-round match on Monday. He then beat Rublev in the second round on Wednesday. After that, Fritz lost to De Minaur in the quarterfinal.\n\nQuestion:\nDid Fritz play the second round before the quarterfinal?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tournament_round_sequence"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nFritz played the first round, then the second round, and only after that played the quarterfinal.\n<timeline>\n1. Fritz won his first-round match on Monday.\n2. Fritz beat Rublev in the second round on Wednesday.\n3. Fritz lost to De Minaur in the quarterfinal.\n</timeline>\n<reflection>\nThe second round occurred before the quarterfinal, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000052",
+    "question": "Did Alcaraz win the tie-break before the roof was closed?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz saved a set point late in the first set. The roof was closed after a short rain shower interrupted play. Later, Alcaraz won the first-set tie-break.\n\nQuestion:\nDid Alcaraz win the tie-break before the roof was closed?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe roof was closed after the rain interruption, and Alcaraz won the tie-break later.\n<timeline>\n1. Alcaraz saved a set point late in the first set.\n2. A short rain shower interrupted play.\n3. The roof was closed.\n4. Later, Alcaraz won the first-set tie-break.\n</timeline>\n<reflection>\nThe tie-break win happened after the roof was closed, not before it.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000053",
+    "question": "Did Zverev receive the coaching violation after losing the opening set?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nZverev lost the opening set after dropping serve at 4-5. During the first changeover of the second set, he received a coaching violation. Later, he broke back to level the set.\n\nQuestion:\nDid Zverev receive the coaching violation after losing the opening set?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nZverev lost the opening set first, then received a coaching violation during the first changeover of the second set.\n<timeline>\n1. Zverev dropped serve at 4-5.\n2. Zverev lost the opening set.\n3. During the first changeover of the second set, Zverev received a coaching violation.\n4. Later, Zverev broke back to level the set.\n</timeline>\n<reflection>\nThe coaching violation happened after Zverev lost the opening set.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000054",
+    "question": "Did Rune get broken before the crowd interruption?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRune held serve to reach 2-2 in the first set. A crowd interruption stopped play for three minutes before De Minaur broke serve. After the break, Rune argued with the umpire.\n\nQuestion:\nDid Rune get broken before the crowd interruption?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nRune held serve, then the crowd interruption stopped play, and only after that did De Minaur break serve.\n<timeline>\n1. Rune held serve to reach 2-2 in the first set.\n2. A crowd interruption stopped play for three minutes.\n3. De Minaur broke serve.\n4. After the break, Rune argued with the umpire.\n</timeline>\n<reflection>\nRune was broken after the crowd interruption, not before it.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000055",
+    "question": "Did Nadal take the medical timeout before saving the set point?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal trailed 4-5 in the second set. He saved a set point before taking a medical timeout for his left leg. After the timeout, he held serve with an ace.\n\nQuestion:\nDid Nadal take the medical timeout before saving the set point?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nNadal saved the set point before taking the medical timeout for his left leg.\n<timeline>\n1. Nadal trailed 4-5 in the second set.\n2. Nadal saved a set point.\n3. Nadal took a medical timeout for his left leg.\n4. After the timeout, Nadal held serve with an ace.\n</timeline>\n<reflection>\nThe medical timeout occurred after the saved set point, so it was not before it.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000057",
+    "question": "Did Djokovic double-fault before Tsitsipas called the trainer?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nDjokovic double-faulted on break point in the second set. During the next changeover, Tsitsipas called the trainer. Later, Djokovic broke back to 4-4.\n\nQuestion:\nDid Djokovic double-fault before Tsitsipas called the trainer?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nDjokovic double-faulted on break point, and Tsitsipas called the trainer during the next changeover.\n<timeline>\n1. Djokovic double-faulted on break point in the second set.\n2. During the next changeover, Tsitsipas called the trainer.\n3. Later, Djokovic broke back to 4-4.\n</timeline>\n<reflection>\nThe double fault occurred before Tsitsipas called the trainer.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000058",
+    "question": "Did De Minaur reach 5-5 before Rublev smashed his racket?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nRublev led De Minaur 5-3 in the first set. De Minaur held serve and then broke back to reach 5-5. After that, Rublev smashed his racket during the changeover.\n\nQuestion:\nDid De Minaur reach 5-5 before Rublev smashed his racket?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nDe Minaur held serve and then broke back to reach 5-5. Rublev smashed his racket only after that.\n<timeline>\n1. Rublev led De Minaur 5-3 in the first set.\n2. De Minaur held serve.\n3. De Minaur broke back to reach 5-5.\n4. Rublev smashed his racket during the changeover.\n</timeline>\n<reflection>\nThe timeline shows De Minaur reached 5-5 before Rublev smashed his racket, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000059",
+    "question": "Did Shelton challenge the line call after saving match point?",
+    "answer": "No",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nShelton challenged a line call at 5-5 in the final set. Minutes later, he saved a match point with a forehand winner. After that, he held serve to force a tie-break.\n\nQuestion:\nDid Shelton challenge the line call after saving match point?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nShelton challenged the line call at 5-5 before he saved match point. Therefore, the challenge did not happen after the saved match point.\n<timeline>\n1. Shelton challenged a line call at 5-5 in the final set.\n2. Minutes later, Shelton saved a match point with a forehand winner.\n3. After that, Shelton held serve to force a tie-break.\n</timeline>\n<reflection>\nThe timeline places the line-call challenge before the saved match point, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>No</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000061",
+    "question": "Did Federer request the light adjustment before Nadal broke serve?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFederer asked for the stadium lights to be adjusted before the ninth game. Nadal broke serve immediately after the delay. Later, Federer saved two break points in the second set.\n\nQuestion:\nDid Federer request the light adjustment before Nadal broke serve?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nFederer asked for the stadium lights to be adjusted before the ninth game. Nadal broke serve immediately after the delay.\n<timeline>\n1. Federer asked for the stadium lights to be adjusted before the ninth game.\n2. Nadal broke serve immediately after the delay.\n3. Later, Federer saved two break points in the second set.\n</timeline>\n<reflection>\nThe timeline shows Federer's light-adjustment request occurred before Nadal broke serve, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000062",
+    "question": "Did Sinner win the tie-break after Alcaraz received the time violation?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nAlcaraz received a time violation at 5-5 in the first set. Sinner saved a break point in the next game. Later, Sinner won the first-set tie-break.\n\nQuestion:\nDid Sinner win the tie-break after Alcaraz received the time violation?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nAlcaraz received a time violation at 5-5. Sinner won the first-set tie-break later.\n<timeline>\n1. Alcaraz received a time violation at 5-5 in the first set.\n2. Sinner saved a break point in the next game.\n3. Later, Sinner won the first-set tie-break.\n</timeline>\n<reflection>\nThe timeline places Sinner's tie-break win after Alcaraz received the time violation, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000063",
+    "question": "Did Zverev serve for the match before the medical timeout?",
+    "answer": "Yes",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nZverev broke serve at 4-4 in the third set. He served for the match before calling a medical timeout for his shoulder. After the timeout, he closed the match with a forehand winner.\n\nQuestion:\nDid Zverev serve for the match before the medical timeout?\n\nReturn the final answer in the required format.",
+    "category": "yes_no_before_after",
+    "tags": [
+      "yes_no_before_after",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nZverev served for the match before calling the medical timeout. He then closed the match after the timeout.\n<timeline>\n1. Zverev broke serve at 4-4 in the third set.\n2. Zverev served for the match.\n3. Zverev called a medical timeout for his shoulder.\n4. After the timeout, Zverev closed the match with a forehand winner.\n</timeline>\n<reflection>\nThe timeline shows Zverev served for the match before the medical timeout, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Yes</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000066",
+    "question": "Which happened first: Fritz saved two break points or Medvedev won the tie-break?",
+    "answer": "Fritz saved two break points",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nMedvedev held serve to open the match. Before the first changeover, Fritz saved two break points. Later in the set, Medvedev won a tie-break.\n\nQuestion:\nWhich happened first: Fritz saved two break points or Medvedev won the tie-break?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nFritz saved two break points before the first changeover. Medvedev won the tie-break later in the set.\n<timeline>\n1. Medvedev held serve to open the match.\n2. Before the first changeover, Fritz saved two break points.\n3. Later in the set, Medvedev won a tie-break.\n</timeline>\n<reflection>\nThe timeline places Fritz saving two break points before Medvedev won the tie-break, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Fritz saved two break points</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000068",
+    "question": "Which happened first: Rune received a coaching warning or Djokovic saved a break point?",
+    "answer": "Djokovic saved a break point",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nDjokovic saved a break point at 1-2 in the second set. Later, Rune received a coaching warning. After that, Djokovic won four straight games.\n\nQuestion:\nWhich happened first: Rune received a coaching warning or Djokovic saved a break point?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nDjokovic saved a break point at 1-2 in the second set. Rune received a coaching warning later.\n<timeline>\n1. Djokovic saved a break point at 1-2 in the second set.\n2. Later, Rune received a coaching warning.\n3. After that, Djokovic won four straight games.\n</timeline>\n<reflection>\nThe timeline shows Djokovic saved a break point before Rune received the coaching warning, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Djokovic saved a break point</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000069",
+    "question": "Which event happened last?",
+    "answer": "Nadal broke serve",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nNadal held serve after a long opening game. Tsitsipas called the trainer during the next changeover. Later, Nadal broke serve to lead 4-2.\n\nQuestion:\nWhich event happened last?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last",
+      "tennis_injury_or_medical"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nNadal held serve first, then Tsitsipas called the trainer. Nadal broke serve later, making it the last listed event.\n<timeline>\n1. Nadal held serve after a long opening game.\n2. Tsitsipas called the trainer during the next changeover.\n3. Later, Nadal broke serve to lead 4-2.\n</timeline>\n<reflection>\nThe timeline places Nadal breaking serve last, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Nadal broke serve</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000070",
+    "question": "Which happened first: De Minaur challenged a baseline call or De Minaur broke serve?",
+    "answer": "De Minaur challenged a baseline call",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nShelton fired an ace to hold for 3-3. De Minaur challenged a baseline call before the next point. Minutes later, De Minaur broke serve.\n\nQuestion:\nWhich happened first: De Minaur challenged a baseline call or De Minaur broke serve?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nDe Minaur challenged a baseline call before the next point. He broke serve minutes later.\n<timeline>\n1. Shelton fired an ace to hold for 3-3.\n2. De Minaur challenged a baseline call before the next point.\n3. Minutes later, De Minaur broke serve.\n</timeline>\n<reflection>\nThe timeline shows De Minaur challenged the baseline call before he broke serve, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>De Minaur challenged a baseline call</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000072",
+    "question": "Which happened first: the crowd interruption or Nadal won the tie-break?",
+    "answer": "The crowd interruption",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nFederer saved a set point at 5-6 in the first set. The crowd interruption happened before the tie-break began. Later, Nadal won the tie-break.\n\nQuestion:\nWhich happened first: the crowd interruption or Nadal won the tie-break?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nThe crowd interruption happened before the tie-break began. Nadal won the tie-break later.\n<timeline>\n1. Federer saved a set point at 5-6 in the first set.\n2. The crowd interruption happened before the tie-break began.\n3. Later, Nadal won the tie-break.\n</timeline>\n<reflection>\nThe timeline places the crowd interruption before Nadal won the tie-break, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>The crowd interruption</answer>"
+  },
+  {
+    "dataset_name": "tennis_temporal",
+    "question_id": "tennis_000073",
+    "question": "Which event happened last?",
+    "answer": "Zverev broke serve",
+    "prompt": "You are given a temporal context from the tennis domain and a question.\nReason only over the events explicitly stated in the context.\nUse the temporal order, durations, overlaps, or tournament sequence when needed.\n\nTemporal context:\nZverev held serve for 2-1 in the deciding set. Medvedev requested new balls during the next changeover. After that, Zverev broke serve to lead 4-1.\n\nQuestion:\nWhich event happened last?\n\nReturn the final answer in the required format.",
+    "category": "which_first_last",
+    "tags": [
+      "which_first_last"
+    ],
+    "source": "unknown",
+    "output": "<reasoning>\nZverev held serve first, then Medvedev requested new balls. Zverev broke serve after that, making it the last event.\n<timeline>\n1. Zverev held serve for 2-1 in the deciding set.\n2. Medvedev requested new balls during the next changeover.\n3. After that, Zverev broke serve to lead 4-1.\n</timeline>\n<reflection>\nThe timeline places Zverev breaking serve last, so the gold answer is supported.\n</reflection>\n</reasoning>\n<answer>Zverev broke serve</answer>"
+  }
+]

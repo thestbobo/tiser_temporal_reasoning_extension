@@ -1,0 +1,88 @@
+{
+  "conditions": [
+    "base_qwen",
+    "original_tiser",
+    "tennis_only",
+    "mixed_replay"
+  ],
+  "event_ordering_categories": [
+    "immediate_before_after",
+    "tournament_round_sequence",
+    "which_first_last",
+    "yes_no_before_after"
+  ],
+  "generated_at": "2026-06-06T19:51:49",
+  "metric_paths": {
+    "base_qwen": {
+      "original_tiser_sample": "MISSING",
+      "tennis_test": "MISSING"
+    },
+    "mixed_replay": {
+      "original_tiser_sample": "MISSING",
+      "tennis_test": "MISSING"
+    },
+    "original_tiser": {
+      "original_tiser_sample": "MISSING",
+      "tennis_test": "MISSING"
+    },
+    "tennis_only": {
+      "original_tiser_sample": "MISSING",
+      "tennis_test": "MISSING"
+    }
+  },
+  "missing_inputs": [
+    "tennis_test metrics for base_qwen",
+    "tennis_test metrics for original_tiser",
+    "original TISER sample metrics for original_tiser",
+    "tennis_test metrics for tennis_only",
+    "original TISER sample metrics for tennis_only",
+    "tennis_test metrics for mixed_replay",
+    "original TISER sample metrics for mixed_replay"
+  ],
+  "rows": [
+    {
+      "condition": "base_qwen",
+      "forgetting_delta_em": "MISSING",
+      "notes": "missing tennis_test metrics; not scheduled for original TISER forgetting eval",
+      "original_tiser_em": "MISSING",
+      "original_tiser_f1": "MISSING",
+      "prompt_style": "MISSING",
+      "tennis_em": "MISSING",
+      "tennis_f1": "MISSING",
+      "tennis_malformed_rate": "MISSING"
+    },
+    {
+      "condition": "original_tiser",
+      "forgetting_delta_em": "MISSING",
+      "notes": "missing tennis_test metrics; missing original TISER sample metrics",
+      "original_tiser_em": "MISSING",
+      "original_tiser_f1": "MISSING",
+      "prompt_style": "MISSING",
+      "tennis_em": "MISSING",
+      "tennis_f1": "MISSING",
+      "tennis_malformed_rate": "MISSING"
+    },
+    {
+      "condition": "tennis_only",
+      "forgetting_delta_em": "MISSING",
+      "notes": "missing tennis_test metrics; missing original TISER sample metrics",
+      "original_tiser_em": "MISSING",
+      "original_tiser_f1": "MISSING",
+      "prompt_style": "MISSING",
+      "tennis_em": "MISSING",
+      "tennis_f1": "MISSING",
+      "tennis_malformed_rate": "MISSING"
+    },
+    {
+      "condition": "mixed_replay",
+      "forgetting_delta_em": "MISSING",
+      "notes": "missing tennis_test metrics; missing original TISER sample metrics",
+      "original_tiser_em": "MISSING",
+      "original_tiser_f1": "MISSING",
+      "prompt_style": "MISSING",
+      "tennis_em": "MISSING",
+      "tennis_f1": "MISSING",
+      "tennis_malformed_rate": "MISSING"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "n_total": 15898,
+  "per_split": {
+    "tempreason_l2_test": 5397,
+    "tempreason_l3_test": 4426,
+    "timeqa_easy_test": 2997,
+    "timeqa_hard_test": 3078
+  },
+  "per_class": {
+    "C1": 11472,
+    "C2": 15898,
+    "C3": 4426
+  },
+  "events_per_item": {
+    "min": 2,
+    "median": 5.0,
+    "max": 54
+  }
+}

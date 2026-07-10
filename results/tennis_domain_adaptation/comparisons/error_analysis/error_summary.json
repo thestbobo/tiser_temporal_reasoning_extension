@@ -1,0 +1,21 @@
+{
+  "available_conditions": [],
+  "category_errors": {},
+  "malformed_by_condition": {},
+  "missing_conditions": [
+    "base_qwen",
+    "original_tiser",
+    "tennis_only",
+    "mixed_replay"
+  ],
+  "n_questions": 0,
+  "overview_by_condition": {},
+  "predictions_root": "results\\tennis_domain_adaptation\\scored",
+  "suspected_failure_mode_counts": {},
+  "transitions": {
+    "broken_by_tennis_only": 0,
+    "fixed_by_mixed_replay": 0,
+    "fixed_by_tennis_only": 0,
+    "persistent_failures": 0
+  }
+}

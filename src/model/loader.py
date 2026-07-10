@@ -52,19 +52,32 @@ def _load_base(cfg) -> PreTrainedModel:
     )
 
 
+def _training_base_adapter(cfg) -> str | None:
+    return cfg.model.get("base_adapter") or None
+
+
+def _prepare_for_training(model: PreTrainedModel, cfg) -> PreTrainedModel:
+    if cfg.model.load_in_4bit:
+        return prepare_model_for_kbit_training(
+            model, use_gradient_checkpointing=cfg.train.gradient_checkpointing
+        )
+    if cfg.train.gradient_checkpointing:
+        # kbit prep normally wires these up; do it by hand on the bf16 path.
+        model.gradient_checkpointing_enable()
+        model.enable_input_require_grads()
+    return model
+
+
 def load_model_and_tokenizer(cfg) -> tuple[PreTrainedModel, PreTrainedTokenizer]:
     tokenizer = _load_tokenizer(cfg.model.name)
     tokenizer.padding_side = "right"  # training; generation flips this to "left"
 
     model = _load_base(cfg)
-    if cfg.model.load_in_4bit:
-        model = prepare_model_for_kbit_training(
-            model, use_gradient_checkpointing=cfg.train.gradient_checkpointing
-        )
-    elif cfg.train.gradient_checkpointing:
-        # kbit prep normally wires these up; do it by hand on the bf16 path.
-        model.gradient_checkpointing_enable()
-        model.enable_input_require_grads()
+    model = _prepare_for_training(model, cfg)
+
+    base_adapter = _training_base_adapter(cfg)
+    if base_adapter:
+        model = PeftModel.from_pretrained(model, base_adapter, is_trainable=True)
     return model, tokenizer
 
 
@@ -113,4 +126,21 @@ def load_base_for_inference(cfg) -> tuple[PreTrainedModel, PreTrainedTokenizer]:
     model = _load_base(cfg)
     model.eval()
     _clear_sampling_defaults(model)
+    return model, tokenizer
+
+
+def load_base_for_inference(cfg) -> tuple[PreTrainedModel, PreTrainedTokenizer]:
+    tokenizer = _load_tokenizer(cfg.model.name)
+    tokenizer.padding_side = "left"  # left-pad for batched generation
+
+    model = _load_base(cfg)
+    model.eval()
+
+    # Match the adapter inference path: greedy decoding should not emit warnings
+    # from model-shipped sampling defaults.
+    gen_cfg = model.generation_config
+    gen_cfg.do_sample = False
+    gen_cfg.temperature = None
+    gen_cfg.top_p = None
+    gen_cfg.top_k = None
     return model, tokenizer

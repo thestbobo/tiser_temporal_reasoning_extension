@@ -1,0 +1,46 @@
+{
+  "n_eligible_items": 571,
+  "enabled_classes": [
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "n_rows": 1176,
+  "per_class": {
+    "C1": 203,
+    "C2": 520,
+    "C3": 333,
+    "control": 120
+  },
+  "valid_per_class": {
+    "C1": 203,
+    "C2": 520,
+    "C3": 333,
+    "control": 120
+  },
+  "validity_pass_rate": {
+    "C1": 1.0,
+    "C2": 1.0,
+    "C3": 1.0,
+    "control": 1.0
+  },
+  "dropped_per_class": {
+    "C1": 31,
+    "C2": 51,
+    "C3": 4
+  },
+  "drop_reasons": {
+    "C1": {
+      "anchor_unresolved_or_not_single_cover": 30,
+      "no_distractor_value": 1
+    },
+    "C2": {
+      "gold_unlocalised": 34,
+      "no_distractor_in_pool": 17
+    },
+    "C3": {
+      "ref_or_neighbour_unresolved": 4
+    }
+  },
+  "control_size": 120
+}

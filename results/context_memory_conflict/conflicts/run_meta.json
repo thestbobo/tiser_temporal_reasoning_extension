@@ -1,0 +1,157 @@
+{
+  "timestamp": "2026-06-03T12:02:37",
+  "git_sha": "8e6dfb05ef61ce41548b078511ea533a057b9157",
+  "library_versions": {
+    "torch": null,
+    "transformers": null,
+    "peft": null,
+    "trl": null,
+    "datasets": null,
+    "vllm": null
+  },
+  "config": {
+    "run_name": "conflict_probe",
+    "seed": 42,
+    "paths": {
+      "data_dir": "/Users/gabrieleadorni/tiser_temporal_reasoning_extension/data",
+      "train_file": "/Users/gabrieleadorni/tiser_temporal_reasoning_extension/data/TISER_train.json",
+      "test_file": "/Users/gabrieleadorni/tiser_temporal_reasoning_extension/data/TISER_test.json",
+      "model_dir": "/Users/gabrieleadorni/tiser_temporal_reasoning_extension/model",
+      "output_dir": "/Users/gabrieleadorni/tiser_temporal_reasoning_extension/outputs",
+      "local_source_dir": "/Users/gabrieleadorni/Documents/POLITO/Magistrale Data Science Engineering/Deep Natural Language Processing/full_data",
+      "hf_dataset_id": "AmazonScience/TISER"
+    },
+    "model": {
+      "name": "Qwen/Qwen2.5-7B-Instruct",
+      "load_in_4bit": false,
+      "bnb_4bit_quant_type": "nf4",
+      "bnb_4bit_use_double_quant": true
+    },
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "bias": "none"
+    },
+    "train": {
+      "subset_size": null,
+      "max_seq_len": 2048,
+      "per_device_batch_size": 8,
+      "gradient_accumulation_steps": 2,
+      "num_epochs": 3,
+      "learning_rate": 0.0002,
+      "lr_scheduler_type": "cosine",
+      "warmup_ratio": 0.03,
+      "weight_decay": 0.0,
+      "optim": "paged_adamw_8bit",
+      "gradient_checkpointing": true,
+      "logging_steps": 20,
+      "save_strategy": "epoch"
+    },
+    "eval": {
+      "max_samples_per_split": null,
+      "batch_size": 32,
+      "max_new_tokens": 768,
+      "do_sample": false
+    },
+    "splits": [
+      "tgqa_test",
+      "tempreason_l2_test",
+      "tempreason_l3_test",
+      "timeqa_easy_test",
+      "timeqa_hard_test"
+    ],
+    "conflict": {
+      "in_scope_splits": [
+        "tempreason_l2_test",
+        "tempreason_l3_test",
+        "timeqa_easy_test",
+        "timeqa_hard_test"
+      ],
+      "max_per_split": null,
+      "memory": {
+        "engine": "vllm",
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": null,
+        "closed_book_style": "tiser_no_context",
+        "k": 5,
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "majority_threshold": 3,
+        "include_greedy": true,
+        "models": [
+          {
+            "tag": "tiser",
+            "adapter_dir": "model/tiser_qwen7b_full/adapter"
+          },
+          {
+            "tag": "base",
+            "adapter_dir": null
+          }
+        ]
+      },
+      "eligibility": {
+        "primary_model": "tiser",
+        "agreement_min": 0.6,
+        "target_n_per_class": 150,
+        "secondary_classes": [
+          "C3"
+        ]
+      },
+      "perturb": {
+        "classes": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "control_size": 120
+      },
+      "prompts": {
+        "styles": [
+          "tiser",
+          "standard"
+        ],
+        "standard_template": "Answer the question using only the temporal context provided. Give a short, direct answer.\n\nQuestion: {q}\n\nTemporal context: {ctx}\n\n### Answer:"
+      },
+      "run": {
+        "engine": "vllm",
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": null,
+        "models": [
+          {
+            "tag": "tiser",
+            "adapter_dir": "model/tiser_qwen7b_full/adapter"
+          },
+          {
+            "tag": "base",
+            "adapter_dir": null
+          }
+        ]
+      },
+      "score": {
+        "conflict_lexicon": [
+          "context says",
+          "but ",
+          "however",
+          "contradict",
+          "assume",
+          "earlier",
+          "instead",
+          "actually"
+        ]
+      }
+    }
+  },
+  "classes": [
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "control_size": 120
+}

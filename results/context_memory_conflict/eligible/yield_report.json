@@ -1,0 +1,52 @@
+{
+  "n_items": 15898,
+  "n_eligible": 571,
+  "n_confident_wrong": 2101,
+  "n_no_memory": 0,
+  "eligible_per_split": {
+    "tempreason_l2_test": 105,
+    "tempreason_l3_test": 337,
+    "timeqa_easy_test": 67,
+    "timeqa_hard_test": 62
+  },
+  "eligible_per_qtype": {
+    "tempreason_l2": 105,
+    "tempreason_l3": 337,
+    "timeqa_easy": 67,
+    "timeqa_hard": 62
+  },
+  "eligible_per_class": {
+    "C1": 234,
+    "C2": 571,
+    "C3": 337
+  },
+  "verdict": {
+    "overall": "GO",
+    "per_class": {
+      "C1": {
+        "n": 234,
+        "target": 150,
+        "secondary": false,
+        "meets_target": true
+      },
+      "C2": {
+        "n": 571,
+        "target": 150,
+        "secondary": false,
+        "meets_target": true
+      },
+      "C3": {
+        "n": 337,
+        "target": 150,
+        "secondary": true,
+        "meets_target": true
+      }
+    }
+  },
+  "cross_model_agreement": {
+    "base": {
+      "n_shared": 15898,
+      "m_agreement": 0.11875707636180652
+    }
+  }
+}

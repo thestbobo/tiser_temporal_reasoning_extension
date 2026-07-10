@@ -1,0 +1,2864 @@
+{
+  "source_records": 785,
+  "generated_records": 574,
+  "merged_records": 393,
+  "failed_records": 200,
+  "error_counts": {
+    "invalid JSONL: Expecting ',' delimiter": 12,
+    "invalid JSONL: Extra data": 7,
+    "missing <answer>": 181,
+    "missing <reasoning>": 181,
+    "missing <reflection>": 181,
+    "missing <timeline>": 181
+  },
+  "failed_examples": [
+    {
+      "line_number": 100,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "line_number": 121,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 122,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 123,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 124,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 149,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "line_number": 248,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "line_number": 288,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 294,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 295,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 297,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "line_number": 396,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "line_number": 406,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 408,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 429,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 438,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 443,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Expecting ',' delimiter"
+      ]
+    },
+    {
+      "line_number": 445,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "line_number": 544,
+      "question_id": "",
+      "errors": [
+        "invalid JSONL: Extra data"
+      ]
+    },
+    {
+      "question_id": "tennis_000219",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states De Minaur hit the ball wide, challenged the call, and then the replay showed the ball was out.\n\n1. De Minaur challenged the call.\n2. The replay showed the ball was out.\n\n\nThe timeline confirms De Minaur challenged the call before the replay was shown.\n\n\nYes",
+      "generated_index": 100
+    },
+    {
+      "question_id": "tennis_000220",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context states the stadium roof was closed before the players entered the arena, and the lights flickered later during the warm-up.\n\n1. The stadium roof was closed.\n2. The players entered the arena.\n3. The arena lights flickered during warm-up.\n\n\nThe roof was closed before the lights flickered, not after. Thus, the answer is No.\n\n\nNo",
+      "generated_index": 101
+    },
+    {
+      "question_id": "tennis_000222",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Alcaraz apologized to the ball kid",
+      "extracted_answer": "",
+      "normalized_gold_answer": "alcaraz apologized to ball kid",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz dropped his racket, then the umpire gave him a warning, and finally Alcaraz apologized to the ball kid.\n\n1. Alcaraz dropped his racket.\n2. The umpire gave a warning.\n3. Alcaraz apologized to the ball kid.\n\n\nApologizing to the ball kid is the last event in the sequence.\n\n\nAlcaraz apologized to the ball kid",
+      "generated_index": 102
+    },
+    {
+      "question_id": "tennis_000223",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic asked the umpire to check a ball mark",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic asked umpire to check ball mark",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Djokovic asked the umpire to check a mark, the umpire confirmed it, and then Djokovic returned to the baseline.\n\n1. Djokovic asked the umpire to check a ball mark.\n2. The umpire confirmed the ball was in.\n3. Djokovic returned to the baseline.\n\n\nAsking the umpire to check the mark happened first in the described sequence.\n\n\nDjokovic asked the umpire to check a ball mark",
+      "generated_index": 103
+    },
+    {
+      "question_id": "tennis_000225",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zverev received a time violation warning",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zverev received time violation warning",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Zverev hit a double fault, but the context explicitly states that prior to that, he had been warned for a time violation.\n\n1. Zverev received a time violation warning.\n2. Zverev hit a double fault.\n\n\nThe time violation warning occurred before the double fault.\n\n\nZverev received a time violation warning",
+      "generated_index": 104
+    },
+    {
+      "question_id": "tennis_000226",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "The opponent hit the return into the net",
+      "extracted_answer": "",
+      "normalized_gold_answer": "opponent hit return into net",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune executed the underarm serve, the crowd reacted, and then his opponent hit the return into the net.\n\n1. Rune executed an underarm serve.\n2. The opponent hit the return into the net.\n\n\nThe opponent hitting the return into the net happened last.\n\n\nThe opponent hit the return into the net",
+      "generated_index": 105
+    },
+    {
+      "question_id": "tennis_000227",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rublev changed his shoes twice",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rublev changed his shoes twice",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states Rublev took a medical timeout, but notes that earlier in the match, he had changed his shoes twice.\n\n1. Rublev changed his shoes twice.\n2. Rublev took a medical timeout.\n\n\nChanging shoes happened earlier than the medical timeout.\n\n\nRublev changed his shoes twice",
+      "generated_index": 106
+    },
+    {
+      "question_id": "tennis_000229",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal requested the physiotherapist",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal requested physiotherapist",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Nadal requested the physiotherapist immediately after winning the opening set, and after a brief consultation, play resumed.\n\n1. Nadal requested the physiotherapist.\n2. Play resumed.\n\n\nNadal requested the physiotherapist before play resumed.\n\n\nNadal requested the physiotherapist",
+      "generated_index": 107
+    },
+    {
+      "question_id": "tennis_000230",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Federer raised his hand",
+      "extracted_answer": "",
+      "normalized_gold_answer": "federer raised his hand",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Federer hit a drop shot, his opponent failed to reach it, and then Federer raised his hand to acknowledge the crowd.\n\n1. Federer hit a drop shot.\n2. Federer raised his hand.\n\n\nRaising his hand occurred after hitting the drop shot.\n\n\nFederer raised his hand",
+      "generated_index": 108
+    },
+    {
+      "question_id": "tennis_000231",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "He broke a string",
+      "extracted_answer": "",
+      "normalized_gold_answer": "he broke string",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Tsitsipas broke a string, then quickly swapped rackets at the back of the court.\n\n1. Tsitsipas broke a string.\n2. Tsitsipas swapped rackets.\n\n\nBreaking a string was the event that caused him to swap rackets.\n\n\nHe broke a string",
+      "generated_index": 109
+    },
+    {
+      "question_id": "tennis_000233",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "He served a double fault",
+      "extracted_answer": "",
+      "normalized_gold_answer": "he served double fault",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Shelton served a double fault and immediately shouted at himself in frustration.\n\n1. Shelton served a double fault.\n2. Shelton shouted at himself.\n\n\nThe double fault immediately preceded him shouting at himself.\n\n\nHe served a double fault",
+      "generated_index": 110
+    },
+    {
+      "question_id": "tennis_000234",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "De Minaur collapsed onto the grass",
+      "extracted_answer": "",
+      "normalized_gold_answer": "de minaur collapsed onto grass",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "De Minaur won the point when the opponent hit a forehand long, and then De Minaur collapsed onto the grass.\n\n1. The opponent hit a forehand long.\n2. De Minaur collapsed onto the grass.\n\n\nCollapsing onto the grass happened directly after the opponent hit the forehand long.\n\n\nDe Minaur collapsed onto the grass",
+      "generated_index": 111
+    },
+    {
+      "question_id": "tennis_000236",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Alcaraz took a sip of his energy drink",
+      "extracted_answer": "",
+      "normalized_gold_answer": "alcaraz took sip of his energy drink",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "After losing the game, the players crossed paths at the net, and immediately after sitting down, Alcaraz took a sip of his drink.\n\n1. The players crossed paths at the net.\n2. Alcaraz sat down.\n3. Alcaraz took a sip of his energy drink.\n\n\nTaking a sip of the drink occurred after the players crossed paths at the net.\n\n\nAlcaraz took a sip of his energy drink",
+      "generated_index": 112
+    },
+    {
+      "question_id": "tennis_000238",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev resumed his service motion",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev resumed his service motion",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The umpire asked the fan to cover the watch, and then Medvedev resumed his service motion.\n\n1. The umpire asked the fan to cover the watch.\n2. Medvedev resumed his service motion.\n\n\nMedvedev resuming his service motion happened after the umpire's request to the fan.\n\n\nMedvedev resumed his service motion",
+      "generated_index": 113
+    },
+    {
+      "question_id": "tennis_000239",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Two hours",
+      "extracted_answer": "",
+      "normalized_gold_answer": "two hours",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text directly states that play resumed exactly two hours later after being suspended.\n\n1. The match was suspended.\n2. Two hours passed.\n3. Play resumed.\n\n\nThe suspension duration is explicitly given as two hours.\n\n\nTwo hours",
+      "generated_index": 114
+    },
+    {
+      "question_id": "tennis_000240",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "7 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "7",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explicitly mentions that the break lasted exactly seven minutes.\n\n1. Bathroom break started.\n2. 7 minutes passed.\n3. Bathroom break ended.\n\n\nThe duration of the break is stated as 7 minutes.\n\n\n7 minutes",
+      "generated_index": 115
+    },
+    {
+      "question_id": "tennis_000241",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "75 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "75",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explicitly states the opening set took 75 minutes to complete.\n\n1. Opening set started.\n2. 75 minutes passed.\n3. Opening set completed.\n\n\nThe duration of the opening set is 75 minutes.\n\n\n75 minutes",
+      "generated_index": 116
+    },
+    {
+      "question_id": "tennis_000242",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "3 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "3",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states the physio spent three minutes physically assessing the injury before applying treatment for another three minutes.\n\n1. Physio assessed the injury for 3 minutes.\n2. Treatment applied for 3 minutes.\n\n\nThe assessment part took 3 minutes.\n\n\n3 minutes",
+      "generated_index": 117
+    },
+    {
+      "question_id": "tennis_000243",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "20 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "20",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explicitly states Fritz practiced his serve on the side practice court for 20 minutes.\n\n1. Fritz practiced serve for 20 minutes.\n2. Fritz stretched for 10 minutes.\n3. Fritz relaxed for an hour.\n\n\nThe time spent practicing the serve was 20 minutes.\n\n\n20 minutes",
+      "generated_index": 118
+    },
+    {
+      "question_id": "tennis_000245",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "40 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "40",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states a previous match ran long, causing a 40-minute delay before Federer walked onto the court.\n\n1. Match scheduled for 7 PM.\n2. 40-minute delay occurred.\n3. Federer walked onto the court at 7:40 PM.\n\n\nThe delay is explicitly stated as 40 minutes.\n\n\n40 minutes",
+      "generated_index": 119
+    },
+    {
+      "question_id": "tennis_000251",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz defeated Zverev in the quarterfinal, and then beat Sinner in the semifinal.\n\n1. Alcaraz defeated Zverev in the quarterfinal.\n2. Alcaraz played and beat Sinner in the semifinal.\n\n\nThe quarterfinal win over Zverev happened before the semifinal.\n\n\nYes",
+      "generated_index": 120
+    },
+    {
+      "question_id": "tennis_000252",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Djokovic won his first three rounds without dropping a set, and then lost in the fourth round.\n\n1. Djokovic won his first three rounds.\n2. Djokovic lost in the fourth round.\n\n\nWinning the first three rounds preceded the fourth-round loss.\n\n\nYes",
+      "generated_index": 121
+    },
+    {
+      "question_id": "tennis_000253",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Medvedev barely survived his second-round match by winning in a final set tie-break.\n\n1. Medvedev played a second-round match.\n2. Medvedev won in a final set tie-break during that match.\n\n\nThe text confirms he played a final set tie-break in the second round.\n\n\nYes",
+      "generated_index": 122
+    },
+    {
+      "question_id": "tennis_000254",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune defeated the world number one in the third round, and then continued his winning streak all the way to the final.\n\n1. Rune defeated the world number one in the third round.\n2. Rune reached the final.\n\n\nThe third round victory happened before reaching the final.\n\n\nYes",
+      "generated_index": 123
+    },
+    {
+      "question_id": "tennis_000255",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rublev won his second-round match but was surprisingly eliminated in the quarterfinal.\n\n1. Rublev won his second-round match.\n2. Rublev was eliminated in the quarterfinal.\n\n\nThe text directly states he was eliminated in the quarterfinal.\n\n\nYes",
+      "generated_index": 124
+    },
+    {
+      "question_id": "tennis_000256",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states that before Djokovic called a medical timeout, Sinner saved a break point. After the medical timeout, Djokovic double-faulted and Sinner broke serve in the fourth game.\n\n1. Djokovic called a medical timeout.\n2. Sinner broke serve in the fourth game.\n\n\nThe medical timeout happened before Sinner broke serve.\n\n\nYes",
+      "generated_index": 125
+    },
+    {
+      "question_id": "tennis_000257",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz broke Medvedev early in the first set. Later, Medvedev asked for the trainer at 2-4.\n\n1. Alcaraz broke Medvedev.\n2. Medvedev asked for the trainer.\n\n\nMedvedev asked for the trainer after Alcaraz broke serve, not before.\n\n\nNo",
+      "generated_index": 126
+    },
+    {
+      "question_id": "tennis_000258",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "During the second set, Zverev received a coaching violation before breaking Rune at 3-2.\n\n1. Zverev received a coaching violation.\n2. Zverev broke Rune at 3-2.\n\n\nThe coaching violation explicitly occurred before he broke Rune.\n\n\nYes",
+      "generated_index": 127
+    },
+    {
+      "question_id": "tennis_000264",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz received treatment during the changeover after slipping. Later in the same set, he broke Zverev.\n\n1. Alcaraz received treatment.\n2. Alcaraz broke Zverev.\n\n\nThe treatment occurred before breaking Zverev.\n\n\nYes",
+      "generated_index": 128
+    },
+    {
+      "question_id": "tennis_000265",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune broke serve after Medvedev complained about the lights in the first set. Medvedev asked for a medical timeout later during the second set.\n\n1. Rune broke serve in the first set.\n2. Medvedev asked for a medical timeout in the second set.\n\n\nThe medical timeout occurred after Rune broke serve, not before.\n\n\nNo",
+      "generated_index": 129
+    },
+    {
+      "question_id": "tennis_000266",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Nadal saved two break points in the next game before the crowd interruption stopped play.\n\n1. Nadal saved two break points.\n2. The crowd interruption stopped play.\n\n\nSaving the break points happened before the interruption.\n\n\nYes",
+      "generated_index": 130
+    },
+    {
+      "question_id": "tennis_000268",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Tsitsipas broke early in the second set before rain interrupted the match.\n\n1. Tsitsipas broke serve.\n2. Rain interrupted the match.\n\n\nThe break of serve occurred before the rain delay.\n\n\nYes",
+      "generated_index": 131
+    },
+    {
+      "question_id": "tennis_000269",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states that before Shelton broke serve, the umpire had already warned the crowd.\n\n1. The umpire warned the crowd.\n2. Shelton broke serve.\n\n\nShelton broke serve after the umpire warned the crowd, so the answer is No.\n\n\nNo",
+      "generated_index": 132
+    },
+    {
+      "question_id": "tennis_000271",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Djokovic broke serve in the second game. Sinner recovered the break later in the set.\n\n1. Djokovic broke serve.\n2. Sinner recovered the break.\n\n\nDjokovic broke serve prior to Sinner recovering it.\n\n\nDjokovic broke serve",
+      "generated_index": 133
+    },
+    {
+      "question_id": "tennis_000272",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Alcaraz saved a break point",
+      "extracted_answer": "",
+      "normalized_gold_answer": "alcaraz saved break point",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz saved a break point, then Medvedev won the next three games and forced a tie-break.\n\n1. Alcaraz saved a break point.\n2. Medvedev forced a tie-break.\n\n\nSaving the break point happened before the tie-break was forced.\n\n\nAlcaraz saved a break point",
+      "generated_index": 134
+    },
+    {
+      "question_id": "tennis_000273",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rune won the second set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rune won second set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Zverev took the first set, Rune received treatment, then Rune broke Zverev twice and won the second set.\n\n1. Zverev took the first set.\n2. Rune received treatment.\n3. Rune won the second set.\n\n\nRune winning the second set was the final event described.\n\n\nRune won the second set",
+      "generated_index": 135
+    },
+    {
+      "question_id": "tennis_000274",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rublev argued with the umpire",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rublev argued with umpire",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rublev argued with the umpire, and Fritz broke serve immediately after the argument.\n\n1. Rublev argued with the umpire.\n2. Fritz broke serve.\n\n\nThe argument with the umpire happened before Fritz broke serve.\n\n\nRublev argued with the umpire",
+      "generated_index": 136
+    },
+    {
+      "question_id": "tennis_000275",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal took a medical timeout",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal took medical timeout",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Nadal lost his opening service game, Federer held serve, and later Nadal took a medical timeout.\n\n1. Nadal lost his service game.\n2. Federer held serve.\n3. Nadal took a medical timeout.\n\n\nTaking the medical timeout is the last event mentioned in the timeline.\n\n\nNadal took a medical timeout",
+      "generated_index": 137
+    },
+    {
+      "question_id": "tennis_000276",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Tsitsipas broke Ruud",
+      "extracted_answer": "",
+      "normalized_gold_answer": "tsitsipas broke ruud",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Tsitsipas broke Ruud in the first game. Ruud broke back before the first changeover.\n\n1. Tsitsipas broke Ruud.\n2. Ruud broke back.\n\n\nTsitsipas breaking Ruud happened first in the match sequence.\n\n\nTsitsipas broke Ruud",
+      "generated_index": 138
+    },
+    {
+      "question_id": "tennis_000278",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "The roof was closed",
+      "extracted_answer": "",
+      "normalized_gold_answer": "roof was closed",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Medvedev won the first set before the roof was closed. After returning from the roof closure, Djokovic broke serve in the second set.\n\n1. The roof was closed.\n2. Djokovic broke serve.\n\n\nThe roof was closed before Djokovic broke serve in the second set.\n\n\nThe roof was closed",
+      "generated_index": 139
+    },
+    {
+      "question_id": "tennis_000282",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Federer requested treatment",
+      "extracted_answer": "",
+      "normalized_gold_answer": "federer requested treatment",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Nadal broke Federer at 2-2. After the break, Federer requested treatment for his knee.\n\n1. Nadal broke Federer.\n2. Federer requested treatment.\n\n\nFederer requested treatment right after Nadal broke his serve.\n\n\nFederer requested treatment",
+      "generated_index": 140
+    },
+    {
+      "question_id": "tennis_000286",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "De Minaur left the court",
+      "extracted_answer": "",
+      "normalized_gold_answer": "de minaur left court",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Shelton won the first set. After the set ended, De Minaur left the court for a bathroom break.\n\n1. Shelton won the first set.\n2. De Minaur left the court.\n\n\nDe Minaur leaving the court occurred immediately after Shelton won the set.\n\n\nDe Minaur left the court",
+      "generated_index": 141
+    },
+    {
+      "question_id": "tennis_000287",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Fritz won three straight return points",
+      "extracted_answer": "",
+      "normalized_gold_answer": "fritz won three straight return points",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rublev took a medical timeout at 4-4. Before the timeout, Fritz had won three straight return points.\n\n1. Fritz won three straight return points.\n2. Rublev took a medical timeout.\n\n\nFritz winning three straight return points occurred right before the medical timeout.\n\n\nFritz won three straight return points",
+      "generated_index": 142
+    },
+    {
+      "question_id": "tennis_000288",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zverev closed the match",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zverev closed match",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune saved two match points before the crowd interruption. After the interruption, Zverev closed the match.\n\n1. The crowd interruption occurred.\n2. Zverev closed the match.\n\n\nZverev closed the match right after the crowd interruption.\n\n\nZverev closed the match",
+      "generated_index": 143
+    },
+    {
+      "question_id": "tennis_000436",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Tsitsipas took a bathroom break",
+      "extracted_answer": "",
+      "normalized_gold_answer": "tsitsipas took bathroom break",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text mentions that after Ruud won the tie-break, Tsitsipas took a bathroom break.\n\n1. Ruud won the first-set tie-break\n2. Tsitsipas took a bathroom break\n3. Tsitsipas broke serve twice during the second set\n\n\nThe first event after the tie-break on the timeline is Tsitsipas taking a bathroom break, supporting the gold answer.\n\n\nTsitsipas took a bathroom break",
+      "generated_index": 242
+    },
+    {
+      "question_id": "tennis_000438",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Sinner held serve at love",
+      "extracted_answer": "",
+      "normalized_gold_answer": "sinner held serve at love",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context states explicitly that after the warning, Sinner held serve at love.\n\n1. Alcaraz received a coaching warning in the second set\n2. Sinner held serve at love\n3. Alcaraz saved two match points\n\n\nLooking at the timeline, the event immediately following the warning is Sinner holding serve at love.\n\n\nSinner held serve at love",
+      "generated_index": 243
+    },
+    {
+      "question_id": "tennis_000441",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "25 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "25",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune broke back 8 minutes after Zverev broke, and the roof started closing 17 minutes after Rune broke back. The total time is 8 + 17 = 25 minutes.\n\n1. 3:20 p.m.: Zverev broke Rune\n2. 3:28 p.m. (+8 minutes): Rune broke back\n3. 3:45 p.m. (+17 minutes): The roof started closing\n\n\nThe timeline calculates the total duration from the initial break to the roof closing as 25 minutes, validating the answer.\n\n\n25 minutes",
+      "generated_index": 244
+    },
+    {
+      "question_id": "tennis_000442",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "12 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "12",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rublev saved a set point at 4:05 p.m. and Fritz won the tie-break at 4:17 p.m. The difference is 12 minutes.\n\n1. 4:05 p.m.: Rublev saved a set point\n2. 4:17 p.m.: Fritz won the tie-break\n3. After the tie-break: The players sat down for a changeover\n\n\nThe duration from 4:05 p.m. to 4:17 p.m. correctly calculates to 12 minutes.\n\n\n12 minutes",
+      "generated_index": 245
+    },
+    {
+      "question_id": "tennis_000443",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "20 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "20",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Nadal held serve 6 minutes after resumption, and Federer broke 14 minutes after that. Total time since resumption is 6 + 14 = 20 minutes.\n\n1. 6:00 p.m.: Match resumed after rain\n2. 6:06 p.m. (+6 minutes): Nadal held serve\n3. 6:20 p.m. (+14 minutes): Federer broke serve\n\n\nThe timeline shows Federer broke serve 20 minutes after the match resumed at 6:00 p.m.\n\n\n20 minutes",
+      "generated_index": 246
+    },
+    {
+      "question_id": "tennis_000444",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "13 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "13",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Tsitsipas received treatment at 1:30 p.m. and Ruud broke serve at 1:43 p.m. The difference in time is 13 minutes.\n\n1. 1:30 p.m.: Tsitsipas received treatment\n2. 1:43 p.m.: Ruud broke serve\n3. 1:50 p.m. (+7 minutes): The next changeover began\n\n\nSubtracting the treatment time (1:30 p.m.) from the break time (1:43 p.m.) yields 13 minutes.\n\n\n13 minutes",
+      "generated_index": 247
+    },
+    {
+      "question_id": "tennis_000445",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "13 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "13",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Shelton won the set at 8:22 p.m. Play restarted at 8:31 p.m. and De Minaur broke serve 4 minutes later at 8:35 p.m. The duration from 8:22 p.m. to 8:35 p.m. is 13 minutes.\n\n1. 8:22 p.m.: Shelton won the first set\n2. Immediately after: De Minaur took a bathroom break\n3. 8:31 p.m.: Play restarted\n4. 8:35 p.m. (+4 minutes): De Minaur broke serve\n\n\nThe elapsed time from the end of the first set (8:22 p.m.) to the break (8:35 p.m.) is 13 minutes.\n\n\n13 minutes",
+      "generated_index": 248
+    },
+    {
+      "question_id": "tennis_000447",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text says that while the trainer treated Sinner's leg, Medvedev stayed seated and spoke with the umpire.\n\n1. Sinner called the trainer during the changeover at 5-4\n2. The trainer treated Sinner's leg / Medvedev stayed seated and spoke with the umpire (simultaneous)\n3. After the treatment ended, Sinner served for the set\n\n\nThe timeline confirms the events occurred concurrently, meaning the answer is Yes.\n\n\nYes",
+      "generated_index": 249
+    },
+    {
+      "question_id": "tennis_000448",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune argued with the chair umpire before the medical timeout began, not during it.\n\n1. Rune argued with the chair umpire\n2. Medical timeout began / Zverev practiced shadow swings\n3. Timeout ended / Rune held serve\n\n\nThe argument happened prior to the timeout, meaning it did not overlap with it.\n\n\nNo",
+      "generated_index": 250
+    },
+    {
+      "question_id": "tennis_000450",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Fritz challenged the call before the crowd interruption occurred, not during it.\n\n1. Fritz challenged a line call\n2. Crowd interruption began / Rublev stood at the baseline waiting to serve\n3. Interruption ended / Fritz won the next point\n\n\nThe challenge took place strictly before the crowd interruption, making the answer No.\n\n\nNo",
+      "generated_index": 251
+    },
+    {
+      "question_id": "tennis_000451",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Sinner beat Djokovic in the semifinal on Saturday, and played Alcaraz in the final the next day (Sunday).\n\n1. Friday: Sinner defeated Rublev in the quarterfinal\n2. Saturday: Sinner beat Djokovic in the semifinal\n3. Sunday: Sinner played Alcaraz in the final\n\n\nThe timeline clearly places the semifinal on Saturday before the final on Sunday.\n\n\nYes",
+      "generated_index": 252
+    },
+    {
+      "question_id": "tennis_000454",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Zverev received the walkover in the second round, which happened before he lost to Tsitsipas in the quarterfinal.\n\n1. Second round: Zverev received a walkover\n2. Third round: Zverev beat Rune\n3. Quarterfinal: Zverev lost to Tsitsipas\n\n\nThe walkover happened in round two, not after the quarterfinal loss.\n\n\nNo",
+      "generated_index": 253
+    },
+    {
+      "question_id": "tennis_000455",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "De Minaur lost to Sinner",
+      "extracted_answer": "",
+      "normalized_gold_answer": "de minaur lost to sinner",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The matches follow tournament sequence: round of sixteen, then quarterfinal, then semifinal.\n\n1. Round of sixteen: De Minaur beat Nadal\n2. Quarterfinal: De Minaur defeated Federer\n3. Semifinal: De Minaur lost to Sinner\n\n\nThe semifinal match where De Minaur lost to Sinner is the final event in the provided context.\n\n\nDe Minaur lost to Sinner",
+      "generated_index": 254
+    },
+    {
+      "question_id": "tennis_000456",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context states that a rain delay stopped play before Djokovic recovered the break.\n\n1. Game 1: Djokovic saved three break points\n2. Game 5: Alcaraz broke serve\n3. Rain delay stopped play\n4. Djokovic recovered the break (did not happen before the rain delay)\n\n\nThe timeline confirms the rain delay occurred prior to Djokovic recovering the break.\n\n\nNo",
+      "generated_index": 255
+    },
+    {
+      "question_id": "tennis_000458",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "De Minaur held serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "de minaur held serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Shelton missed a volley, then De Minaur held serve. Later, Shelton won the tie-break.\n\n1. Shelton missed a volley on break point\n2. De Minaur held serve\n3. Shelton won a tie-break\n\n\nDe Minaur holding serve explicitly happens before Shelton wins the tie-break.\n\n\nDe Minaur held serve",
+      "generated_index": 256
+    },
+    {
+      "question_id": "tennis_000459",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Federer served out the match",
+      "extracted_answer": "",
+      "normalized_gold_answer": "federer served out match",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Federer won the first set, Nadal called the trainer, Federer broke in the second set, and later served out the match.\n\n1. Federer won the first set\n2. Nadal called the trainer\n3. Second set begins\n4. Federer broke serve at 4-3\n5. Federer served out the match\n\n\nThe final event described is Federer serving out the match.\n\n\nFederer served out the match",
+      "generated_index": 257
+    },
+    {
+      "question_id": "tennis_000460",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explicitly says that after the complaint, Medvedev broke serve.\n\n1. Zverev saved a break point\n2. Medvedev complained about crowd noise\n3. Medvedev broke serve\n\n\nThe timeline reflects Medvedev breaking serve immediately following his complaint.\n\n\nMedvedev broke serve",
+      "generated_index": 258
+    },
+    {
+      "question_id": "tennis_000464",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz saved a break point early in the second set, and Medvedev argued with the umpire after that game.\n\n1. Alcaraz saved a break point early in the second set\n2. Medvedev argued with the umpire\n3. Medvedev broke serve\n4. Medvedev won the set in a tie-break\n\n\nThe timeline establishes that the break point save preceded Medvedev's argument.\n\n\nYes",
+      "generated_index": 259
+    },
+    {
+      "question_id": "tennis_000465",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Zverev broke serve only after the treatment was completed, meaning it happened after, not before.\n\n1. Djokovic lost the first set\n2. Changeover: Djokovic received treatment on his shoulder\n3. Treatment was completed\n4. Zverev broke serve\n\n\nThe timeline proves Zverev's break happened subsequent to Djokovic's treatment.\n\n\nNo",
+      "generated_index": 260
+    },
+    {
+      "question_id": "tennis_000467",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "De Minaur requested a medical timeout after the first set ended, while Fritz received a coaching violation earlier in the match.\n\n1. Fritz received a coaching violation\n2. Fritz won the first set with a late break\n3. De Minaur requested a medical timeout\n\n\nThe timeout request happened after Fritz's coaching violation, not before.\n\n\nNo",
+      "generated_index": 261
+    },
+    {
+      "question_id": "tennis_000468",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context states that before Federer broke serve, Nadal had saved two break points in his previous service game.\n\n1. Nadal held serve to start the match\n2. Nadal saved two break points in his previous service game\n3. Federer broke serve in the fourth game\n\n\nThe timeline verifies that saving the break points occurred before losing serve.\n\n\nYes",
+      "generated_index": 262
+    },
+    {
+      "question_id": "tennis_000469",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Ruud called the trainer after losing the opening game of the second set, and Tsitsipas broke serve later in the same set.\n\n1. Tsitsipas won the first set\n2. Tsitsipas won the opening game of the second set\n3. Ruud called the trainer\n4. Tsitsipas broke serve later in the set\n\n\nThe break of serve occurred after Ruud called the trainer, making the answer No.\n\n\nNo",
+      "generated_index": 263
+    },
+    {
+      "question_id": "tennis_000473",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune smashed a racket during the changeover following Rublev holding serve, and later Rune broke back.\n\n1. Rublev held serve after saving three break points\n2. Changeover: Rune smashed a racket\n3. Later: Rune broke back to level the set at 4-4\n\n\nThe racket smash during the changeover happened prior to breaking back.\n\n\nYes",
+      "generated_index": 264
+    },
+    {
+      "question_id": "tennis_000474",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Fritz broke Ruud in the first game. After that, Ruud requested treatment.\n\n1. Fritz broke Ruud in the first game of the final set\n2. Ruud requested treatment for his wrist\n3. Minutes later: Fritz held serve to confirm the break\n\n\nThe treatment request happened sequentially after the initial break of serve.\n\n\nYes",
+      "generated_index": 265
+    },
+    {
+      "question_id": "tennis_000475",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The roof was closed during the suspension, and Shelton won the second-set tie-break only after play resumed.\n\n1. De Minaur won the first set\n2. Match suspended\n3. Roof was closed\n4. Play resumed\n5. Shelton won the second-set tie-break\n\n\nShelton won the tie-break after the resumption, which means it happened after the roof was closed.\n\n\nNo",
+      "generated_index": 266
+    },
+    {
+      "question_id": "tennis_000477",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states that before Sinner broke back, Alcaraz had already received a warning for slow play.\n\n1. Alcaraz took an early break in the first set\n2. Alcaraz received a warning for slow play\n3. Sinner broke back after a long sixth game\n\n\nSinner broke back after Alcaraz received his warning, not before.\n\n\nNo",
+      "generated_index": 267
+    },
+    {
+      "question_id": "tennis_000478",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic saved a break point",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic saved break point",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Djokovic saved a break point in the second game, and Zverev broke serve in the sixth game.\n\n1. Game 2: Djokovic saved a break point\n2. Game 6: Zverev broke serve\n3. Later: Djokovic won a tie-break\n\n\nThe event in the second game (saving a break point) happens before the event in the sixth game.\n\n\nDjokovic saved a break point",
+      "generated_index": 268
+    },
+    {
+      "question_id": "tennis_000479",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Sinner called for the trainer",
+      "extracted_answer": "",
+      "normalized_gold_answer": "sinner called for trainer",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Sinner called for the trainer after losing the first set. Alcaraz broke serve early in the second set.\n\n1. Sinner lost the first set\n2. Sinner called for the trainer\n3. Second set begins: Alcaraz broke serve\n4. Later: Sinner won four straight games\n\n\nThe trainer call occurred at the end of the first set, preceding the break in the second set.\n\n\nSinner called for the trainer",
+      "generated_index": 269
+    },
+    {
+      "question_id": "tennis_000480",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rune won the tie-break",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rune won tie break",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The sequence of events ends with Rune winning the tie-break.\n\n1. First changeover: Medvedev complained about the balls\n2. 5-6: Rune saved a set point\n3. End of set: Rune won the tie-break\n\n\nThe final event listed is Rune winning the tie-break to end the set.\n\n\nRune won the tie-break",
+      "generated_index": 270
+    },
+    {
+      "question_id": "tennis_000481",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rublev broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rublev broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rublev broke serve in the third game, which happened before Fritz broke back in the fourth game.\n\n1. Third game: Rublev broke serve\n2. Fourth game: Fritz broke back\n3. Rain delay\n4. Rublev won the first-set tie-break\n\n\nThe third game break logically precedes the fourth game break back.\n\n\nRublev broke serve",
+      "generated_index": 271
+    },
+    {
+      "question_id": "tennis_000482",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal served out the set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal served out set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Nadal received treatment, Federer held, Nadal broke, and finally Nadal served out the set.\n\n1. Before second set: Nadal received treatment\n2. Start of set: Federer held serve\n3. Later: Nadal broke serve\n4. Nadal served out the set\n\n\nThe last described action is Nadal serving out the set.\n\n\nNadal served out the set",
+      "generated_index": 272
+    },
+    {
+      "question_id": "tennis_000483",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Shelton earned break point",
+      "extracted_answer": "",
+      "normalized_gold_answer": "shelton earned break point",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Shelton earned the break point with a passing shot first, and then De Minaur saved it.\n\n1. Shelton hit a passing shot to earn break point\n2. De Minaur saved the break point with a volley\n3. Two games later: Shelton won the set with an ace\n\n\nEarning the break point is a prerequisite to it being saved.\n\n\nShelton earned break point",
+      "generated_index": 273
+    },
+    {
+      "question_id": "tennis_000484",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Tsitsipas lost the set in a tie-break",
+      "extracted_answer": "",
+      "normalized_gold_answer": "tsitsipas lost set in tie break",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The sequence finishes with Tsitsipas recovering the break and then losing the set in a tie-break.\n\n1. Tsitsipas lost serve in the first game\n2. Ruud held for 2-0\n3. Later: Tsitsipas recovered the break\n4. Tsitsipas lost the set in a tie-break\n\n\nThe final chronological event mentioned is Tsitsipas losing the tie-break.\n\n\nTsitsipas lost the set in a tie-break",
+      "generated_index": 274
+    },
+    {
+      "question_id": "tennis_000485",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Djokovic broke serve in the opening game. Later in the set at 4-3, he saved a break point.\n\n1. Opening game: Zverev served two double faults\n2. Opening game: Djokovic broke serve\n3. Later at 4-3: Djokovic saved a break point\n\n\nThe opening game break happens prior to the break point save at 4-3.\n\n\nDjokovic broke serve",
+      "generated_index": 275
+    },
+    {
+      "question_id": "tennis_000486",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Medvedev broke serve in the opening game of the second set, which is the last described event.\n\n1. Alcaraz won the first-set tie-break\n2. Next changeover: Medvedev changed his shoes\n3. Opening game of second set: Medvedev broke serve\n\n\nMedvedev breaking serve is the final temporal step.\n\n\nMedvedev broke serve",
+      "generated_index": 276
+    },
+    {
+      "question_id": "tennis_000487",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rune received a coaching violation",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rune received coaching violation",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune received a coaching violation in the first set before Rublev ultimately won that set.\n\n1. In the first set: Rune received a coaching violation\n2. End of first set: Rublev won the first set after saving set point\n3. In the second set: Rune broke serve twice before closing the match\n\n\nThe coaching violation happened during the first set, prior to Rublev winning it.\n\n\nRune received a coaching violation",
+      "generated_index": 277
+    },
+    {
+      "question_id": "tennis_000488",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic held serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic held serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text clearly states that before the rain delay, Djokovic held serve after saving two break points.\n\n1. Sinner broke serve in the fourth game\n2. Djokovic held serve after saving two break points\n3. Rain delay\n4. After delay: Sinner won the next three games\n\n\nThe event immediately preceding the rain delay on the timeline is Djokovic holding serve.\n\n\nDjokovic held serve",
+      "generated_index": 278
+    },
+    {
+      "question_id": "tennis_000489",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "He changed rackets",
+      "extracted_answer": "",
+      "normalized_gold_answer": "he changed rackets",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "After losing the tie-break, Alcaraz changed rackets during the changeover.\n\n1. Alcaraz lost the first set in a tie-break\n2. Changeover: He changed rackets\n3. Later: He broke Medvedev in the first game of the second set\n\n\nThe direct consequence after losing the set was changing rackets.\n\n\nHe changed rackets",
+      "generated_index": 279
+    },
+    {
+      "question_id": "tennis_000492",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Shelton hit a return winner",
+      "extracted_answer": "",
+      "normalized_gold_answer": "shelton hit return winner",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Shelton hit a return winner to reach break point, and De Minaur double-faulted on the next point.\n\n1. Shelton hit a return winner to reach break point\n2. Next point: De Minaur double-faulted\n3. After the double fault: Shelton celebrated the break\n\n\nThe point before the double fault was the return winner by Shelton.\n\n\nShelton hit a return winner",
+      "generated_index": 280
+    },
+    {
+      "question_id": "tennis_000497",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "18 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "18",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Alcaraz began serving at 7:10 p.m. and Medvedev broke him at 7:28 p.m. The difference is 18 minutes.\n\n1. 7:10 p.m.: Alcaraz began serving\n2. 7:28 p.m.: Medvedev broke him\n3. After the break: Play paused for crowd disturbance\n\n\nThe elapsed time from 7:10 p.m. to 7:28 p.m. is exactly 18 minutes.\n\n\n18 minutes",
+      "generated_index": 281
+    },
+    {
+      "question_id": "tennis_000499",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "53 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "53",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The set started at 4:05 p.m. and Rublev won the tie-break at 4:58 p.m. The total elapsed time is 53 minutes.\n\n1. 4:05 p.m.: Second set started\n2. 4:17 p.m.: Rune saved a break point\n3. 4:58 p.m.: Rublev won the tie-break\n\n\nCalculating the difference between 4:58 p.m. and 4:05 p.m. yields 53 minutes.\n\n\n53 minutes",
+      "generated_index": 282
+    },
+    {
+      "question_id": "tennis_000500",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "14 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "14",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context explicitly states that De Minaur broke back 14 minutes later (after Fritz broke serve).\n\n1. 25 minutes into play: Fritz broke serve\n2. 14 minutes later: De Minaur broke back\n3. After that: both players held serve until the tie-break\n\n\nThe timeline explicitly records the gap between the two breaks as 14 minutes.\n\n\n14 minutes",
+      "generated_index": 283
+    },
+    {
+      "question_id": "tennis_000502",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "7 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "7",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "De Minaur saved the first match point 2 minutes after it was reached, and Shelton earned another match point 5 minutes after that. Total time is 2 + 5 = 7 minutes.\n\n1. 2h 6m: Shelton reached first match point\n2. +2 minutes: De Minaur saved it\n3. +5 minutes: Shelton earned another match point\n\n\nThe total duration between the first and second match point is 7 minutes.\n\n\n7 minutes",
+      "generated_index": 284
+    },
+    {
+      "question_id": "tennis_000503",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context states that while the players were off court, the roof was closed.\n\n1. Changeover after seventh game: Rain began / Players went off court\n2. While players off court: Roof was closed\n3. Roof fully closed: Play resumed\n\n\nThe roof closing occurred simultaneously with the players being off court.\n\n\nYes",
+      "generated_index": 285
+    },
+    {
+      "question_id": "tennis_000506",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Rune argued with the umpire while Rublev was sitting down during the changeover, not serving. Rublev only served when the changeover ended.\n\n1. Rune lost serve\n2. Changeover: Rune argued with umpire / Rublev was sitting down\n3. Changeover ended\n4. Rublev served for the set\n\n\nRublev was seated, not serving, during the argument.\n\n\nNo",
+      "generated_index": 286
+    },
+    {
+      "question_id": "tennis_000653",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Ruud hit two consecutive aces",
+      "extracted_answer": "",
+      "normalized_gold_answer": "ruud hit two consecutive aces",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context describes the points leading up to the opponent's backhand error.\n\n1. Ruud faced three break points at 0-40\n2. Ruud hit two consecutive aces (score 30-40)\n3. Opponent hit a backhand into the net (score deuce)\n4. Ruud won the game\n\n\nThe event right before the opponent's backhand into the net was Ruud hitting two consecutive aces.\n\n\nRuud hit two consecutive aces",
+      "generated_index": 385
+    },
+    {
+      "question_id": "tennis_000654",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal requested the physio",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal requested physio",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text describes the events leading to the physio's treatment.\n\n1. Nadal tweaked his abdominal muscle\n2. Nadal lost the game\n3. Nadal requested the physio at the changeover\n4. The physio applied tape to his midsection\n5. Nadal returned to the baseline\n\n\nAccording to the timeline, the event immediately preceding the application of tape was Nadal requesting the physio.\n\n\nNadal requested the physio",
+      "generated_index": 386
+    },
+    {
+      "question_id": "tennis_000655",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "The crowd gave a roaring ovation",
+      "extracted_answer": "",
+      "normalized_gold_answer": "crowd gave roaring ovation",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text states the direct reaction to Fritz hitting the winner.\n\n1. Fritz hit a clean winner to clinch the second set\n2. The crowd gave a roaring ovation\n3. Fritz walked to his chair and sat down\n\n\nThe event immediately following the clean winner is the crowd giving a roaring ovation.\n\n\nThe crowd gave a roaring ovation",
+      "generated_index": 387
+    },
+    {
+      "question_id": "tennis_000657",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "45 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "45",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The start time is 2:00 PM and the rain began at 2:45 PM. The duration between these two times is calculated by subtracting 2:00 from 2:45.\n\n1. 2:00 PM: The match commenced\n2. 2:45 PM: Heavy rain began to fall\n\n\nThe difference between 2:00 PM and 2:45 PM is exactly 45 minutes.\n\n\n45 minutes",
+      "generated_index": 388
+    },
+    {
+      "question_id": "tennis_000658",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "105 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "105",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The total playing time before the bathroom break is the sum of the durations of the first and second sets.\n\n1. First set played (40 minutes)\n2. Second set played (65 minutes)\n3. Bathroom break started\n\n\nAdding the 40 minutes from the first set and 65 minutes from the second set equals 105 minutes of tennis played before the break.\n\n\n105 minutes",
+      "generated_index": 389
+    },
+    {
+      "question_id": "tennis_000659",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "35 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "35",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The suspension happened at 7:15 PM and lights were restored at 7:50 PM. The duration is the difference between these times.\n\n1. 7:15 PM: Lighting failure caused suspension\n2. 7:50 PM: Lights were restored\n\n\nThe time elapsed from 7:15 PM to 7:50 PM is 35 minutes.\n\n\n35 minutes",
+      "generated_index": 390
+    },
+    {
+      "question_id": "tennis_000661",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "30 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "30",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explicitly provides the duration of the second set.\n\n1. First set lasted 75 minutes\n2. Djokovic took a 4-minute break\n3. Second set lasted 30 minutes\n\n\nThe context directly states that the second set concluded in just 30 minutes.\n\n\n30 minutes",
+      "generated_index": 391
+    },
+    {
+      "question_id": "tennis_000662",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "40 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "40",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The first break was at 15 minutes. The second break occurred 25 minutes after the first. Total time is the sum of these durations.\n\n1. 15 minutes: First break of serve\n2. +25 minutes (40 minutes): Second break of serve\n\n\nAdding 15 minutes and 25 minutes results in 40 minutes into the match for the second break.\n\n\n40 minutes",
+      "generated_index": 392
+    },
+    {
+      "question_id": "tennis_000663",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text describes what happened concurrently with the players being in the locker room.\n\n1. Players left the court for the locker room\n2. Stadium roof was closed (while players were in locker room)\n3. Play resumed\n\n\nThe context explicitly states that officials ordered the roof to be closed while the players were in the locker room.\n\n\nYes",
+      "generated_index": 393
+    },
+    {
+      "question_id": "tennis_000667",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context describes the players' experience during the shadow's movement.\n\n1. Sixth game: Shadow began to creep across baseline\n2. Shadow was shifting / Players struggled with visibility (simultaneous)\n3. Eighth game: Entire court in shade\n\n\nThe text explicitly states that both players struggled with visibility while the shadow was shifting.\n\n\nYes",
+      "generated_index": 394
+    },
+    {
+      "question_id": "tennis_000670",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text outlines Djokovic's opponents in each round.\n\n1. Quarterfinal: Djokovic played De Minaur\n2. Semifinal: Djokovic played Nadal\n3. Final: Djokovic played Tsitsipas\n\n\nDjokovic played Nadal in the semifinal, while De Minaur was his quarterfinal opponent.\n\n\nNo",
+      "generated_index": 395
+    },
+    {
+      "question_id": "tennis_000671",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The sequence of tournament rounds shows when Alcaraz played each opponent.\n\n1. Quarterfinal: Alcaraz played Rune\n2. Semifinal: Alcaraz played Ruud\n3. Final: Alcaraz progressed to final stage\n\n\nThe quarterfinal match against Rune occurred before the semifinal match against Ruud.\n\n\nYes",
+      "generated_index": 396
+    },
+    {
+      "question_id": "tennis_000672",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Shelton",
+      "extracted_answer": "",
+      "normalized_gold_answer": "shelton",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context describes Medvedev's progression and his defeat in the semifinal.\n\n1. Quarterfinal: Medvedev defeated Fritz\n2. Semifinal: Shelton defeated Medvedev\n3. Final: Shelton lost the match\n\n\nThe text explicitly states Medvedev suffered a defeat at the hands of Shelton in the semifinal.\n\n\nShelton",
+      "generated_index": 397
+    },
+    {
+      "question_id": "tennis_000673",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text establishes the order of the timeout and the break of serve.\n\n1. Sinner held serve to open the match\n2. Medvedev called a medical timeout\n3. Sinner broke serve immediately after the timeout\n\n\nThe timeline confirms the timeout was called prior to Sinner breaking serve.\n\n\nYes",
+      "generated_index": 398
+    },
+    {
+      "question_id": "tennis_000674",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Alcaraz lost the first set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "alcaraz lost first set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The events are ordered by sets. The first set precedes the second set.\n\n1. First set: Alcaraz lost 6-2\n2. Second set: Alcaraz saved three break points\n3. Second set: Alcaraz won 7-5\n\n\nLosing the first set happened before saving break points in the second set.\n\n\nAlcaraz lost the first set",
+      "generated_index": 399
+    },
+    {
+      "question_id": "tennis_000675",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic saved the break point",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic saved break point",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explains the sequence of events surrounding the roof closure.\n\n1. Djokovic faced a break point at 3-3\n2. Roof was closed during the changeover\n3. Djokovic saved the break point\n4. Djokovic held serve\n\n\nThe event immediately following the roof closure was Djokovic saving the break point.\n\n\nDjokovic saved the break point",
+      "generated_index": 400
+    },
+    {
+      "question_id": "tennis_000676",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zverev double-faulted twice",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zverev double faulted twice",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text describes the action that caused Zverev to face break point.\n\n1. Zverev served for the match at 5-4\n2. Zverev double-faulted twice\n3. Zverev faced break point\n4. Crowd interruption caused a delay\n\n\nThe action leading directly to facing break point was Zverev double-faulting twice.\n\n\nZverev double-faulted twice",
+      "generated_index": 401
+    },
+    {
+      "question_id": "tennis_000677",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "3 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "3",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The medical timeout started at the beginning of the second set and lasted 3 minutes, after which Rublev broke serve.\n\n1. Start of second set: Rublev took a medical timeout\n2. 3 minutes later: Timeout ended\n3. Rublev broke Rune's serve\n\n\nThe duration from the start of the set to the break is exactly the length of the timeout, which is 3 minutes.\n\n\n3 minutes",
+      "generated_index": 402
+    },
+    {
+      "question_id": "tennis_000678",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text provides a clear chronological sequence of the critical points.\n\n1. Fritz saved a match point at 4-5\n2. Tsitsipas double-faulted on his match point (two points later)\n3. Fritz won the next two points\n\n\nThe timeline confirms Fritz saved a match point prior to Tsitsipas's double fault.\n\n\nYes",
+      "generated_index": 403
+    },
+    {
+      "question_id": "tennis_000679",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal won the second set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal won second set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The events are ordered by sets. The second set concludes after the first set.\n\n1. First set: Nadal dropped the set\n2. Second set (2-2): Nadal called a coaching violation\n3. Second set end: Nadal won the set\n\n\nWinning the second set is the final event in the chronological sequence compared to dropping the first set.\n\n\nNadal won the second set",
+      "generated_index": 404
+    },
+    {
+      "question_id": "tennis_000680",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev called a medical timeout",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev called medical timeout",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text lists the sequence of events from 3-3 to 4-4.\n\n1. 3-3: Medvedev broke serve\n2. Next game: Sinner broke back\n3. 4-4 changeover: Medvedev called a medical timeout\n\n\nFollowing Sinner breaking back, the next event described is Medvedev calling a medical timeout.\n\n\nMedvedev called a medical timeout",
+      "generated_index": 405
+    },
+    {
+      "question_id": "tennis_000681",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The break points saved by Alcaraz occurred during the 4-4 game, prior to the tie-break.\n\n1. Game at 4-4: Alcaraz saved a break point with an ace\n2. Same game: Alcaraz saved two more break points\n3. Same game: Alcaraz held serve\n4. Later: The set went to a tie-break\n\n\nAll mentioned break points were saved during the 4-4 game, not during the subsequent tie-break.\n\n\nNo",
+      "generated_index": 406
+    },
+    {
+      "question_id": "tennis_000682",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Shelton broke back",
+      "extracted_answer": "",
+      "normalized_gold_answer": "shelton broke back",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The scoreline progression dictates the order of events.\n\n1. Score 5-3: De Minaur led by a break\n2. Score 5-5: Shelton broke back\n3. Score 7-5: De Minaur broke again and served out the set\n\n\nShelton breaking back at 5-5 happened before De Minaur served out the set at 7-5.\n\n\nShelton broke back",
+      "generated_index": 407
+    },
+    {
+      "question_id": "tennis_000683",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "The singles semifinal started",
+      "extracted_answer": "",
+      "normalized_gold_answer": "singles semifinal started",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text clearly orders the events following the quarterfinal match.\n\n1. Rublev lost the quarterfinal match\n2. Rublev withdrew from the doubles tournament\n3. The singles semifinal started two hours later\n\n\nThe event listed chronologically after his withdrawal from doubles is the start of the singles semifinal.\n\n\nThe singles semifinal started",
+      "generated_index": 408
+    },
+    {
+      "question_id": "tennis_000684",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "30 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "30",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text explicitly states the time elapsed from the start of the match to the rain delay.\n\n1. Match started\n2. 30 minutes later: A rain delay began\n3. 45 minutes of delay elapsed\n\n\nThe context directly provides the 30-minute duration between the match start and the rain delay.\n\n\n30 minutes",
+      "generated_index": 409
+    },
+    {
+      "question_id": "tennis_000685",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text details the sequence of the points and umpire interventions in the final game.\n\n1. Chair umpire gave a time violation\n2. Djokovic double-faulted\n3. Djokovic faced break point\n4. Djokovic saved break point\n\n\nThe time violation occurred before the double fault that resulted in Djokovic facing a break point.\n\n\nYes",
+      "generated_index": 410
+    },
+    {
+      "question_id": "tennis_000687",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rune called a medical timeout",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rune called medical timeout",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context specifies an event that took place simultaneously with the tie-break.\n\n1. 5-6: Tsitsipas saved two set points\n2. Tie-break: Tsitsipas won 8-6 / Rune called a medical timeout (simultaneous)\n\n\nThe text explicitly states that Rune called a medical timeout during the tie-break.\n\n\nRune called a medical timeout",
+      "generated_index": 411
+    },
+    {
+      "question_id": "tennis_000688",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Shelton retired",
+      "extracted_answer": "",
+      "normalized_gold_answer": "shelton retired",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The events follow the progression of the match from the first set to the third set.\n\n1. Shelton lost the first set\n2. Shelton won the second set\n3. Shelton retired before the third set\n\n\nShelton's retirement is the final chronological event, occurring after he won the second set.\n\n\nShelton retired",
+      "generated_index": 412
+    },
+    {
+      "question_id": "tennis_000689",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Federer broke back early in the set, while Nadal's timeout occurred at 3-3.\n\n1. Opening game: Nadal broke serve\n2. Two games later: Federer broke back\n3. 3-3: Nadal took a medical timeout\n4. 4-4: Nadal broke serve again\n\n\nFederer's break back happened before the 3-3 medical timeout, not after.\n\n\nNo",
+      "generated_index": 413
+    },
+    {
+      "question_id": "tennis_000691",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev was broken",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev was broken",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The sequence in the second set explains how the score progressed from 3-3.\n\n1. 3-3: Medvedev was broken\n2. Immediately after: Medvedev broke back\n3. 7-5: Medvedev held serve to win the set\n\n\nBeing broken is the precipitating event that precedes Medvedev breaking back.\n\n\nMedvedev was broken",
+      "generated_index": 414
+    },
+    {
+      "question_id": "tennis_000694",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic withdrew due to a hamstring injury",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic withdrew due to hamstring injury",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context describes an event that took place in the two-day gap between the matches.\n\n1. Djokovic won the semifinal\n2. Djokovic withdrew due to a hamstring injury\n3. The final started\n\n\nThe withdrawal is strictly ordered after the semifinal and before the final.\n\n\nDjokovic withdrew due to a hamstring injury",
+      "generated_index": 415
+    },
+    {
+      "question_id": "tennis_000695",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The events are described game by game, moving from 4-4 to the end of the set.\n\n1. 4-4 game: Alcaraz saved three break points\n2. 4-4 game: Alcaraz held serve\n3. Next game: Alcaraz broke serve\n\n\nAlcaraz saved the break points at 4-4, which was before he broke serve in the next game.\n\n\nNo",
+      "generated_index": 416
+    },
+    {
+      "question_id": "tennis_000696",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Shelton received a coaching violation",
+      "extracted_answer": "",
+      "normalized_gold_answer": "shelton received coaching violation",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The score progression in the final set dictates the sequence of events.\n\n1. 5-2: Shelton led\n2. 5-5: De Minaur tied the set\n3. Shelton called/received a coaching violation\n4. Shelton lost the match\n\n\nDe Minaur tying the set at 5-5 occurred prior to the coaching violation.\n\n\nShelton received a coaching violation",
+      "generated_index": 417
+    },
+    {
+      "question_id": "tennis_000697",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "7 minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "7",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The start of the second set was delayed by a bathroom break right after the first set.\n\n1. Sinner won the first set\n2. 7-minute bathroom break occurred\n3. Second set began\n\n\nThe duration of the bathroom break explicitly marks the 7 minutes between the end of the first set and the start of the second.\n\n\n7 minutes",
+      "generated_index": 418
+    },
+    {
+      "question_id": "tennis_000698",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Tsitsipas double-faulted to give the break back",
+      "extracted_answer": "",
+      "normalized_gold_answer": "tsitsipas double faulted to give break back",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The text lists consecutive game outcomes in the third set.\n\n1. Tsitsipas broke serve at 1-1\n2. Tsitsipas double-faulted to give the break back immediately\n3. Changeover: Crowd interrupted play\n\n\nThe immediate next event after breaking serve was Tsitsipas double-faulting to give the break back.\n\n\nTsitsipas double-faulted to give the break back",
+      "generated_index": 419
+    },
+    {
+      "question_id": "tennis_000699",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The time-out occurred in the second set, which naturally follows the first set.\n\n1. First set: Nadal lost 7-5\n2. Second set 0-1: Nadal took an injury time-out\n3. Second set: Nadal won 6-2\n\n\nNadal lost the first set before taking the injury time-out in the second set.\n\n\nNo",
+      "generated_index": 420
+    },
+    {
+      "question_id": "tennis_000700",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zverev broke Fritz",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zverev broke fritz",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The score progression from 4-4 to 5-4 indicates the chronological order.\n\n1. 4-4: Zverev broke Fritz\n2. 5-4: Zverev served for the set\n3. Tie-break: Fritz won 7-5\n\n\nBreaking Fritz at 4-4 logically and chronologically precedes serving for the set at 5-4.\n\n\nZverev broke Fritz",
+      "generated_index": 421
+    },
+    {
+      "question_id": "tennis_000701",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Beating Alcaraz in the semifinal is what allowed Medvedev to reach the final where he became champion.\n\n1. Semifinal: Medvedev beat Alcaraz\n2. Final: Medvedev lost the first set\n3. Final: Medvedev won the next two sets to become champion\n\n\nMedvedev beat Alcaraz before becoming the champion.\n\n\nNo",
+      "generated_index": 422
+    },
+    {
+      "question_id": "tennis_000704",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Facing and saving break points are part of the process of a game where a player holds serve.\n\n1. 2-2 game: Alcaraz faced break points\n2. Same game: Alcaraz saved break points\n3. End of same game: Alcaraz held serve\n\n\nThe break points were faced and saved during the exact same game in which he held serve, making the events overlapping.\n\n\nYes",
+      "generated_index": 423
+    },
+    {
+      "question_id": "tennis_000705",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic won the second set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic won second set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The set chronology places the second set before the third set.\n\n1. Djokovic won the second set 6-4\n2. Third set, 4-5: Djokovic saved a match point\n3. Third set, 7-5: Djokovic won the match\n\n\nWinning the second set happened before the events of the third set, including saving the match point.\n\n\nDjokovic won the second set",
+      "generated_index": 424
+    },
+    {
+      "question_id": "tennis_000706",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "A rain delay interrupted play",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rain delay interrupted play",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The context describes the interruption between Zverev holding for 5-3 and serving out the set.\n\n1. Zverev held serve to lead 5-3\n2. A rain delay interrupted play\n3. Zverev served out the set\n\n\nThe rain delay occurred immediately after Zverev held serve and before he served for the set.\n\n\nA rain delay interrupted play",
+      "generated_index": 425
+    },
+    {
+      "question_id": "tennis_000708",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "The mixed doubles final took place",
+      "extracted_answer": "",
+      "normalized_gold_answer": "mixed doubles final took place",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The timeline of events after the quarterfinal dictates what followed the withdrawal.\n\n1. Shelton lost the quarterfinal\n2. Shelton withdrew from the mixed doubles event\n3. The mixed doubles final took place three hours later\n\n\nThe event mentioned right after Shelton's withdrawal is the mixed doubles final taking place.\n\n\nThe mixed doubles final took place",
+      "generated_index": 426
+    },
+    {
+      "question_id": "tennis_000714",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rune saved two break points",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rune saved two break points",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "The progression of events at 4-4 follows Rublev breaking back.\n\n1. 3-3: Rune broke serve\n2. 4-4: Rublev broke back\n3. 4-4: Rune saved two break points\n4. Rune held serve\n\n\nDirectly after Rublev broke back to make it 4-4, Rune saved two break points.\n\n\nRune saved two break points",
+      "generated_index": 427
+    },
+    {
+      "question_id": "tennis_000871",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Federer lost the quarterfinal",
+      "extracted_answer": "",
+      "normalized_gold_answer": "federer lost quarterfinal",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Federer won his first-round match on Monday.\n2. Federer beat De Minaur in the second round on Wednesday.\n3. Federer lost to Nadal in the quarterfinal.\n\n\nFederer losing the quarterfinal is the chronologically last event listed.\n\n\nFederer lost the quarterfinal",
+      "generated_index": 526
+    },
+    {
+      "question_id": "tennis_000872",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Medvedev beat Shelton in the fourth round.\n2. Medvedev defeated Fritz in the quarterfinal.\n3. Medvedev lost to Djokovic in the semifinal.\n\n\nWinning the quarterfinal happened before losing the semifinal.\n\n\nYes",
+      "generated_index": 527
+    },
+    {
+      "question_id": "tennis_000873",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner held serve to open the match.\n2. Medvedev broke Sinner's serve in the fourth game.\n3. Sinner broke back immediately in the following game.\n\n\nMedvedev breaking serve occurred in the fourth game, which is before Sinner breaking back in the following game.\n\n\nYes",
+      "generated_index": 528
+    },
+    {
+      "question_id": "tennis_000874",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Alcaraz won the first set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "alcaraz won first set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Alcaraz won the first set 7-5.\n2. Djokovic called a medical timeout during the changeover after the first set.\n3. Djokovic won the second set 6-3.\n\n\nAlcaraz winning the first set happened before the changeover timeout.\n\n\nAlcaraz won the first set",
+      "generated_index": 529
+    },
+    {
+      "question_id": "tennis_000876",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rublev smashed his racquet and received a code violation",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rublev smashed his racquet and received code violation",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Rublev saved three set points in the tenth game of the second set.\n2. Rublev lost the tie-break 7-3.\n3. Rublev smashed his racquet and received a code violation.\n\n\nSmashing the racquet and receiving a code violation occurred explicitly after the tie-break.\n\n\nRublev smashed his racquet and received a code violation",
+      "generated_index": 530
+    },
+    {
+      "question_id": "tennis_000878",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Nadal faced a break point at 3-3 in the final set.\n2. Nadal saved it with an ace.\n3. Nadal broke serve two games later.\n4. Nadal served out the match.\n\n\nBreaking serve is the last event among the choices provided.\n\n\nNadal broke serve",
+      "generated_index": 531
+    },
+    {
+      "question_id": "tennis_000879",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Tsitsipas won the quarterfinal against Rune.\n2. Tsitsipas lost the first set of the semifinal to De Minaur.\n3. Tsitsipas retired due to a shoulder injury.\n\n\nTsitsipas retired in the semifinal and never reached the final.\n\n\nNo",
+      "generated_index": 532
+    },
+    {
+      "question_id": "tennis_000880",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Sinner held serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "sinner held serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Ruud double-faulted on break point at 2-2 in the first set.\n2. Sinner converted the break.\n3. Sinner held serve.\n4. Ruud received a coaching violation after the changeover.\n\n\nSinner holding serve happened immediately before the changeover and violation.\n\n\nSinner held serve",
+      "generated_index": 533
+    },
+    {
+      "question_id": "tennis_000883",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Alcaraz broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "alcaraz broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Alcaraz broke serve at 5-4 in the second set.\n2. Zverev called for a physio before the third set started.\n3. Zverev received a three-minute treatment.\n4. Zverev won the third set 6-3.\n\n\nBreaking serve in the second set happened before the physio was called before the third set.\n\n\nAlcaraz broke serve",
+      "generated_index": 534
+    },
+    {
+      "question_id": "tennis_000884",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Djokovic saved the break point",
+      "extracted_answer": "",
+      "normalized_gold_answer": "djokovic saved break point",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Djokovic served for the match at 5-4 in the third set.\n2. Djokovic double-faulted twice to face break point.\n3. Djokovic saved the break point.\n4. Djokovic won the match on his second match point.\n\n\nSaving the break point is the explicitly stated event following facing it.\n\n\nDjokovic saved the break point",
+      "generated_index": 535
+    },
+    {
+      "question_id": "tennis_000885",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. The warm-up began.\n2. A fan ran onto the court, interrupting the warm-up.\n3. The fan was escorted off after two minutes.\n4. The players resumed warm-up for five more minutes.\n\n\nThe interruption and escorting off happened within the timeline of the warm-up phase.\n\n\nYes",
+      "generated_index": 536
+    },
+    {
+      "question_id": "tennis_000886",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner beat Rublev in the semifinal.\n2. Sinner played the final, losing the first set to Medvedev.\n3. Sinner won the next two sets to claim the title.\n\n\nThe semifinal was completed before the final began.\n\n\nNo",
+      "generated_index": 537
+    },
+    {
+      "question_id": "tennis_000888",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal broke back",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal broke back",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Federer saved a break point at 2-2 in the first set.\n2. Federer broke serve two games later.\n3. Nadal broke back immediately in the following game.\n\n\nNadal breaking back is the chronologically last event listed.\n\n\nNadal broke back",
+      "generated_index": 538
+    },
+    {
+      "question_id": "tennis_000889",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "De Minaur called a medical timeout",
+      "extracted_answer": "",
+      "normalized_gold_answer": "de minaur called medical timeout",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. De Minaur lost the first set 6-3.\n2. De Minaur called a medical timeout at the start of the second set.\n3. De Minaur won the second set 6-4.\n\n\nCalling a medical timeout happened at the start of the second set, before he won it.\n\n\nDe Minaur called a medical timeout",
+      "generated_index": 539
+    },
+    {
+      "question_id": "tennis_000890",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Two minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "two minutes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Zverev held serve at 3-3 in the final set.\n2. Two minutes passed.\n3. A drone flew over the court causing a delay.\n4. Zverev broke serve.\n\n\nThe context explicitly states the delay happened two minutes later.\n\n\nTwo minutes",
+      "generated_index": 540
+    },
+    {
+      "question_id": "tennis_000891",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Murray won the first set in a tie-break.\n2. The second set began.\n3. A cat ran onto the court during the second set.\n4. Play was stopped for one minute.\n5. Murray lost the second set 6-2.\n\n\nThe text explicitly states the cat interruption happened during the second set.\n\n\nYes",
+      "generated_index": 541
+    },
+    {
+      "question_id": "tennis_000892",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner defeated Alcaraz in the quarterfinal.\n2. Sinner lost to Djokovic in the semifinal.\n3. Djokovic withdrew from the final.\n\n\nSinner was eliminated in the semifinal, meaning he did not reach the final at all.\n\n\nNo",
+      "generated_index": 542
+    },
+    {
+      "question_id": "tennis_000893",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Rublev smashed his racquet",
+      "extracted_answer": "",
+      "normalized_gold_answer": "rublev smashed his racquet",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Rublev smashed his racquet after losing the first set.\n2. The umpire gave him a warning.\n3. Rublev won the second set.\n4. Rublev called for a physio during the changeover.\n\n\nSmashing the racquet happened after the first set, before calling a physio after the second set.\n\n\nRublev smashed his racquet",
+      "generated_index": 543
+    },
+    {
+      "question_id": "tennis_000895",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Two points",
+      "extracted_answer": "",
+      "normalized_gold_answer": "two points",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Alcaraz faced a break point at 5-5 in the second set.\n2. Alcaraz saved it with a drop shot.\n3. Two points passed.\n4. Alcaraz won the set with a backhand winner.\n\n\nThe text explicitly states he won the set two points later.\n\n\nTwo points",
+      "generated_index": 544
+    },
+    {
+      "question_id": "tennis_000896",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Medvedev lost his serve at 2-2 in the first set.\n2. Medvedev argued with the umpire during the changeover.\n3. Medvedev broke back immediately in the next game.\n\n\nBreaking back occurred in the game following the changeover argument.\n\n\nYes",
+      "generated_index": 545
+    },
+    {
+      "question_id": "tennis_000897",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Nadal lost the second set",
+      "extracted_answer": "",
+      "normalized_gold_answer": "nadal lost second set",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Nadal won the first set 6-2.\n2. Nadal called for a medical timeout at 1-1 in the second set.\n3. Nadal received a five-minute treatment.\n4. Nadal lost the second set 6-3.\n\n\nLosing the second set is the final event in the chronological order.\n\n\nNadal lost the second set",
+      "generated_index": 546
+    },
+    {
+      "question_id": "tennis_000898",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Fritz forced a fifth set by winning the tie-break",
+      "extracted_answer": "",
+      "normalized_gold_answer": "fritz forced fifth set by winning tie break",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Fritz saved three match points in the fourth set.\n2. Fritz forced a fifth set by winning the tie-break.\n3. Fritz retired at 3-3 in the fifth set.\n\n\nForcing the fifth set is the event that precedes his retirement in the fifth set.\n\n\nFritz forced a fifth set by winning the tie-break",
+      "generated_index": 547
+    },
+    {
+      "question_id": "tennis_000899",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Djokovic double-faulted on set point at 5-4.\n2. The set went to a tie-break.\n3. Djokovic lost the tie-break 7-4.\n4. Djokovic smashed his racquet.\n\n\nThe double fault happened at 5-4, triggering the events that led to the tie-break.\n\n\nYes",
+      "generated_index": 548
+    },
+    {
+      "question_id": "tennis_000900",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Rune won the semifinal against Shelton.\n2. The final was scheduled for the next day.\n3. Rune withdrew with a wrist injury during the warm-up for the final.\n\n\nRune withdrew during the warm-up and did not play the final.\n\n\nNo",
+      "generated_index": 549
+    },
+    {
+      "question_id": "tennis_000901",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zero minutes (immediately)",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zero minutes immediately",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner lost the first set 7-5.\n2. Sinner won the second set 6-3.\n3. Sinner led 4-1 in the third set.\n4. Rain stopped play immediately.\n\n\nThe text specifies rain stopped play when Sinner led 4-1, indicating zero minutes passed.\n\n\nZero minutes (immediately)",
+      "generated_index": 550
+    },
+    {
+      "question_id": "tennis_000902",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Alcaraz served an ace to hold at 3-3.\n2. The next game began.\n3. A line judge collapsed during the next game.\n4. Alcaraz broke serve to go up 5-4.\n\n\nThe collapse happened during the next game, which was not Alcaraz's service game.\n\n\nNo",
+      "generated_index": 551
+    },
+    {
+      "question_id": "tennis_000903",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zverev broke serve",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zverev broke serve",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Zverev received a code violation for racquet abuse at 2-2.\n2. Zverev broke serve two games later.\n3. Zverev held serve to take the set.\n\n\nBreaking serve happened before he held serve to win the set.\n\n\nZverev broke serve",
+      "generated_index": 552
+    },
+    {
+      "question_id": "tennis_000904",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev broke his opponent's serve to win the match",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev broke his opponents serve to win match",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Medvedev saved a break point at 3-4 in the final set.\n2. Medvedev held serve.\n3. The changeover occurred.\n4. Medvedev broke his opponent's serve to win the match.\n\n\nBreaking serve is the event that happened after the changeover following holding serve.\n\n\nMedvedev broke his opponent's serve to win the match",
+      "generated_index": 553
+    },
+    {
+      "question_id": "tennis_000906",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Three games",
+      "extracted_answer": "",
+      "normalized_gold_answer": "three games",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Shelton double-faulted on break point at 1-1.\n2. Shelton broke back immediately.\n3. Three games passed.\n4. Shelton saved a match point with an ace.\n\n\nThe text explicitly states three games later.\n\n\nThree games",
+      "generated_index": 554
+    },
+    {
+      "question_id": "tennis_000908",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "De Minaur retired",
+      "extracted_answer": "",
+      "normalized_gold_answer": "de minaur retired",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. De Minaur beat Fritz in the quarterfinal.\n2. De Minaur lost the first set to Sinner in the semifinal.\n3. De Minaur retired with a hamstring injury.\n\n\nRetiring is the final listed event in chronological order.\n\n\nDe Minaur retired",
+      "generated_index": 555
+    },
+    {
+      "question_id": "tennis_000911",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Alcaraz won the semifinal against Medvedev.\n2. Alcaraz played the final, losing the first set to Zverev.\n3. Alcaraz won the next two sets to become champion.\n\n\nThe final matches occur chronologically after the semifinal matches.\n\n\nYes",
+      "generated_index": 556
+    },
+    {
+      "question_id": "tennis_000912",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Four minutes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "four minutes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner lost the first set 7-5.\n2. Sinner called a medical timeout at 0-1 in the second set.\n3. The treatment lasted four minutes.\n4. Sinner won the second set 6-3.\n\n\nThe text explicitly mentions a four-minute treatment.\n\n\nFour minutes",
+      "generated_index": 557
+    },
+    {
+      "question_id": "tennis_000914",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Fritz smashed a racquet in frustration",
+      "extracted_answer": "",
+      "normalized_gold_answer": "fritz smashed racquet in frustration",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Fritz broke serve at 5-4 in the second set to win the set.\n2. Fritz smashed a racquet in frustration.\n3. The umpire gave him a warning before the third set.\n\n\nSmashing the racquet immediately followed breaking serve.\n\n\nFritz smashed a racquet in frustration",
+      "generated_index": 558
+    },
+    {
+      "question_id": "tennis_000915",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Medvedev saved a set point at 4-5 in the first set.\n2. Medvedev won the tie-break 7-3.\n3. Medvedev received a standing ovation.\n\n\nThe standing ovation happened after the tie-break, not before.\n\n\nNo",
+      "generated_index": 559
+    },
+    {
+      "question_id": "tennis_000916",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Zverev retired",
+      "extracted_answer": "",
+      "normalized_gold_answer": "zverev retired",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Zverev lost the first set 6-2.\n2. Zverev saved three set points and won the second set 7-6.\n3. Zverev retired at 2-2 in the third set.\n\n\nRetiring is the final listed event.\n\n\nZverev retired",
+      "generated_index": 560
+    },
+    {
+      "question_id": "tennis_000917",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Sinner refused to shake the umpire's hand",
+      "extracted_answer": "",
+      "normalized_gold_answer": "sinner refused to shake umpires hand",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner double-faulted on match point at 5-4 in the third set.\n2. The match continued to a tie-break which Sinner lost 8-6.\n3. Sinner refused to shake the umpire's hand after the match.\n\n\nRefusing to shake hands is the event succeeding the tie-break loss.\n\n\nSinner refused to shake the umpire's hand",
+      "generated_index": 561
+    },
+    {
+      "question_id": "tennis_000918",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Two games",
+      "extracted_answer": "",
+      "normalized_gold_answer": "two games",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Alcaraz hit a tweener lob winner at 3-3 in the second set.\n2. Two games passed.\n3. Alcaraz faced a break point.\n4. Alcaraz saved it with an ace and held serve.\n\n\nThe text states the break point was faced two games later.\n\n\nTwo games",
+      "generated_index": 562
+    },
+    {
+      "question_id": "tennis_000919",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Djokovic won the first set in a tie-break.\n2. The changeover occurred.\n3. A fan shouted an obscenity and was ejected during the changeover.\n4. Djokovic lost the second set 6-1.\n\n\nThe ejection is explicitly stated to have happened during the changeover.\n\n\nYes",
+      "generated_index": 563
+    },
+    {
+      "question_id": "tennis_000921",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Tsitsipas held serve for 4-2",
+      "extracted_answer": "",
+      "normalized_gold_answer": "tsitsipas held serve for 4 2",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Tsitsipas broke serve at 2-2 in the third set.\n2. Tsitsipas held serve for 4-2.\n3. Three games passed.\n4. Tsitsipas served for the match and double-faulted three times.\n\n\nHolding serve for 4-2 happened before serving for the match three games later.\n\n\nTsitsipas held serve for 4-2",
+      "generated_index": 564
+    },
+    {
+      "question_id": "tennis_000922",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Medvedev saved two break points",
+      "extracted_answer": "",
+      "normalized_gold_answer": "medvedev saved two break points",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Medvedev saved two break points at 1-1 in the third set.\n2. Medvedev lost his serve two games later.\n3. Medvedev broke back immediately.\n\n\nSaving the break points happened before losing his serve.\n\n\nMedvedev saved two break points",
+      "generated_index": 565
+    },
+    {
+      "question_id": "tennis_000923",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner broke Alcaraz's serve in the third game.\n2. It started raining heavily immediately after.\n3. Alcaraz called for the trainer later in the second set.\n\n\nThe break of serve happened immediately before the rain started.\n\n\nYes",
+      "generated_index": 566
+    },
+    {
+      "question_id": "tennis_000924",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Djokovic received a coaching warning early in the match.\n2. Djokovic won the first set.\n3. Djokovic took a bathroom break after winning the set.\n\n\nThe bathroom break happened after winning the first set, not before.\n\n\nNo",
+      "generated_index": 567
+    },
+    {
+      "question_id": "tennis_000926",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. The match was suspended due to darkness after the fourth set.\n2. Play resumed the next day.\n3. Nadal immediately broke Tsitsipas's serve.\n4. Nadal won the match twenty minutes later.\n\n\nThe suspension happened the day before the break of serve.\n\n\nYes",
+      "generated_index": 568
+    },
+    {
+      "question_id": "tennis_000928",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Federer lost the first set in exactly thirty minutes.\n2. Federer won the second set.\n3. The roof was closed due to a passing shower.\n\n\nThe first set was lost well before the roof closing event that happened after the second set.\n\n\nYes",
+      "generated_index": 569
+    },
+    {
+      "question_id": "tennis_000930",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Rublev lost the second set.\n2. Rublev violently threw his racket.\n3. Rublev received a point penalty immediately after the throw.\n4. Rublev broke Rune's serve in the opening game of the third set.\n\n\nBreaking serve happened in the third set, which was after the point penalty.\n\n\nNo",
+      "generated_index": 570
+    },
+    {
+      "question_id": "tennis_000931",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Shelton served three consecutive aces to open the match.\n2. Alcaraz won four straight games.\n3. Shelton rolled his ankle and retired.\n\n\nAlcaraz winning four straight games followed Shelton's aces.\n\n\nYes",
+      "generated_index": 571
+    },
+    {
+      "question_id": "tennis_000932",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Zverev hit a double fault to face a break point.\n2. Zverev saved it with a booming first serve.\n3. Zverev held his serve.\n4. Zverev complained to the umpire about excessive crowd noise.\n\n\nSaving the break point happened before complaining to the umpire.\n\n\nNo",
+      "generated_index": 572
+    },
+    {
+      "question_id": "tennis_000933",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "Yes",
+      "extracted_answer": "",
+      "normalized_gold_answer": "yes",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Djokovic saved three championship points in the second set tie-break.\n2. Djokovic won the second set.\n3. Opponent required a lengthy injury treatment before the third set.\n4. Djokovic won the final set 6-0.\n\n\nThe injury treatment occurred after the second set where Djokovic saved the championship points.\n\n\nYes",
+      "generated_index": 573
+    },
+    {
+      "question_id": "tennis_000934",
+      "errors": [
+        "missing <reasoning>",
+        "missing <timeline>",
+        "missing <reflection>",
+        "missing <answer>"
+      ],
+      "gold_answer": "No",
+      "extracted_answer": "",
+      "normalized_gold_answer": "no",
+      "normalized_extracted_answer": "",
+      "output_excerpt": "Concise reasoning over the explicit temporal context only.\n\n1. Sinner requested a new racket at 3-3 in the first set.\n2. Sinner broke Medvedev's serve in the next game.\n3. Medvedev immediately broke back in the following game.\n4. Medvedev won the tie-break.\n\n\nMedvedev broke back after Sinner requested a new racket.\n\n\nNo",
+      "generated_index": 574
+    }
+  ]
+}

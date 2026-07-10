@@ -1,0 +1,164 @@
+{
+  "adapter_dir": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\model\\tiser_tennis_full600_smoke\\adapter",
+  "answer_type_confusion": {
+    "duration_minutes": {
+      "duration_minutes": 27,
+      "number": 1,
+      "span": 1
+    },
+    "span": {
+      "number": 2,
+      "span": 77,
+      "yes_no": 12
+    },
+    "tournament_round": {
+      "tournament_round": 3
+    },
+    "yes_no": {
+      "yes_no": 101
+    }
+  },
+  "batch_size": 1,
+  "category_answer_type_confusion": {
+    "duration_minutes": {
+      "duration_minutes": {
+        "duration_minutes": 27,
+        "number": 1,
+        "span": 1
+      }
+    },
+    "immediate_before_after": {
+      "span": {
+        "span": 39
+      }
+    },
+    "other_temporal": {
+      "span": {
+        "number": 1,
+        "span": 1
+      },
+      "tournament_round": {
+        "tournament_round": 1
+      }
+    },
+    "overlap_while_during": {
+      "span": {
+        "span": 1
+      },
+      "yes_no": {
+        "yes_no": 22
+      }
+    },
+    "tennis_injury_or_medical": {
+      "span": {
+        "number": 1
+      }
+    },
+    "tournament_round_sequence": {
+      "span": {
+        "span": 1
+      },
+      "tournament_round": {
+        "tournament_round": 2
+      },
+      "yes_no": {
+        "yes_no": 1
+      }
+    },
+    "which_first_last": {
+      "span": {
+        "span": 35,
+        "yes_no": 12
+      }
+    },
+    "yes_no_before_after": {
+      "yes_no": {
+        "yes_no": 78
+      }
+    }
+  },
+  "condition": "tennis_only_full600_test224",
+  "limit": 224,
+  "malformed_examples": [],
+  "max_new_tokens": 768,
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "no_adapter": false,
+  "normalization": {
+    "function": "src.tennis.normalize.normalize_tennis_answer",
+    "notes": [
+      "lowercase with NFKC Unicode normalization",
+      "normalize curly apostrophes and dash variants",
+      "normalize No. 1 / no 1 / #1 / number 1 ranking answers to 1",
+      "normalize numeric minute/minutes durations to singular minute",
+      "normalize duration_minutes whole-answer numbers/minute units to bare numbers",
+      "remove punctuation and English articles, then collapse whitespace"
+    ]
+  },
+  "overall": {
+    "em": 0.4642857142857143,
+    "f1": 0.5164143767938412,
+    "malformed_count": 0,
+    "malformed_rate": 0.0,
+    "n": 224
+  },
+  "per_category": {
+    "duration_minutes": {
+      "em": 0.3793103448275862,
+      "f1": 0.3793103448275862,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 29
+    },
+    "immediate_before_after": {
+      "em": 0.23076923076923078,
+      "f1": 0.4410214429445199,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 39
+    },
+    "other_temporal": {
+      "em": 0.6666666666666666,
+      "f1": 0.8888888888888888,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 3
+    },
+    "overlap_while_during": {
+      "em": 0.7391304347826086,
+      "f1": 0.7391304347826086,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 23
+    },
+    "tennis_injury_or_medical": {
+      "em": 0.0,
+      "f1": 0.0,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 1
+    },
+    "tournament_round_sequence": {
+      "em": 0.75,
+      "f1": 0.8214285714285714,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 4
+    },
+    "which_first_last": {
+      "em": 0.46808510638297873,
+      "f1": 0.5218000675447484,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 47
+    },
+    "yes_no_before_after": {
+      "em": 0.5128205128205128,
+      "f1": 0.5128205128205128,
+      "malformed_count": 0,
+      "malformed_rate": 0.0,
+      "n": 78
+    }
+  },
+  "prompt_style": "tiser",
+  "test_file": "C:\\Users\\aless\\OneDrive\\Desktop\\dnlp\\tiser_temporal_reasoning_extension\\tiser_temporal_reasoning_extension\\data\\tennis\\tennis_test.json"
+}

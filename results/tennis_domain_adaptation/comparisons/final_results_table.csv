@@ -1,0 +1,5 @@
+condition,prompt_style,tennis_em,tennis_f1,tennis_malformed_rate,original_tiser_em,original_tiser_f1,forgetting_delta_em,notes
+base_qwen,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,missing tennis_test metrics; not scheduled for original TISER forgetting eval
+original_tiser,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,missing tennis_test metrics; missing original TISER sample metrics
+tennis_only,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,missing tennis_test metrics; missing original TISER sample metrics
+mixed_replay,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,MISSING,missing tennis_test metrics; missing original TISER sample metrics

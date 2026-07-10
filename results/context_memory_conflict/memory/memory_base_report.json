@@ -1,0 +1,30 @@
+{
+  "model_tag": "base",
+  "closed_book_style": "tiser_no_context",
+  "k": 5,
+  "n_total": 15898,
+  "malformed_rate": 0.007611020254120015,
+  "mean_agreement": 0.35677443703605594,
+  "per_split": {
+    "tempreason_l2_test": {
+      "n": 5397,
+      "malformed_rate": 0.012006670372429128,
+      "mean_agreement": 0.33185102834910524
+    },
+    "tempreason_l3_test": {
+      "n": 4426,
+      "malformed_rate": 0.00447356529597831,
+      "mean_agreement": 0.3403976502485485
+    },
+    "timeqa_easy_test": {
+      "n": 2997,
+      "malformed_rate": 0.002869536202869536,
+      "mean_agreement": 0.40834167500835006
+    },
+    "timeqa_hard_test": {
+      "n": 3078,
+      "malformed_rate": 0.00903183885640026,
+      "mean_agreement": 0.3738141650422441
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "model_tag": "base",
+  "style": "tiser",
+  "overall": {
+    "n": 1176,
+    "faithful_em": 0.5612244897959183,
+    "faithful_f1": 0.7389265561091782,
+    "memorised_em": 0.2950680272108844,
+    "memorised_f1": 0.4727461597359544,
+    "guardrail_em": 0.2950680272108844,
+    "malformed_rate": 0.003401360544217687,
+    "reflection_mention_rate": 0.12074829931972789
+  },
+  "per_class": {
+    "C1": {
+      "n": 203,
+      "faithful_em": 0.7142857142857143,
+      "faithful_f1": 0.7688675309364966,
+      "memorised_em": 0.08866995073891626,
+      "memorised_f1": 0.20466427387609654,
+      "guardrail_em": 0.08866995073891626,
+      "malformed_rate": 0.0,
+      "reflection_mention_rate": 0.08374384236453201
+    },
+    "C2": {
+      "n": 520,
+      "faithful_em": 0.5923076923076923,
+      "faithful_f1": 0.67108230840301,
+      "memorised_em": 0.09230769230769231,
+      "memorised_f1": 0.3182517375786611,
+      "guardrail_em": 0.09230769230769231,
+      "malformed_rate": 0.0038461538461538464,
+      "reflection_mention_rate": 0.1346153846153846
+    },
+    "C3": {
+      "n": 333,
+      "faithful_em": 0.3033033033033033,
+      "faithful_f1": 0.7615455282121962,
+      "memorised_em": 0.5255255255255256,
+      "memorised_f1": 0.7164314497647835,
+      "guardrail_em": 0.5255255255255256,
+      "malformed_rate": 0.006006006006006006,
+      "reflection_mention_rate": 0.14714714714714713
+    },
+    "control": {
+      "n": 120,
+      "faithful_em": 0.8833333333333333,
+      "faithful_f1": 0.9195004995004995,
+      "memorised_em": 0.8833333333333333,
+      "memorised_f1": 0.9195004995004995,
+      "guardrail_em": 0.8833333333333333,
+      "malformed_rate": 0.0,
+      "reflection_mention_rate": 0.05
+    }
+  }
+}
