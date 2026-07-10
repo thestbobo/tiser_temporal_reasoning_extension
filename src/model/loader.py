@@ -127,20 +127,3 @@ def load_base_for_inference(cfg) -> tuple[PreTrainedModel, PreTrainedTokenizer]:
     model.eval()
     _clear_sampling_defaults(model)
     return model, tokenizer
-
-
-def load_base_for_inference(cfg) -> tuple[PreTrainedModel, PreTrainedTokenizer]:
-    tokenizer = _load_tokenizer(cfg.model.name)
-    tokenizer.padding_side = "left"  # left-pad for batched generation
-
-    model = _load_base(cfg)
-    model.eval()
-
-    # Match the adapter inference path: greedy decoding should not emit warnings
-    # from model-shipped sampling defaults.
-    gen_cfg = model.generation_config
-    gen_cfg.do_sample = False
-    gen_cfg.temperature = None
-    gen_cfg.top_p = None
-    gen_cfg.top_k = None
-    return model, tokenizer

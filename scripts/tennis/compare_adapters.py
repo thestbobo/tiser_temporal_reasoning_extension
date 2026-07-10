@@ -6,7 +6,6 @@ import argparse
 import csv
 import datetime as dt
 import json
-import sys
 from pathlib import Path
 from typing import Any
 

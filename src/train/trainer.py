@@ -50,7 +50,7 @@ def build_trainer(cfg, model, tokenizer, train_ds) -> SFTTrainer:
         "model": model,
         "args": _sft_config(cfg),
         "train_dataset": train_ds,
-        "tokenizer": tokenizer,
+        "processing_class": tokenizer,
         "data_collator": collator,
     }
     # If training starts from an existing PEFT adapter, it is already attached
