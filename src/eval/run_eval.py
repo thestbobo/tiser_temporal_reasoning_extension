@@ -15,7 +15,7 @@ def _default_adapter_dir(cfg) -> str:
 
 
 def _build_generate(cfg, adapter_dir: str):
-    """Return a greedy `generate(prompts) -> list[str]` for the configured engine.
+    """Return a greedy generate(prompts) -> list[str] for the configured engine.
 
     `eval.engine` selects the backend; it defaults to 'hf' so the frozen-baseline
     reproduction stays byte-identical. 'vllm' reuses the validated conflict-pipeline

@@ -1,17 +1,17 @@
-"""M10 (analysis) — does memory confidence drive conflict-raising in <reflection>?
+"""M10 (analysis): does memory confidence drive conflict-raising in <reflection>?
 
 Question: among the conflict items whose reflection *raised* the context<->memory
 conflict (per the LLM-agent audit, the realized M7 judge), what was the model's
 *initial closed-book memory confidence* (3/5, 4/5, 5/5 self-consistency passes at M1)?
 Does the model only flag the mismatch for the facts it is most sure of (5/5)?
 
-Joins the agentic reflection audit (`outputs/conflict/scored/audit/<cell>.audit.csv`)
-to the M1/M2 memory confidence (`agreement` in `outputs/conflict/eligible/eligible.jsonl`,
-where 0.6 == 3/5, 0.8 == 4/5, 1.0 == 5/5) by item `id`, then cross-tabs confidence x
-agent-raised, overall and stratified by `conflict_type`. tiser__tiser is the primary
+Joins the agentic reflection audit (outputs/conflict/scored/audit/<cell>.audit.csv)
+to the M1/M2 memory confidence (the agreement field in eligible.jsonl, where
+0.6 == 3/5, 0.8 == 4/5, 1.0 == 5/5) by item id, then cross-tabs confidence x
+agent-raised, overall and stratified by conflict_type. tiser__tiser is the primary
 (star) cell; base__tiser is reported as a secondary cross-check.
 
-Output: `outputs/conflict/confidence_vs_reflection/` ->
+Output: outputs/conflict/confidence_vs_reflection/ ->
   - confidence_vs_reflection.json  (full result; backs the report's new H2 numbers)
   - raised_rows.csv                (every conflict-raised row, for inspection)
   - confidence_vs_reflection.png   (raise-rate by confidence bucket, per cell + within-C3)
@@ -133,7 +133,7 @@ def analyse_cell(rows: list[dict], agreement: dict[str, float]) -> dict:
 
 
 def _plot(results: dict, conf_dist: dict, out_path: str) -> None:
-    """Grouped bars: raise-rate by confidence bucket — overall (per cell) + within-C3 (star)."""
+    """Grouped bars: raise-rate by confidence bucket, overall (per cell) + within-C3 (star)."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.2))
     x = range(len(CONF_BUCKETS))
     width = 0.38

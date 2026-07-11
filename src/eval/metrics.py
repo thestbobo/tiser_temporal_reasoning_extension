@@ -39,10 +39,10 @@ def token_f1(pred: str, gold: str) -> float:
 def aggregate(records: list[dict], macro_splits: list[str] | None = None) -> dict:
     """Group per-example {dataset_name, em, f1} by split; macro = unweighted split mean.
 
-    `per_split` is reported for every split present (informational), but the macro
-    is averaged only over `macro_splits` (the in-domain whitelist). This keeps any
+    per_split is reported for every split present (informational), but the macro
+    is averaged only over macro_splits (the in-domain whitelist). This keeps any
     OOD split present in the test file (e.g. tot_semantic_test) out of the headline
-    number. If `macro_splits` is None, every present split counts.
+    number. If macro_splits is None, every present split counts.
     """
     per_split: dict[str, dict] = {}
     for name in sorted({r["dataset_name"] for r in records}):

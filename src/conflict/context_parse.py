@@ -270,7 +270,7 @@ def assert_round_trip(split: str, events: list[dict]) -> str:
 
     The safety net for byte-template fidelity: every edited context must survive this
     before it is emitted by M3. Compares structured fields only (the 'raw' provenance
-    field is excluded — see '_strip_raw').
+    field is excluded, see '_strip_raw').
     """
     rendered = serialize_context(split, events)
     reparsed = parse_context(split, rendered)

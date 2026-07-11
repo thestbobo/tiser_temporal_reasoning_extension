@@ -1,6 +1,6 @@
 """Train tennis-domain TISER adapters with data validation.
 
-This is intentionally a thin wrapper around ``src.train.trainer.run_training``.
+This is intentionally a thin wrapper around src.train.trainer.run_training.
 It applies tennis-specific CLI overrides, validates the selected training file,
 then hands control to the baseline training stack.
 """
@@ -120,10 +120,10 @@ def resolve_repo_path(path: str | Path) -> Path:
 def run_base_dir(path: str | Path, run_name: str) -> Path:
     """Return the base dir expected by the baseline trainer.
 
-    The trainer writes to ``paths.output_dir/run_name`` and
-    ``paths.model_dir/run_name``. If the user passes an explicit run directory
-    whose basename already equals ``run_name``, use its parent to avoid
-    ``run_name/run_name`` duplication while preserving existing trainer behavior.
+    The trainer writes to paths.output_dir/run_name and paths.model_dir/run_name.
+    If the user passes an explicit run directory whose basename already equals
+    run_name, use its parent to avoid run_name/run_name duplication while
+    preserving existing trainer behavior.
     """
 
     resolved = resolve_repo_path(path)

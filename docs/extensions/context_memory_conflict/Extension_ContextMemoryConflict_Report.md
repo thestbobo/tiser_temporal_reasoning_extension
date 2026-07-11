@@ -6,7 +6,7 @@ status: final-results-aligned
 aliases: [Context-Memory Conflict Report, E6 Report, Faithfulness Probe Report]
 ---
 
-# Context–Memory Conflict in TISER — Research Report
+# Context–Memory Conflict in TISER - Research Report
 
 > [!info] What this document is, read me first
 > This is the **handoff doc for the write-up**. It tells you, end-to-end and in plain language: *what we built, what we ran, what came out, and what it means.* The **design/decision record** lives in [[Extension_ContextMemoryConflict_ExperimentPlan]]; the **baseline** in `TISER_training_notes.md`. The **experimenting phase is closed**: M0→M6 produced the conflict set and run matrix, M7 added a post-hoc LLM-agent audit of the TISER-prompt reflections, and M10 produced the final analysis tables.
@@ -17,10 +17,10 @@ aliases: [Context-Memory Conflict Report, E6 Report, Faithfulness Probe Report]
 
 We probe whether the fine-tuned **TISER** model (Qwen2.5-7B-Instruct + LoRA SFT) trusts **what it reads** or **what it remembers**, and whether its `<reflection>` step actually *notices* a contradiction. We take real-entity temporal-QA items the model **provably knows** (it answers them correctly with *no context*), then **deterministically edit the context** so it points to a *different* answer than memory. Running the edited items through a 2×2 matrix of {fine-tune vs vanilla Qwen} × {TISER 4-tag prompt vs plain prompt}, we find:
 
-- **The TISER pipeline makes the model a faithful reader (H1 ✅):** it follows the edited text **78.7%** of the time, **+0.213** over the same model with a plain prompt and **+0.226** over vanilla Qwen with the TISER prompt.
+- **The TISER pipeline makes the model a faithful reader (H1 ✅):** it follows the edited text **78.7%** of the time, **+0.213** over the same model with a plain prompt and **+0.225** over vanilla Qwen with the TISER prompt.
 - **But it does not *notice* the conflict (H2 ✅, "silent override"):** a post-hoc LLM-agent audit of the TISER-prompt reflections finds that the star cell explicitly names the contradiction only **4.2%** of the time, barely above the 2.3% "rubber-stamp" rate measured on normal data. It is usually right for the wrong reason. The earlier lexical proxy rates (3.8% star cell, 12.1% base×TISER) are retained as first-pass diagnostics but are superseded by the audit for final reporting.
 - **One conflict type defeats it (H4 ✅):** date-shift and entity-swap are easy (0.94 / 0.97 faithful), but **order-reversal collapses to 0.37**, the only case where memory beats the text. The model reverts to the event order it remembers.
-- **H3 (does fame predict faithfulness?) is deferred** — it needs the entity-fame signal we scoped out.
+- **H3 (does fame predict faithfulness?) is deferred** - it needs the entity-fame signal we scoped out.
 
 **Deliverable:** a labelled **1,176-row counterfactual eval set** + a fully-scored 2×2 run matrix with a control arm, every stage backed by a committed artifact.
 
@@ -53,7 +53,7 @@ M0 subset ─► M1 closed-book memory ─► M2 eligibility (YIELD GATE) ─►
 ```
 
 **The eligibility gate (the core idea).** An item is usable only if the model **truly knows** the fact:
-- **Memory `m`:** ask the question **closed-book** (delete the `Temporal context:` block — the answer span lived only there, so this is a genuine memory test, not leakage). 5 samples at T=0.7; `m` = majority answer, kept iff it appears in **≥3/5** samples.
+- **Memory `m`:** ask the question **closed-book** (delete the `Temporal context:` block - the answer span lived only there, so this is a genuine memory test, not leakage). 5 samples at T=0.7; `m` = majority answer, kept iff it appears in **≥3/5** samples.
 - **Eligible:** keep iff `m` is **confident** (≥3/5) **and correct** (`m == gold`). On the kept set `m == gold`, so one conflict set serves every run-matrix cell.
 - **Gate:** GO iff each primary class (C1, C2) has ≥150 eligible items. → **Passed: 571 eligible.**
 
@@ -84,7 +84,7 @@ All three examples are **unanimous-memory** items (the model answered the closed
 
 ### Example A: Valentina Tereshkova (TempReason L2) → silent override
 
-**(A) Dataset sample** — `id: L2_Q44371_P102_0`
+**(A) Dataset sample** - `id: L2_Q44371_P102_0`
 ```
 Question:     Which political party did Valentina Tereshkova belong to in Jun, 1985?
 Real gold:    Communist Party of the Soviet Union
@@ -92,7 +92,7 @@ True context: Communist Party of the Soviet Union (1960–1991); Our Home–Russ
               Russian Party of Life (2003–2008); United Russia (2008–2022)
 ```
 
-**(B1) Memory probe — closed-book input** (context deleted):
+**(B1) Memory probe - closed-book input** (context deleted):
 ```
 ...[TISER 4-tag instruction]...
 Question: Which political party did Valentina Tereshkova belong to in Jun, 1985?
@@ -151,7 +151,7 @@ True context: 2000–2004 The Washington Post; 2004–2018 The New York Times; 2
 ```
 Closed-book: `<answer> The New York Times </answer>` (5/5) ✅ KEPT.
 
-- **C1** (`ctx'` gives the 2004–2018 slot to "The Washington Post"): **all 4 cells answer "The Washington Post"** ✅ — date-shift on a clean 3-row timeline is easy for everyone.
+- **C1** (`ctx'` gives the 2004–2018 slot to "The Washington Post"): **all 4 cells answer "The Washington Post"** ✅ - date-shift on a clean 3-row timeline is easy for everyone.
 - **C2** (swap NYT → "US National Institute of Allergy and Infectious Diseases"): **all 4 cells obey** ✅ even though it is absurd.
 - **control** (reorder rows, answer unchanged): **all 4 cells answer "The New York Times"** (faithful = memorised = 1) → proves the *edits don't break the context*; a low C3 score is a real conflict effect, not edit damage.
 
@@ -174,12 +174,12 @@ Closed-book: `<answer> The New York Times </answer>` (5/5) ✅ KEPT.
 | Cell (model × prompt) | n | **faithful-EM** | faithful-F1 | memorised-EM | malformed | refl-conflict (M7 audit) |
 |---|---:|---:|---:|---:|---:|---:|
 | **tiser × tiser** ★ | 1176 | **0.787** | 0.917 | 0.230 | 0.002 | **0.042** |
-| tiser × standard | 1176 | 0.574 | 0.771 | 0.297 | 0.000 | — |
+| tiser × standard | 1176 | 0.574 | 0.771 | 0.297 | 0.000 | - |
 | base × tiser | 1176 | 0.561 | 0.739 | 0.295 | 0.003 | 0.074 |
-| base × standard | 1176 | 0.380 | 0.605 | 0.332 | 0.000 | — |
+| base × standard | 1176 | 0.380 | 0.605 | 0.332 | 0.000 | - |
 
 - **Prompt axis (H1):** 0.787 − 0.574 = **+0.213**.
-- **Model axis (SFT):** 0.787 − 0.561 = **+0.226**.
+- **Model axis (SFT):** 0.7866 − 0.5612 = **+0.225**.
 - **H2:** the most faithful cell names the conflict rarely (4.2% by M7 audit); vanilla base names it more often (7.4%) yet is *less* faithful → naming ≠ resolving.
 - **Lexical proxy note:** M6 also persists keyword-style `reflection_mention_rate` for continuity with earlier analysis: 3.8% for tiser×tiser and 12.1% for base×tiser. These proxy rates are not the final conflict-detection metric.
 
@@ -200,7 +200,7 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 
 ## 6. What we conclude
 
-- **H1: TISER is a more faithful reader.** The timeline+reflection scaffold forces the model onto the text; strip it (plain prompt) and memory reasserts itself. The SFT compounds this (+0.226).
+- **H1: TISER is a more faithful reader.** The timeline+reflection scaffold forces the model onto the text; strip it (plain prompt) and memory reasserts itself. The SFT compounds this (+0.225).
 - **H2: but it is silent override, not auditing.** The M7 audit shows that explicit conflict naming is rare even when the answer follows the edited context. Faithfulness is usually **incidental, not reasoned**. This is the sharpest result: it bounds the value of the reflection stage the TISER paper sells.
 - **H4: order-reversal is the blind spot.** C1/C2 (entity/date binding) are nearly solved; C3 (event-event ordering) is where the fine-tune reverts to remembered order and even fabricates a supporting timeline (Example B). 
 - **Control validates the instrument:** edits don't break contexts (0.900 floor), so the C3 drop is a genuine conflict effect.
@@ -211,8 +211,8 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 
 1. **Single-decode point estimates.** All cell scores are one greedy decode. Final analysis reports item-level bootstrap CIs and paired **McNemar** tests for the prompt and model axes.
 2. **H2 uses one automated LLM-agent audit.** The audit supersedes the lexical keyword proxy, but it is still one automated judge, not a human-calibrated multi-judge panel. It agrees with the discarded lexical proxy only moderately, so report it as an audit signal rather than ground-truth psychology.
-3. **The eligible set is a stress sample.** By construction it is **well-known entities** (strongest memory, hardest faithfulness case). Report "78.7% faithful" as *"on the items where memory should fight hardest,"* not a general rate. (This bias is also exactly the H3 fame gradient — see Plan §11.)
-4. **A normalisation edge case.** Some gold strings carry a mojibake (`u2013` for an en-dash); vanilla base sometimes outputs the *correct* en-dash and is wrongly scored unfaithful (seen in Example A / C1, base cell). The analysis pass applies a Unicode-normalising EM — it can only *raise* the base cells slightly, not change the story.
+3. **The eligible set is a stress sample.** By construction it is **well-known entities** (strongest memory, hardest faithfulness case). Report "78.7% faithful" as *"on the items where memory should fight hardest,"* not a general rate. (This bias is also exactly the H3 fame gradient - see Plan §11.)
+4. **A normalisation edge case.** Some gold strings carry a mojibake (`u2013` for an en-dash); vanilla base sometimes outputs the *correct* en-dash and is wrongly scored unfaithful (seen in Example A / C1, base cell). The analysis pass applies a Unicode-normalising EM - it can only *raise* the base cells slightly, not change the story.
 
 ---
 
@@ -223,7 +223,7 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 | Phase | Module | Key artifact(s) | rows | what it holds |
 |---|---|---|---:|---|
 | **M0** subset | `src/conflict/subset.py` | `subset/items.jsonl` · `subset_report.json` | 15,898 | parsed in-scope items + structured `ctx_events` + applicable classes |
-| **M1** memory | `src/conflict/memory.py` | `memory/memory_{tiser,base}.jsonl` *(on RunPod)* | 15,898 | closed-book `m`, 5 samples, agreement, greedy — **per-sample traces are on the pod** |
+| **M1** memory | `src/conflict/memory.py` | `memory/memory_{tiser,base}.jsonl` *(on RunPod)* | 15,898 | closed-book `m`, 5 samples, agreement, greedy - **per-sample traces are on the pod** |
 | **M2** eligibility | `src/conflict/eligibility.py` | `eligible/eligible.jsonl` | **571** | the kept set: `m`, `agreement`, `prompt_no_context`, `applicable_classes` |
 | **M3** conflicts | `src/conflict/perturb.py` | `conflicts/conflict_set.jsonl` · `conflict_report.json` · `conflict_sample.jsonl` | 1,176 (+30 sample) | `ctx_prime`, `answer_ctx_prime`, `m`, `edit_meta`, per-class validity + drop reasons |
 | **M4** run inputs | `src/conflict/prompts.py` | `run_inputs/{tiser,standard}.jsonl` | 1,176 ×2 | exact prompts fed to the model, per style |

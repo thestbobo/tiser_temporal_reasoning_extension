@@ -25,6 +25,7 @@ This repo fine-tunes `Qwen2.5-7B-Instruct` with LoRA on the released `TISER_trai
 | `scripts/` | Thin CLI entrypoints: `fetch_data.py`, `train.py`, `evaluate.py`, `conflict/`, `tennis/` |
 | `notebooks/` | `colab_run.ipynb` (baseline) and `colab_tennis_experiments.ipynb` |
 | `results/` | Committed headline metrics: `baseline/`, `context_memory_conflict/`, tennis comparisons |
+| `model/` | Tracked adapters: `tiser_qwen7b_full` (the main TISER LoRA) and the reported tennis runs |
 | `data/`, `outputs/` | Gitignored datasets and raw run outputs (`data/tennis/` is tracked; it is small) |
 
 ## Install
@@ -78,7 +79,7 @@ Paper reference numbers (Table 1, Qwen2.5-7B + TISER):
 
 Inference-only probe: elicit the model's closed-book memory, keep items it confidently knows, deterministically edit the context to contradict that memory, and measure whether the model follows the text or its memory across a 2x2 (model x prompt) run matrix. Headline: faithful-EM rises from 0.380 (base model, standard prompt) to 0.787 (TISER fine-tune, TISER prompt), but an LLM-agent audit finds the `<reflection>` step names the contradiction in only 4.2% of rows.
 
-Pipeline stages are `scripts/conflict/01_build_subset.py` through `07_confidence_vs_reflection.py` plus `08_stats.py` (bootstrap CIs and McNemar), all driven by `config/conflict.yaml`. Artifacts:
+Pipeline stages are `scripts/conflict/01_build_subset.py` through `07_confidence_vs_reflection.py` plus `08_stats.py` (bootstrap CIs and McNemar), all driven by `config/conflict.yaml`. The fine-tuned adapter it probes is committed at `model/tiser_qwen7b_full/adapter`. Artifacts:
 
 ```text
 results/context_memory_conflict/

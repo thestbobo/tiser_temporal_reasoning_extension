@@ -36,9 +36,9 @@ def git_sha() -> str:
 
 
 def _library_versions() -> dict:
-    """Best-effort version probe. Each lib is recorded if importable, else None — so a
-    run on a leaner env (e.g. the vLLM eval/inference box, which deliberately has no
-    `peft`/`trl`) still writes run_meta instead of hard-failing. vllm is tracked too."""
+    """Best-effort version probe. Each lib is recorded if importable, else None, so a
+    run on a leaner env (e.g. the vLLM eval box, which deliberately has no peft/trl)
+    still writes run_meta instead of hard-failing. vllm is tracked too."""
     versions: dict[str, str | None] = {}
     for name in ("torch", "transformers", "peft", "trl", "vllm"):
         try:

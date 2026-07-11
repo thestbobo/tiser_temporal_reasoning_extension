@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 
-# `datasets` (HF) is needed only by the training path (build_train_dataset's .map/.filter).
-# It is imported lazily there so the inference/eval path — and any CPU box without the GPU
-# stack — can load the test set without pulling in `datasets`.
+# HF datasets is needed only by the training path (build_train_dataset's .map/.filter).
+# It is imported lazily there so the inference/eval path (and any CPU box without the
+# GPU stack) can load the test set without pulling it in.
 
 TRAIN_KEYS = ("dataset_name", "question_id", "question", "answer", "prompt", "output")
 TEST_KEYS = ("dataset_name", "question_id", "question", "prompt", "answer")
@@ -26,13 +26,13 @@ def _load_records(path: str) -> list[dict]:
 def _encode_train_example(prompt: str, completion: str, tokenizer) -> dict:
     """Pre-tokenize one example with completion-only label masking.
 
-    We build the *exact* chat-templated text an instruct model expects
-    (`<|im_start|>user … <|im_start|>assistant {completion}<|im_end|>`) and mask
+    We build the exact chat-templated text an instruct model expects
+    (<|im_start|>user ... <|im_start|>assistant {completion}<|im_end|>) and mask
     everything up to the assistant header so the loss is computed on the gold
-    trace only. The trailing EOS (`<|im_end|>`) stays unmasked so the model
-    learns to stop. Tokenizing the dataset ourselves bypasses TRL's automatic
-    `{prompt, completion}` handling, which would otherwise (a) re-wrap with the
-    chat template *and* (b) train on the whole sequence with no masking.
+    trace only. The trailing EOS stays unmasked so the model learns to stop.
+    Tokenizing the dataset ourselves bypasses TRL's automatic prompt/completion
+    handling, which would otherwise re-wrap with the chat template and train on
+    the whole sequence with no masking.
     """
     full_text = tokenizer.apply_chat_template(
         [{"role": "user", "content": prompt}, {"role": "assistant", "content": completion}],
@@ -66,8 +66,8 @@ def build_train_dataset(
 ) -> tuple[Dataset, int]:
     """Load -> chat-template + completion-only mask -> length filter.
 
-    Inference must wrap prompts with the *same* chat template (see
-    `src/inference/generate.py`) so the model sees the context it was trained in.
+    Inference must wrap prompts with the same chat template (see
+    src/inference/generate.py) so the model sees the context it was trained in.
     """
     from datasets import Dataset
 
@@ -86,10 +86,10 @@ def build_train_dataset(
 
 
 def load_tiser_test(path: str, max_samples_per_split: int | None = None) -> list[dict]:
-    """Test records as a plain list of dicts (no `datasets` dependency).
+    """Test records as a plain list of dicts (no datasets dependency).
 
-    run_eval consumes this by row iteration and per-key access, so a list of dicts is
-    sufficient and keeps the eval path off the GPU/`datasets` stack.
+    run_eval consumes this by row iteration and per-key access, so a list of dicts
+    is sufficient and keeps the eval path off the GPU stack.
     """
     records = _load_records(path)
     rows = [{k: r[k] for k in TEST_KEYS} for r in records]

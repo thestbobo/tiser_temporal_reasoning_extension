@@ -59,11 +59,11 @@ Each raw tennis temporal QA example should contain:
 - `source`: provenance label, for example `synthetic_seed`, `manual`, `match_report`, or another auditable source name.
 - `question_id`: stable unique identifier.
 
-Current repository note: `data/tennis/raw/tennis.json` currently contains 1,122 examples with `context`, `question`, and `answer` only. The audit/conversion phase must add or derive `category`, `source`, and `question_id` before training or evaluation.
+Current repository note: `data/tennis/raw/tennis_raw.json` contains 1,122 examples with `context`, `question`, and `answer` only. The audit/conversion phase must add or derive `category`, `source`, and `question_id` before training or evaluation.
 
 ### Raw Dataset Audit
 
-The raw tennis data was found at `data/tennis/raw/tennis.json` and copied to the canonical audit input path `data/tennis/raw/tennis_raw.json`. The audit script wrote the enriched dataset to `data/tennis/processed/tennis_raw_audited.json` and reports under `results/tennis_domain_adaptation/raw_audit/`.
+The raw tennis data lives at the canonical audit input path `data/tennis/raw/tennis_raw.json`. The audit script wrote the enriched dataset to `data/tennis/processed/tennis_raw_audited.json` and reports under `results/tennis_domain_adaptation/raw_audit/`.
 
 - Number of examples: 1,122.
 - Valid examples: 1,122.
@@ -464,7 +464,7 @@ The report includes condition-level overview metrics, category-wise error counts
 
 ### Phase 1: Raw Data Audit
 
-- Inspect `data/tennis/raw/tennis.json`.
+- Inspect `data/tennis/raw/tennis_raw.json`.
 - Validate required raw fields.
 - Assign stable `question_id` values where missing.
 - Assign `source` values.
