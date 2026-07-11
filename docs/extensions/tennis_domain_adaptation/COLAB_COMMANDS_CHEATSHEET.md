@@ -82,7 +82,7 @@ python scripts/tennis/generate_tennis_traces.py \
   --mode validate \
   --input-generations results/tennis_domain_adaptation/generations/tennis_trace_generations.jsonl \
   --base-records data/tennis/tennis_train.json \
-  --output data/tennis/tennis_train_traced.json \
+  --output data/tennis/tennis_train_traced_full.json \
   --report results/tennis_domain_adaptation/generations/tennis_trace_validation_report.md \
   --summary results/tennis_domain_adaptation/generations/tennis_trace_validation_summary.json
 ```
@@ -90,7 +90,7 @@ python scripts/tennis/generate_tennis_traces.py \
 ```bash
 python scripts/tennis/train_tennis.py \
   --config config/config_tennis_smoke.yaml \
-  --train-file data/tennis/tennis_train_traced.json \
+  --train-file data/tennis/tennis_train_traced_full.json \
   --run-name tiser_tennis_smoke \
   --subset 50 \
   --epochs 1
@@ -99,7 +99,7 @@ python scripts/tennis/train_tennis.py \
 ```bash
 python scripts/tennis/train_tennis.py \
   --config config/config_tennis.yaml \
-  --train-file data/tennis/tennis_train_traced.json \
+  --train-file data/tennis/tennis_train_traced_full.json \
   --run-name tiser_tennis_only_qwen7b \
   --output-dir outputs/tiser_tennis_only_qwen7b \
   --model-dir model/tiser_tennis_only_qwen7b
@@ -107,7 +107,7 @@ python scripts/tennis/train_tennis.py \
 
 ```bash
 python scripts/tennis/build_mixed_replay_data.py \
-  --tennis-train data/tennis/tennis_train_traced.json \
+  --tennis-train data/tennis/tennis_train_traced_full.json \
   --tiser-train data/TISER_train.json \
   --tiser-replay-size 500 \
   --seed 42 \

@@ -1,197 +1,100 @@
 # Tennis Domain Adaptation: Current Status and Next Steps
 
-This extension is currently a tennis-domain temporal reasoning evaluation and
-adapter-preparation pipeline. With the artifacts present in this repository, the
-scientifically supported experiment is prompt-based Base Qwen evaluation on the
-tennis test set.
+This document is the current source of truth for the tennis-domain result
+database. Older planning docs may still describe intended paths, but the claims
+below reflect the completed artifacts that should drive the report.
 
 ## Repository State
 
-Inspected paths:
+Dataset artifacts:
 
-- `data/tennis/`
-  - Present: `tennis_train.json`, `tennis_dev.json`, `tennis_test.json`
-  - Present raw data: `raw/tennis.json`, `raw/tennis_raw.json`
-  - Present processed data: `processed/tennis_all_standard_prompt.json`,
-    `processed/tennis_all_tiser.json`, `processed/tennis_raw_audited.json`
-  - Missing: `tennis_train_traced.json`
-  - Missing: `tennis_mixed_replay_train.json`
-- `config/`
-  - Present: `config.yaml`, `config_smoke.yaml`, `config_tennis.yaml`,
-    `config_tennis_smoke.yaml`
-- `scripts/tennis/`
-  - Present: evaluation, training wrapper, data build, trace generation,
-    result comparison, aggregation, diagnostics, and smoke-test scripts
-- `src/tennis/`
-  - Present: dataset construction, normalization, parser/scoring, prompts,
-    schema, splits, and trace-generation helpers
-- `results/tennis_domain_adaptation/`
-  - Present directories: `comparisons/`, `generations/`, `metrics/`,
-    `processed/`, `raw_audit/`, `scored/`
-  - `scored/` currently contains only `.gitkeep`
-- `model/`
-  - Missing entirely in the inspected workspace
-- `outputs/`
-  - Missing entirely in the inspected workspace
+- `data/tennis/raw/tennis_raw.json`: 1,122 raw examples.
+- `data/tennis/processed/tennis_all_tiser.json`: 1,122 converted TISER-style records.
+- `data/tennis/tennis_train.json`: 785 examples.
+- `data/tennis/tennis_dev.json`: 113 examples.
+- `data/tennis/tennis_test.json`: 224 examples.
+- `data/tennis/tennis_train_traced_50.json`: 50 externally generated/validated traces.
+- `data/tennis/tennis_train_traced_full.json`: 600 externally generated/validated traces.
 
-Original TISER data is also missing from this checkout:
+Result families:
 
-- Missing: `data/TISER_train.json`
-- Missing: `model/tiser_qwen7b_full/adapter`
+- `results/tennis_domain_adaptation/scored/`: completed 0.5B base and
+  tennis-only adapter evaluations.
+- `results/tennis_from_tiser_experiments/scored/`: completed Qwen2.5-7B
+  original-TISER transfer and tennis-from-TISER continued-adaptation grid
+  evaluations.
+- `results/tennis_from_tiser_experiments/comparisons/`: adapter-comparison
+  summaries for the 7B tennis-from-TISER grid.
 
-## Canonical Adapter Paths
+## Completed Tennis-Test Results
 
-Use these adapter paths consistently:
+### 0.5B Standalone Tennis Subexperiment
 
-- Original TISER adapter: `model/tiser_qwen7b_full/adapter`
-- Tennis-only adapter: `model/tiser_tennis_only_qwen7b/adapter`
-- Mixed tennis plus TISER replay adapter:
-  `model/tiser_tennis_mixed_replay_qwen7b/adapter`
+These are the results used by the compact tennis table in the LaTeX report.
 
-The mixed-replay path above is canonical. Do not use
-older mixed-replay adapter names that omit the `tiser_tennis_mixed_replay_qwen7b`
-run namespace.
+| Condition | Model | Prompt | n | EM | F1 | malformed |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| `base_qwen_standard_test224` | Qwen2.5-0.5B-Instruct | standard | 224 | 0.379 | 0.472 | 0 |
+| `base_qwen_tiser_test224` | Qwen2.5-0.5B-Instruct | TISER | 224 | 0.375 | 0.420 | 5 |
+| `tennis_only_full600_test224` | Qwen2.5-0.5B-Instruct + tennis LoRA | TISER | 224 | 0.464 | 0.516 | 0 |
 
-## What Works Now
+Interpretation:
 
-The following is supported with the current repository artifacts:
+- TISER-style prompting alone does not help the 0.5B base model on this tennis
+  test set.
+- The 0.5B tennis-only `full600` adapter improves over the 0.5B standard base
+  prompt by +0.085 EM and +0.045 F1.
+- This is a small-model subexperiment and should not be described as the full
+  7B tennis-domain adaptation result.
 
-- Tennis data loading from `data/tennis/tennis_test.json`
-- Base Qwen evaluation through `scripts/tennis/evaluate_tennis.py`
-- Standard direct-answer tennis prompt evaluation
-- TISER-style tennis prompt evaluation
-- Tennis answer parsing, normalization, exact match, token F1, and malformed
-  answer accounting
-- Writing `metrics.json`, `predictions.jsonl`, `metrics_report.md`, and
-  `run_meta.json` under a chosen scored output directory
-- Dry-run experiment planning for currently supported Base Qwen smoke runs
+### 7B Tennis-from-TISER Experiments
 
-## Supported Experiments Now
+The original TISER adapter transfer and continued tennis adaptation were run.
+Do not describe them as missing or future work.
 
-Run these from the repository root. They do not use adapters.
+| Condition | Model | Prompt | n | EM | F1 | malformed |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| `original_tiser_qwen7b_test224` | Qwen2.5-7B-Instruct + original TISER LoRA | TISER | 224 | 0.580 | 0.701 | 0 |
+| `tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011` | Qwen2.5-7B-Instruct + continued tennis LoRA | TISER | 224 | 0.732 | 0.856 | 0 |
 
-Standard prompt, 100-example smoke:
+Interpretation:
 
-```bash
-python scripts/tennis/evaluate_tennis.py \
-  --config config/config_tennis.yaml \
-  --test-file data/tennis/tennis_test.json \
-  --condition base_qwen_standard \
-  --prompt-style standard \
-  --no-adapter \
-  --limit 100 \
-  --output-dir results/tennis_domain_adaptation/scored/base_qwen_standard_smoke_100
-```
+- The original 7B TISER adapter transfers to tennis above the 0.5B baselines.
+- The best canonical 7B continued-adaptation run improves over the original
+  TISER adapter by +0.152 EM and +0.155 F1 on the 224-example tennis test set.
+- The grid contains additional 7B runs; use
+  `results/tennis_from_tiser_experiments/comparisons/adapter_comparison.*` for
+  the full ranking.
 
-TISER-style prompt, 100-example smoke:
+## Not Yet Supported
 
-```bash
-python scripts/tennis/evaluate_tennis.py \
-  --config config/config_tennis.yaml \
-  --test-file data/tennis/tennis_test.json \
-  --condition base_qwen_tiser \
-  --prompt-style tiser \
-  --no-adapter \
-  --limit 100 \
-  --output-dir results/tennis_domain_adaptation/scored/base_qwen_tiser_smoke_100
-```
+The following claims still need a completed, auditable result artifact before
+they appear as final findings:
 
-Generate the same command plan without executing:
+- Mixed tennis plus original-TISER replay results.
+- Forgetting or preservation on an original TISER evaluation sample.
+- Human-validated factual correctness of the synthetic tennis dataset beyond the
+  existing schema, duplicate, split, and answer-normalization checks.
 
-```bash
-python scripts/tennis/run_experiment_plan.py \
-  --config config/config_tennis.yaml \
-  --tennis-test data/tennis/tennis_test.json
-```
+## Canonical Report Guidance
 
-This writes a shell script at:
+- If the report only presents the 0.5B table, explicitly label it as a
+  preliminary 0.5B standalone tennis subexperiment.
+- Treat original TISER-adapter transfer as completed: it has a 224-example
+  result.
+- Treat tennis-from-TISER continued adaptation as completed: the 7B grid exists,
+  and the best canonical run is listed above.
+- It is still correct to say mixed replay and original-TISER forgetting
+  evaluation are not yet reportable unless their artifacts are restored from
+  another machine.
 
-```text
-results/tennis_domain_adaptation/comparisons/run_tennis_experiments.sh
-```
+## Next Steps
 
-## Training Safety
-
-`scripts/tennis/train_tennis.py` validates the selected training file before
-calling the trainer. It now aborts by default if placeholder-style traces are
-detected.
-
-The current fallback file, `data/tennis/tennis_train.json`, contains placeholder
-trace text. Training on it is not scientifically valid. It may only be used for
-trainer plumbing checks with the explicit override:
-
-```bash
-python scripts/tennis/train_tennis.py \
-  --config config/config_tennis_smoke.yaml \
-  --allow-placeholder-traces
-```
-
-Do not use such runs for adapter-quality, domain-adaptation, transfer, or
-forgetting claims.
-
-## Blocked Experiments
-
-Blocked until `data/tennis/tennis_train_traced.json` exists and contains
-validated non-placeholder TISER-style outputs:
-
-- Tennis-only adapter training
-- Tennis-only adapter evaluation
-
-Blocked until original TISER data and adapter artifacts are restored:
-
-- Original TISER adapter evaluation on tennis
-- Original TISER forgetting/sample evaluation
-- Mixed tennis plus original TISER replay dataset build
-- Mixed replay adapter training
-- Mixed replay adapter evaluation
-
-Specifically, do not build mixed replay until `data/TISER_train.json` exists.
-Do not evaluate original TISER transfer until
-`model/tiser_qwen7b_full/adapter` exists.
-
-## Scientifically Valid Claims
-
-Valid with current artifacts:
-
-- The repository can evaluate Base Qwen on tennis temporal QA using standard and
-  TISER-style prompts.
-- The evaluation pipeline writes reproducible metrics, predictions, and run
-  metadata.
-- Parser and normalization behavior can be tested independently of model
-  generation.
-
-Not valid yet:
-
-- Claims that the original TISER adapter transfers to tennis.
-- Claims that tennis-only fine-tuning improves tennis temporal reasoning.
-- Claims that mixed replay improves tennis performance or prevents forgetting.
-- Claims based on training over placeholder traces.
-- Any comparison among Base Qwen, original TISER adapter, tennis-only adapter,
-  and mixed-replay adapter unless the missing adapters are restored or trained
-  from validated data.
-
-## Minimal Experiment Plan
-
-Current supported path:
-
-1. Run Base Qwen plus standard prompt on 100 tennis examples.
-2. Run Base Qwen plus TISER-style prompt on the same 100 tennis examples.
-3. Compare `metrics.json` and inspect malformed predictions in
-   `predictions.jsonl`.
-
-After traced tennis data exists:
-
-1. Generate or restore `data/tennis/tennis_train_traced.json`.
-2. Validate that traces are non-placeholder and answers match gold.
-3. Train `model/tiser_tennis_only_qwen7b/adapter`.
-4. Evaluate the tennis-only adapter on `data/tennis/tennis_test.json`.
-
-After original TISER data and adapter exist:
-
-1. Restore `data/TISER_train.json`.
-2. Restore `model/tiser_qwen7b_full/adapter`.
-3. Optionally build `data/tennis/original_tiser_eval_sample.json`.
-4. Evaluate the original TISER adapter.
-5. Build `data/tennis/tennis_mixed_replay_train.json`.
-6. Train `model/tiser_tennis_mixed_replay_qwen7b/adapter`.
-7. Evaluate mixed replay and compare against the available baselines.
+1. Decide whether the LaTeX report should include the completed 7B
+   tennis-from-TISER results or explicitly scope the tennis section to the 0.5B
+   subexperiment.
+2. If mixed replay exists on another machine, copy its metrics and run metadata
+   into the result database before making replay or forgetting claims.
+3. Regenerate or update comparison summaries if result folders are renamed, so
+   `final_results_table.*` and `adapter_comparison.*` agree on canonical
+   condition names.

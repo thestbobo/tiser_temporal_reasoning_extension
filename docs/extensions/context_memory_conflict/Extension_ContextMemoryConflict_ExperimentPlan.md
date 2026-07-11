@@ -13,14 +13,14 @@ aliases: [Context-Memory Conflict Experiment Plan, E6 Experiment Plan, Faithfuln
 > - **The baseline we build on** (reproduction, results, bugs): `TISER_training_notes.md` (repo)
 > - This file is the **operational plan**: §1 (overview) and §2 (hypotheses) are **frozen**. Everything from §3 down is a **living document** expanded during development.
 
-> [!success] Status — experimenting phase CLOSED (2026-06-04)
-> The build-and-run phase is **complete**: modules **M0→M6** ran end-to-end (subset → memory → eligibility gate → conflict set → run matrix → faithfulness scoring), producing the 2×2 run matrix + control. The project is now in its **analysis phase** (inspect/aggregate the results we already have). The originally-planned **M7 (LLM judge), M8 (entity-fame), M9 (human validation)** and the **GPT-4o ceiling cell** are **NOT being run** for this deliverable — they are recorded as **§11 Future Paths**. Hypotheses **H1, H2, H4 are tested & supported**; **H3 is deferred** (it requires M8).
+> [!success] Status — experimenting phase CLOSED (2026-07-11)
+> The build-and-run phase is **complete**: modules **M0→M6** ran end-to-end (subset → memory → eligibility gate → conflict set → run matrix → faithfulness scoring), M7 added the post-hoc LLM-agent reflection audit, and M10 produced the final analysis. The remaining scoped-out items are **M8 (entity-fame), M9/human or second-judge validation**, and the **GPT-4o ceiling cell**. Hypotheses **H1, H2, H4 are tested & supported**; **H3 is deferred** (it requires M8).
 
 > [!abstract] One-line version
 > Feed TISER a context that contradicts what the model has memorised, and measure whether it follows the **text** or its **memory**,  and whether the `<reflection>` step (the paper's load-bearing stage) actually *notices* the contradiction or silently rubber-stamps an answer.
 
 > [!important] Working principle — asset-backed provenance (project-wide, from 2026-06-01)
-> Every analysis, statistic, or claim must be backed by an **inspectable, committed artifact** — a script that produced it and an output file that can be re-opened and cited — never ephemeral terminal output. This is for (a) the team's own verification, (b) the report's evidence trail, and (c) transparency to the professor/TAs. Concretely: each pipeline stage (§7) writes a versioned artifact + `run_meta.json` under `outputs/conflict/<stage>/`, and the §3 evidence will be re-emitted by committed scripts (`scripts/conflict/analysis/`) rather than left as one-off shell output.
+> Every analysis, statistic, or claim must be backed by an **inspectable artifact** — a script that produced it and an output file that can be re-opened and cited — never ephemeral terminal output. This is for (a) the team's own verification, (b) the report's evidence trail, and (c) transparency to the professor/TAs. Concretely: each pipeline stage (§7) writes a versioned artifact + `run_meta.json` under the run machine's conflict artifact root; compact mirrors may appear under `results/context_memory_conflict/` in a local checkout.
 
 ---
 
@@ -28,7 +28,7 @@ aliases: [Context-Memory Conflict Experiment Plan, E6 Experiment Plan, Faithfuln
 
 ### 1.1 What we run
 
-We take our **frozen baseline**: `Qwen2.5-7B-Instruct` + LoRA SFT, reproduced at macro-EM 0.887 / F1 0.955, see `TISER_training_notes.md` — and run a **purely inference-only** behavioural probe. No fine-tuning. We:
+We take our **frozen baseline**: `Qwen2.5-7B-Instruct` + LoRA SFT, reproduced at full-test macro-EM 0.878 / F1 0.949 (with an earlier 500-per-split sample at 0.887 / 0.955), and run a **purely inference-only** behavioural probe. No fine-tuning. We:
 
 1. Select **real-entity** items from `TISER_test.json` (TimeQA easy/hard, TempReason L2/L3 — entities with Wikipedia/Wikidata grounding the model plausibly memorised).
 2. Elicit the model's **parametric memory** `m` (closed-book: ask the question with *no* context).
@@ -68,7 +68,7 @@ This is **primarily a behavioural / robustness probe** under a controlled advers
 | **H3** ⏸️ | Faithfulness depends on **entity fame** (stronger memory → harder to override the context) | quantifies a memory-strength → faithfulness curve, a genuinely new measurement | flat → conflict resolution is entity-independent |
 | **H4** | Faithfulness / detection depend on the **type of conflict** (date-shift vs entity-swap vs order-reversal — see §4) | TISER resists some temporal-conflict kinds but not others → a fine-grained map of the reflection stage's competence | flat across types → conflict handling is type-agnostic |
 
-> [!note] Outcome (2026-06-04): **H1 ✅, H2 ✅ (silent override), H4 ✅; H3 ⏸️ deferred.** H1/H2/H4 are answered from the M6 run-matrix results (see [[Extension_ContextMemoryConflict_Report]] §5). **H3 is deferred to §11 Future Paths** because it depends on the entity-fame signal (M8), which we chose not to run for this deliverable.
+> [!note] Outcome (2026-07-11): **H1 ✅, H2 ✅ (silent override), H4 ✅; H3 ⏸️ deferred.** H1/H4 are answered from the M6 run-matrix results; H2 uses the M7 LLM-agent audit, with the older M6 lexical proxy retained only as a diagnostic (see [[Extension_ContextMemoryConflict_Report]] §5). **H3 is deferred to §11 Future Paths** because it depends on the entity-fame signal (M8).
 
 > [!note] H4 is new vs the pitch
 > H4 was added here because §3's finding that contexts are fully *structured* makes per-class perturbation cheap and reliable (§4). It is the hypothesis that the "data-enrichment / perturbation-taxonomy" structuring exists to test. H1–H3 are unchanged from [[Extension_ContextMemoryConflict_Presentation]].
@@ -157,7 +157,7 @@ Each edit is validated to satisfy the **conflict invariant**: `answer(c') ≠ m`
 | Metric | Definition | Reads as |
 |---|---|---|
 | **Context-faithfulness rate** | fraction of conflict items where `<answer>` matches `answer(c')`, not `m` | "does it trust the text?" (= `1 − memorisation rate`, Longpre 2021) |
-| **Conflict-detection rate** | fraction where `<reflection>` explicitly flags the reasoning↔timeline/context mismatch (rubric + 2-LLM-judge) | "does reflection *notice*?" — compare against the §3.1 baseline revise-rate of **2.3%** as the null |
+| **Conflict-detection rate** | fraction where `<reflection>` explicitly flags the reasoning↔timeline/context mismatch, decided by the M7 LLM-agent audit | "does reflection *notice*?" — compare against the §3.1 baseline revise-rate of **2.3%** as the null |
 | **Silent-override rate** | faithful answer **AND** reflection never mentions the conflict | "right answer, wrong mechanism" (H2-FALSE signature) |
 | EM (guardrail) | standard exact-match, sanity only | nothing broke |
 
@@ -178,7 +178,7 @@ The conflict set is an **evaluation** set (a probe), **not** training data, noth
 | **Qwen2.5-7B-TISER (ours)** |        ✓        |    **★ **    | **the star cell + H1 contrast** |
 | GPT-4o                      |        ✓        |      ✓       | closed-model reference ceiling  |
 
-6 cells total × a few-hundred-item conflict set
+4 local Qwen cells were run over the 1,176-row conflict set. The GPT-4o ceiling cell remains optional/future.
 
 ---
 
@@ -212,17 +212,18 @@ Loc legend: **I** = internal (in-repo, runs on our infra) · **X** = external (A
 | **M3**  | `src/conflict/perturb.py` ← `04_build_conflicts.py`     | deterministic perturbation engine, per class                                                                 | `eligible.jsonl`                                                                                | `conflicts/conflict_set.jsonl` `{id, conflict_type, ctx_prime, answer_ctx_prime, m, answer_orig, edit_meta, validity_ok}` | CPU                                     | M0 structured parsers                                                                            | **class assignment is substrate-driven, not equal** (C1: L2/TimeQA; C2: L2/TimeQA(+L3); C3: L3 only); **build for N-class (flag-gated), run 1-class first** (**D-NCLASS**) — rows keyed by `(item_id, conflict_type)`; enforce invariants `answer(c')≠m`, single-coverage, `distractor≠m`; emit a small **no-conflict control arm** (`answer(c')=m`, **D-CTRL**); seeded |     I     |
 | **M4**  | `src/conflict/prompts.py` (used by `05`)                | build run inputs per prompt-style; inject `c'` into TISER template + build **standard** (non-TISER) template | `conflict_set.jsonl`                                                                            | `run_inputs/<style>.jsonl`                                                                                                | CPU                                     | TISER preamble extracted verbatim from data                                                      | standard-prompt template is **new** (direct-answer, **D-STD**); chat-template wrap stays identical to training (the #1 baseline bug)                                                                                                                                                                                                                                     |     I     |
 | **M5** ✅ | `05_run_inference.py`                                   | execute run-matrix cells (4 local Qwen)                                                                      | `run_inputs/*.jsonl` + model cfg                                                                | `generations/<model>__<style>.jsonl` `{id, raw_generation}`                                                               | **GPU** (vLLM/H100)                      | `generate_batch`; `load_adapter_for_inference` (TISER); base loader (off-the-shelf)              | **4 local cells run** (tiser/base × tiser/standard, n=1,176 each); GPT-4o ceiling cell **not run** → §11 Future Paths                                                                                                                                                                                                                                                     |     I     |
-| **M6** ✅ | `src/conflict/score.py` ← `06_score.py`                 | parse trace; faithfulness + silent-override (lexical proxy) + guardrail EM                                   | `generations/*` + `conflict_set.jsonl`                                                          | `scored/<model>__<style>.jsonl` + `<cell>.metrics.json`                                                                   | CPU                                     | extend `parser.parse_answer` w/ `<reflection>`/`<timeline>` parsers; `normalize_answer`          | faithfulness = `answer ≈ answer(c')` not `m`; silent-override read from a **lexical** reflection-mention proxy (authoritative LLM judge **deferred** → §11)                                                                                                                                                                                                               |     I     |
-| **M10** 🔄 | `07_analyse.py` *(analysis phase — current)*           | aggregate; stratify by conflict_type; bootstrap CIs; H1/H2/H4 tests; figures + error analysis                | `scored/*`                                                                                      | `analysis/*.{json,csv,png}` + report tables                                                                               | CPU                                     | `aggregate`                                                                                      | **two views**: (a) headline faithfulness one-variant-per-item; (b) within-item paired for H4; **bootstrap CIs + paired McNemar** (H1 prompt-axis, model-axis); qualitative reflection inspection (silent override) + the en-dash normalisation fix (Report §7)                                                                                                            |     I     |
+| **M6** ✅ | `src/conflict/score.py` ← `06_score.py`                 | parse trace; faithfulness + lexical reflection proxy + guardrail EM                                          | `generations/*` + `conflict_set.jsonl`                                                          | `scored/<model>__<style>.jsonl` + `<cell>.metrics.json`                                                                   | CPU                                     | extend `parser.parse_answer` w/ `<reflection>`/`<timeline>` parsers; `normalize_answer`          | faithfulness = `answer ≈ answer(c')` not `m`; lexical `reflection_mention_rate` retained as a first-pass diagnostic, not the final H2 metric                                                                                                                                                                                                                              |     I     |
+| **M7** ✅ | post-hoc LLM-agent reflection audit                    | authoritative conflict-naming audit for TISER-prompt reflections                                             | `scored/*__tiser.jsonl`                                                                          | `scored/audit/<cell>.audit.csv`                                                                                            | external/API + CPU                     | persisted `reflection_text`; no model re-generation                                               | final H2 metric: `conflict_raised`, `conflict_kind`, and rationale for audited reflections; supersedes the lexical proxy for report claims                                                                                                                                                                                                                               |     X     |
+| **M10** ✅ | `07_analyse.py` / confidence-vs-reflection analysis    | aggregate; stratify by conflict_type/confidence; bootstrap CIs; H1/H2/H4 tests; figures + error analysis     | `scored/*` + M7 audit                                                                            | `analysis/*.{json,csv,png}` + report tables                                                                                | CPU                                     | `aggregate`                                                                                      | bootstrap CIs + paired McNemar (H1 prompt-axis, model-axis); confidence-vs-agent-raised analysis; C3 inversion; qualitative reflection inspection                                                                                                                                                                                                                       |     I     |
 
-### 7.3 External / out-of-repo steps — NOT RUN for this deliverable
+### 7.3 External / out-of-repo steps
 
-All external/API/manual steps (M5 GPT-4o ceiling, M7 LLM-judge, M8 entity-fame, M9 human validation) were **scoped out** of the graded deliverable to concentrate effort on analysing the results we already have. They are preserved as **§11 Future Paths** (with the rationale for each). The executed pipeline is **fully internal/offline**: M0–M6 + the M10 analysis pass.
+M7 was run as a post-hoc external/API audit over persisted reflections; it required no new generations. The GPT-4o ceiling cell, M8 entity-fame lookup, and M9 human/second-judge validation remain scoped out and are preserved as §11 Future Paths.
 
 ### 7.4 Compute & dependency notes
 
 - **GPU stages: M1, M5 (local cells) only.** Everything else is CPU/laptop. The single live GPU dependency was the RunPod network volume (adapter + base model). Closed-book elicitation (M1) and the 4 inference cells (M5) were a few GPU-hours total.
-- **Executed dependency order:** M0 → M1 → M2 **(GATE = GO)** → M3 → M4 → M5 → M6 → M10 (analysis). The GATE was the only go/no-go; everything downstream was built only after yield was confirmed. (M7/M8/M9 → §11 Future Paths.)
+- **Executed dependency order:** M0 → M1 → M2 **(GATE = GO)** → M3 → M4 → M5 → M6 → M7 → M10 (analysis). The GATE was the only go/no-go; everything downstream was built only after yield was confirmed. (M8/M9/GPT-4o ceiling → §11 Future Paths.)
 
 ### 7.5 Locked decisions (settled — build to these)
 
@@ -271,11 +272,12 @@ Built on `ext/context-memory-conflict`. Pipeline lives in `src/conflict/` with t
 - [x] **P2 — Baseline trace mining** — reflection 84.8% confirm / 2.3% revise in-domain (§3.1). ✅ *(to be re-emitted as a committed script per §7.1)*
 - [x] **P3 — M0+M1+M2 → YIELD GATE** — **DONE, verdict = GO** *(2026-06-02)*. M0 15,898 items / 100% parse; M1 closed-book elicitation run on RunPod (vLLM, both models); M2 gate **GO** with 571 eligible (C1 234 · C2 571 · C3 337, all ≥150). Numbers + cross-model analysis in [[Extension_ContextMemoryConflict_Report]]. *(was the highest-risk milestone — cleared.)*
 - [x] **P4 — M3+M4** — **DONE** *(2026-06-03)*. Conflict set = **1,176 labelled rows** (C1 203 · C2 520 · C3 333 · control 120; 100% per-class validity) + TISER/standard run inputs (1,176 each). Numbers in [[Extension_ContextMemoryConflict_Report]] §4.5–4.6.
-- [x] **P5 — M6 scorer** — **DONE** *(2026-06-03)*. Trace/reflection parser + faithfulness/silent-override-proxy scorer; required a style-aware fix for standard cells (see §7.6 deviation). Silent override is read from a **lexical reflection-mention proxy**; the authoritative LLM **judge (M7) is deferred → §11 Future Paths**.
+- [x] **P5 — M6 scorer** — **DONE** *(2026-06-03)*. Trace/reflection parser + faithfulness scorer; required a style-aware fix for standard cells (see §7.6 deviation). The lexical reflection-mention proxy is persisted for diagnostics but is no longer the final H2 metric.
 - [x] **P6 — M5** — **DONE** *(2026-06-03)*. All four local Qwen cells (model × prompt), n=1,176 each, vLLM/H100. Headline faithful-EM: tiser×tiser **0.787**, tiser×standard 0.574, base×tiser 0.561, base×standard 0.380 → H1 **+0.213**, SFT axis **+0.226**. GPT-4o cell deferred (optional). Report §4.7.
-- [ ] **P7 — M10 analysis (current phase)** — aggregate the four cells: bootstrap CIs on every faithful-EM, paired **McNemar** for the H1 prompt-axis and the model-axis, per-class breakdown (the C3 inversion), qualitative reflection inspection for silent override, and the en-dash normalisation fix (Report §7). **No new generations** — pure analysis of existing artifacts.
-- [ ] **P8 — Write-up** — "grounded reader vs. fluent confirmer" narrative + tables, off the Report doc.
-- ⏸️ **Future Paths (NOT in this deliverable → §11):** M7 LLM-judge (harden H2), M8 entity-fame (unlock H3), M9 human validation, GPT-4o ceiling cell.
+- [x] **P7 — M7 reflection audit** — **DONE**. Post-hoc LLM-agent audit over persisted TISER-prompt reflections; final report uses agent conflict-naming rates rather than the M6 lexical proxy.
+- [x] **P8 — M10 analysis** — **DONE**. Aggregated the four cells with bootstrap CIs, paired **McNemar** tests for the H1 prompt-axis and model-axis, per-class breakdown, confidence-vs-reflection analysis, and C3 inversion. **No new generations** were required.
+- [ ] **P9 — Write-up** — "grounded reader vs. fluent confirmer" narrative + tables, off the Report doc.
+- ⏸️ **Future Paths (NOT in this deliverable → §11):** M8 entity-fame (unlock H3), M9 human/second-judge validation, GPT-4o ceiling cell.
 
 ---
 
@@ -287,7 +289,7 @@ Built on `ext/context-memory-conflict`. Pipeline lives in `src/conflict/` with t
 | Memory elicitation reliability (is `m` stable?) | Medium | self-consistency k=5/T≈0.7, keep ≥3/5 (**D-K**, §7.5); closed-book OOD for fine-tune → M1 reports malformed-rate, base-model fallback |
 | Per-class statistical power | Medium | 3 classes, pre-registered balanced N ≥150/class, report CIs |
 | Edit validity (C1 ambiguity, C2 distractor) | Medium | post-edit invariant asserts + 200-item manual spot-check |
-| Judge subjectivity (conflict-detection) | Medium | rubric + 2 judges + inter-judge agreement; anchored to §3.1 lexical baseline |
+| Judge subjectivity (conflict-detection) | Medium | M7 uses one automated LLM-agent audit; report as an audit signal and keep second-judge/human calibration as future work |
 | Context isolation brittleness | **Resolved** | 100% parse across 22k records (§3.2) |
 | Adapter availability | **Resolved** | adapter local + network volume live (§3.3) |
 
@@ -302,13 +304,12 @@ Full annotated bibliography (Longpre 2021 knowledge-conflict, Xu 2024 survey, th
 ## 11. Future Paths (scoped out of this deliverable)
 
 > [!info] Why these are here, not in the pipeline
-> The experimenting phase delivered a complete study with **M0–M6** (H1/H2/H4 answered). The steps below would *deepen* the work but each adds external API cost, manual labour, or a new data dependency without changing the core finding. They are recorded so a future iteration (or the report's "future work" paragraph) can pick them up cleanly. Each already has a stub in the original module spec.
+> The experimenting phase delivered a complete study with **M0–M7 + M10** (H1/H2/H4 answered). The steps below would *deepen* the work but each adds external API cost, manual labour, or a new data dependency without changing the core finding. They are recorded so a future iteration can pick them up cleanly.
 
 | Future path | Was | Unlocks | Why deferred | What exists already |
 |---|---|---|---|---|
-| **LLM conflict-detection judge** | M7 (`src/conflict/judge.py`) | Authoritative H2 (replaces the lexical mention proxy) | External API + ≥2-judge agreement + human calibration; the **lexical proxy already tells the silent-override story** (3.8% vs the 2.3% null) | `reflection_text` is persisted in every `scored/*__tiser.jsonl` row → a judge can be run later with **no re-generation** |
 | **Entity-fame signal** | M8 (`src/conflict/fame.py`) | **H3** (fame → faithfulness curve) | Wikidata/pageviews lookup + noisy name→KB-id linking; H3 is the one hypothesis with no substrate yet | `eligible.jsonl` carries the entities; the eligible set is already fame-biased (well-known entities) |
-| **Human validation** | M9 | Edit-validity evidence + judge calibration | Manual labelling; M3 already reports **100% per-class construction validity** and the control arm guards against broken edits | `conflict_sample.jsonl` (30 rows) is a ready spot-check sheet |
+| **Human or second-judge validation** | M9 / audit calibration | Edit-validity evidence + judge calibration | Manual labelling and/or a second independent judge; M7 is automated and should not be overclaimed | `conflict_sample.jsonl` and M7 rationale fields are ready spot-check inputs |
 | **GPT-4o ceiling cell** | M5 external arm | Closed-model reference ceiling | API cost; not load-bearing for H1/H2/H4 (the 4 local cells already give both axes) | `run_inputs/{tiser,standard}.jsonl` are model-agnostic → feed any model, score with the same M6 |
 
-**If exactly one is ever resumed, do M7** (the judge): it is the cheapest, hardens the most interesting claim (silent override / H2), and needs no new model runs.
+**If exactly one is resumed, do M8 or second-judge calibration** depending on the report need: M8 unlocks H3, while calibration hardens the M7 audit.

@@ -32,7 +32,7 @@ Deep Natural Language Processing\\
 
 \begin{abstract}
 Temporal reasoning, tracking event order, duration, and overlap across a textual context, remains a difficult capability for large language models. This project reproduces the TISER framework proposed by Bazaga et al.~\cite{bazaga2025tiser}, which trains a model to generate an explicit structured trace (reasoning, timeline, reflection, answer) before producing its final response. We reproduce this setup using \texttt{Qwen2.5-7B-Instruct} with LoRA~\cite{hu2022lora} on the released TISER data: frozen base weights, LoRA adapters on attention projections ($r{=}16$, $\alpha{=}32$), bf16 precision, completion-only loss masking, and consistent Qwen chat-template formatting at both training and inference. On the full in-domain test set our reproduction achieves macro-EM~0.878 / macro-F1~0.949, placing it in the same performance regime as the original paper's reported macro-EM~0.911 / macro-F1~0.944 for the comparable Qwen2.5-7B + TISER configuration. Beyond reproduction, we propose a \emph{Context--Memory Conflict} probe: we select temporal-QA items the model reliably recalls closed-book (correct with no context at ${\geq}3/5$ self-consistency), then deterministically edit the context so the context-implied answer contradicts that memory. Evaluating a $2{\times}2$ matrix of \{fine-tuned vs.\ vanilla\}${\times}$\{TISER prompt vs.\ standard prompt\}, we find that the TISER pipeline raises context-faithfulness from 0.380 to 0.787 (faithful-EM), but the \texttt{<reflection>} step almost never explicitly detects the contradiction: a Claude-based LLM-agent audit of all reflections puts the conflict-naming rate at 4.2\%, barely above the 2.3\% baseline revise-rate. TISER thus turns the model into a grounded reader, but not a genuine conflict auditor. Order-reversal conflicts remain a blind spot where memorised answers dominate.
-We also implemented a tennis-domain adaptation extension: on \texttt{Qwen2.5-0.5B-Instruct}, a preliminary tennis-only LoRA adapter improves tennis-test EM from 0.379 to 0.464 on the 224-example test set.
+We also implemented a tennis-domain adaptation extension. On \texttt{Qwen2.5-0.5B-Instruct}, a tennis-only LoRA adapter improves tennis-test EM from 0.379 to 0.464 on the 224-example test set. In the completed \texttt{Qwen2.5-7B-Instruct} tennis-from-TISER experiments, the original TISER adapter transfers at EM~0.580 / F1~0.701, and continued tennis adaptation reaches EM~0.732 / F1~0.856.
 The project repository is at \href{https://github.com/thestbobo/tiser_temporal_reasoning_extension}{GitHub repository}.
 \end{abstract}
 
@@ -99,7 +99,7 @@ We test three hypotheses. \textbf{H1:} the TISER prompt and fine-tune make the m
 
 \subsection{Tennis Domain Adaptation for Temporal Reasoning}
 
-The second extension studies temporal reasoning in professional-tennis narratives, where time is expressed through match progression, breaks of serve, rain delays, medical timeouts, set and tie-break sequences, and tournament rounds. The research question is: \emph{does tennis-domain adaptation improve TISER-style temporal reasoning on tennis QA while preserving general temporal reasoning?} This extension is therefore an adaptation and forgetting study, not a new model architecture.
+The second extension is a tennis-domain adaptation study. It first evaluates lightweight 0.5B tennis-only LoRA adaptation on professional-tennis narratives, then evaluates 7B transfer from the original TISER adapter and continued tennis adaptation initialized from that adapter. Mixed tennis+TISER replay and original-TISER forgetting evaluation are not reportable in the current local result database.
 
 \section{Methodology}
 \label{sec:methodology}
@@ -139,7 +139,7 @@ M6 scores each prediction for faithful-EM/F1 (matches $\text{answer}(c')$), memo
 
 The raw tennis set contains 1,122 temporal QA examples covering before/after relations, first/last events, immediate order, durations, overlap, tournament rounds, and medical timing. Audit and conversion add ids, rule-based categories, prompts, and TISER-compatible fields; duplicate-aware splitting with seed~42 yields 785 train, 113 dev, and 224 test examples.
 
-The tennis evaluator keeps the TISER parser and completion format---\texttt{<reasoning>}, \texttt{<timeline>}, \texttt{<reflection>}, \texttt{<answer>}---and adds tennis-specific answer normalization for rankings, minute durations, punctuation, and articles. In addition to base \texttt{Qwen2.5-0.5B-Instruct} standard/TISER-prompt runs, we trained and evaluated a lightweight tennis-only LoRA adapter in the \texttt{full600} condition. This tennis experiment uses the 0.5B model, not the full \texttt{Qwen2.5-7B-Instruct} TISER reproduction. Original TISER-adapter transfer and mixed tennis+TISER replay were not run.
+The tennis evaluator keeps the TISER parser and completion format---\texttt{<reasoning>}, \texttt{<timeline>}, \texttt{<reflection>}, \texttt{<answer>}---and adds tennis-specific answer normalization for rankings, minute durations, punctuation, and articles. In addition to base \texttt{Qwen2.5-0.5B-Instruct} standard/TISER-prompt runs, we trained and evaluated a lightweight tennis-only LoRA adapter in the \texttt{full600} condition. We also evaluated \texttt{Qwen2.5-7B-Instruct} with the original TISER adapter on the same tennis test set, then ran continued tennis-from-TISER LoRA experiments initialized from that adapter. Mixed tennis+TISER replay and original-TISER forgetting evaluation are not reported because their final artifacts are not in the current local result database.
 
 \section{Experiments and Results}
 
@@ -228,21 +228,40 @@ C1 (date-shift) and C2 (entity-swap) are largely solved: the fine-tuned model re
 
 \subsection{Tennis Domain Adaptation Results}
 
-Table~\ref{tab:tennis-final} reports the main 224-example tennis-test runs. We do not treat smaller smoke conditions as final test results.
+Table~\ref{tab:tennis-final} reports the completed 0.5B 224-example tennis-test runs. We do not treat smaller smoke conditions as final test results.
 
 \begin{table}[t]
 \centering
-\caption{Tennis temporal QA results on the 224-example test set with \texttt{Qwen2.5-0.5B-Instruct}. Malf. is malformed/extraction-failed outputs.}
+\caption{Tennis temporal QA results on the 224-example test set with Qwen2.5-0.5B-Instruct. Deltas are computed against the base standard prompt.}
 \label{tab:tennis-final}
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 {\footnotesize
-\begin{tabular}{lrrrr}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Condition} & \textbf{$n$} & \textbf{EM} & \textbf{F1} & \textbf{Malf.} \\
+Condition & EM & F1 & $\Delta$EM & $\Delta$F1 & Malf. \\
 \midrule
-Base Qwen standard & 224 & 0.379 & 0.472 & 0 \\
-Base Qwen + TISER prompt & 224 & 0.375 & 0.420 & 5 \\
-Tennis-only adapter full600 & 224 & \textbf{0.464} & \textbf{0.516} & 0 \\
+Base standard & 0.379 & 0.472 & -- & -- & 0 \\
+Base + TISER prompt & 0.375 & 0.420 & -0.004 & -0.052 & 5 \\
+Tennis-only adapter & 0.464 & 0.516 & +0.085 & +0.045 & 0 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Table~\ref{tab:tennis-7b} reports the completed 7B tennis transfer and continued-adaptation runs. Deltas are computed against direct transfer of the original TISER adapter to the tennis test set.
+
+\begin{table}[t]
+\centering
+\caption{Qwen2.5-7B tennis-transfer and continued-adaptation results on the 224-example tennis test set.}
+\label{tab:tennis-7b}
+\setlength{\tabcolsep}{3pt}
+{\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+Condition & EM & F1 & $\Delta$EM & $\Delta$F1 & Malf. \\
+\midrule
+Original TISER transfer & 0.580 & 0.701 & -- & -- & 0 \\
+Best tennis-from-TISER & 0.732 & 0.856 & +0.152 & +0.155 & 0 \\
 \bottomrule
 \end{tabular}
 }
@@ -266,7 +285,7 @@ Our reproduction reaches the same general performance regime as the original TIS
 
 \subsection{Tennis-Domain Status}
 
-TISER prompting alone does not improve the small base model on the full tennis test set: EM changes from 0.379 to 0.375 and F1 drops from 0.472 to 0.420, with five malformed outputs. The tennis-only \texttt{full600} LoRA adapter improves over the standard base prompt by +0.085 EM and +0.045 F1. This is preliminary because it uses \texttt{Qwen2.5-0.5B-Instruct} and a small synthetic tennis dataset. Original TISER-adapter transfer and mixed tennis+TISER replay remain missing, so we do not report forgetting or preservation of general TISER performance.
+TISER prompting alone does not improve the small base model on the full tennis test set: EM changes from 0.379 to 0.375 and F1 drops from 0.472 to 0.420, with five malformed outputs. The tennis-only \texttt{full600} LoRA adapter improves over the standard base prompt by +0.085 EM and +0.045 F1. In the 7B setting, the original TISER adapter transfers to tennis at EM~0.580 / F1~0.701, and continued tennis-from-TISER adaptation improves this to EM~0.732 / F1~0.856. Thus the local tennis outputs support a real domain-adaptation gain beyond the lightweight 0.5B result. Mixed replay and original-TISER forgetting remain unreported, so we cannot claim preservation of general TISER performance.
 
 \subsection{Caveats}
 
@@ -278,7 +297,7 @@ Our reproduction of TISER under a single-GPU LoRA setup succeeds, reaching macro
 
 The Context--Memory Conflict extension shows that TISER substantially improves context-faithfulness under counterfactual contexts: faithful-EM rises from 0.380 (vanilla baseline) to 0.787 (TISER fine-tune + TISER prompt). However, the reflection stage mostly rubber-stamps the answer rather than explicitly detecting contradictions between the context and memorised knowledge (4.2\% conflict-naming rate by the LLM-agent audit vs.\ a 2.3\% baseline revise-rate). Event-ordering conflicts (C3) remain a weakness where the model reverts to memorised temporal order despite contradictory context.
 
-For the tennis extension, lightweight tennis-only adaptation produces a small but measurable gain on the 224-example tennis test set (EM 0.379 to 0.464). Original TISER-adapter transfer, mixed tennis+TISER replay, and forgetting on the original TISER sample remain future work.
+For the tennis extension, lightweight tennis-only adaptation produces a small but measurable gain on the 224-example tennis test set (EM 0.379 to 0.464). The completed 7B tennis-from-TISER experiments improve over direct original-TISER transfer from EM~0.580 / F1~0.701 to EM~0.732 / F1~0.856. Mixed tennis+TISER replay and forgetting on the original TISER sample remain unreported.
 
 \section{Reproducibility}
 

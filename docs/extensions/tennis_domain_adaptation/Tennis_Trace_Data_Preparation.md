@@ -17,9 +17,10 @@ Existing tennis data files:
 - `data/tennis/processed/tennis_all_tiser.json`
 - `data/tennis/processed/tennis_raw_audited.json`
 
-Missing required full traced training file:
+Validated traced training files:
 
-- `data/tennis/tennis_train_traced.json`
+- `data/tennis/tennis_train_traced_50.json`
+- `data/tennis/tennis_train_traced_full.json`
 
 Example only:
 
@@ -100,7 +101,7 @@ validate the candidate file:
 
 ```bash
 python scripts/tennis/validate_tennis_traces.py \
-  --input data/tennis/tennis_train_traced.json \
+  --input data/tennis/tennis_train_traced_full.json \
   --failed-output results/tennis_domain_adaptation/trace_validation/failed_examples.json
 ```
 
@@ -127,7 +128,7 @@ python scripts/tennis/validate_tennis_traces.py \
 
 It is safe to start tennis-only adapter training only after:
 
-- `data/tennis/tennis_train_traced.json` exists;
+- `data/tennis/tennis_train_traced_full.json` exists;
 - the validator reports zero invalid records;
 - failed examples JSON is empty;
 - placeholder count is zero;
@@ -135,5 +136,6 @@ It is safe to start tennis-only adapter training only after:
   answer validation;
 - the lightweight test suite still passes.
 
-Until then, tennis-only training remains blocked except for explicit
-plumbing-only smoke checks.
+Those conditions have been satisfied for the committed traced-full training
+file used by the completed tennis runs. New trace-generation batches should
+still pass the same validation before they are used for additional training.

@@ -5,8 +5,14 @@ This extension prepares two adapter conditions:
 - E2: tennis-only adapter
 - E3: mixed adapter trained on tennis plus original TISER replay
 
+Current result status: E2-style tennis adaptation has already been evaluated in
+two forms: a 0.5B standalone `tennis_only_full600_test224` run and a 7B
+tennis-from-TISER grid whose best canonical run is
+`tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011`.
+E3 mixed replay is still not reportable from the current result database.
+
 Do not treat results from placeholder tennis traces as scientific evidence. The
-preferred train file is `data/tennis/tennis_train_traced.json`. If it is absent,
+preferred train file is `data/tennis/tennis_train_traced_full.json`. If it is absent,
 `scripts/tennis/train_tennis.py` falls back to `data/tennis/tennis_train.json`
 for inspection, detects the placeholder-style outputs, and aborts by default.
 Use `--allow-placeholder-traces` only for plumbing checks.
@@ -18,7 +24,7 @@ Use this only to check the training pipeline:
 ```bash
 python scripts/tennis/train_tennis.py \
   --config config/config_tennis_smoke.yaml \
-  --train-file data/tennis/tennis_train_traced.json \
+  --train-file data/tennis/tennis_train_traced_full.json \
   --run-name tiser_tennis_smoke \
   --subset 50 \
   --epochs 1
@@ -41,7 +47,7 @@ outputs/tiser_tennis_smoke
 ```bash
 python scripts/tennis/train_tennis.py \
   --config config/config_tennis.yaml \
-  --train-file data/tennis/tennis_train_traced.json \
+  --train-file data/tennis/tennis_train_traced_full.json \
   --run-name tiser_tennis_only_qwen7b \
   --output-dir outputs/tiser_tennis_only_qwen7b \
   --model-dir model/tiser_tennis_only_qwen7b
@@ -72,7 +78,7 @@ modifying `data/TISER_train.json`.
 
 ```bash
 python scripts/tennis/build_mixed_replay_data.py \
-  --tennis-train data/tennis/tennis_train_traced.json \
+  --tennis-train data/tennis/tennis_train_traced_full.json \
   --tiser-train data/TISER_train.json \
   --tiser-replay-size 500 \
   --seed 42 \
@@ -81,7 +87,7 @@ python scripts/tennis/build_mixed_replay_data.py \
 ```
 
 Do not build mixed replay from `data/tennis/tennis_train.json` for scientific
-training. If `data/tennis/tennis_train_traced.json` is unavailable, the fallback
+training. If `data/tennis/tennis_train_traced_full.json` is unavailable, the fallback
 command below is only a plumbing check and still requires `data/TISER_train.json`:
 
 ```bash

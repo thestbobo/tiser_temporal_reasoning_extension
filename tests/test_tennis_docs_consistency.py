@@ -30,9 +30,9 @@ def test_docs_use_canonical_mixed_adapter_path() -> None:
         assert obsolete_path not in combined
 
 
-def test_docs_do_not_claim_original_tiser_results_when_artifacts_are_missing() -> None:
+def test_docs_do_not_claim_original_tiser_results_without_any_result_artifact() -> None:
     adapter_exists = (REPO_ROOT / "model" / "tiser_qwen7b_full" / "adapter").is_dir()
-    result_exists = (
+    legacy_result_exists = (
         REPO_ROOT
         / "results"
         / "tennis_domain_adaptation"
@@ -40,7 +40,15 @@ def test_docs_do_not_claim_original_tiser_results_when_artifacts_are_missing() -
         / "original_tiser"
         / "metrics.json"
     ).exists()
-    if adapter_exists and result_exists:
+    current_result_exists = (
+        REPO_ROOT
+        / "results"
+        / "tennis_from_tiser_experiments"
+        / "scored"
+        / "original_tiser_qwen7b_test224"
+        / "metrics.json"
+    ).exists()
+    if adapter_exists or legacy_result_exists or current_result_exists:
         return
 
     risky_line = re.compile(
@@ -65,8 +73,11 @@ def test_docs_do_not_claim_original_tiser_results_when_artifacts_are_missing() -
 def test_status_doc_distinguishes_supported_blocked_and_future_experiments() -> None:
     text = STATUS_DOC.read_text(encoding="utf-8")
 
-    assert "## Supported Experiments Now" in text
-    assert "## Blocked Experiments" in text
-    assert "After traced tennis data exists" in text
-    assert "After original TISER data and adapter exist" in text
-    assert "Not valid yet" in text
+    assert "## Completed Tennis-Test Results" in text
+    assert "### 0.5B Standalone Tennis Subexperiment" in text
+    assert "### 7B Tennis-from-TISER Experiments" in text
+    assert "## Not Yet Supported" in text
+    assert "base_qwen_standard_test224" in text
+    assert "original_tiser_qwen7b_test224" in text
+    assert "tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011" in text
+    assert "Mixed tennis plus original-TISER replay results" in text

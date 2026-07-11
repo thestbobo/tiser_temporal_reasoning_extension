@@ -1,0 +1,836 @@
+• ## 1. Executive Summary                                                                                                                                 
+                                                                                                                                                          
+  The audit was read-only. No file, Git reference, artifact, result, or configuration was changed. The repository remained on main at                     
+  eb35a9ca49b3b847f9d845edcabd6fe504899cbb with a clean working tree.                                                                                     
+                                                                                                                                                          
+  Key findings:                                                                                                                                           
+                                                                                                                                                          
+  - The repository contains 704 tracked files totaling 1,428,497,746 bytes (1,362.322 MiB).                                                               
+  - model/ accounts for 1,248.808 MiB. Most of this is adapter weights and 24 byte-identical tokenizer bundles.                                           
+  - Exactly 50 tracked files exceed 5 MiB.                                                                                                                
+  - The scientifically valid 7B experiment design is 18 effective combinations: 3 epochs × 3 learning rates × 2 gradient-accumulation settings, with      
+    effective dropout fixed at 0.05.                                                                                                                      
+                                                                                                                                                          
+  - Four nominal d0p0 runs are not valid dropout ablations: their exported adapters report dropout 0.05 and their weights exactly duplicate paired d0p05  
+    adapters.                                                                                                                                             
+                                                                                                                                                          
+  - The original TISER 7B baseline and best adapted 7B metrics are intact.                                                                                
+  - Canonical loaders, trainers, evaluators, parsers, and fetchers remain unique. Most duplication is in historical orchestration scripts, notebooks, and 
+    documentation.                                                                                                                                        
+                                                                                                                                                          
+  - The README, most tennis planning documents, several context-conflict documents, and report/report.tex are materially stale.                           
+  - The report references a missing figure and still presents tennis as a 0.5B-only/future experiment.                                                    
+  - Reproducibility is limited by missing adapter provenance, missing dataset hashes, machine-specific paths, CLI/notebook-only overrides, and single-seed
+    execution.                                                                                                                                            
+                                                                                                                                                          
+  - The checkout could eventually shrink by approximately 1,193.9 MiB while retaining the best adapter, one tokenizer suite, all small scientific         
+    metadata, and externally archived unique checkpoints.                                                                                                 
+                                                                                                                                                          
+  ## 2. Repository Map                                                                                                                                    
+                                                                                                                                                          
+   Area               Files            Bytes    Contents                                                                                                  
+  ━━━━━━━━━━━━━━━━━  ━━━━━━━  ━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                                   
+   Repository root        5            5,770    README, project metadata, ignore rules                                                                    
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   config/                6           12,305    Baseline, smoke, tennis, and conflict YAMLs                                                               
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   data/                 13        6,481,129    Raw, processed, split, and traced tennis datasets                                                         
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   docs/                 11          164,711    Tennis and context-conflict plans, guides, and reports                                                    
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   gridsearch/           26           38,908    24 generated YAMLs and training manifests                                                                 
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   model/               328    1,309,469,750    22 7B adapter bundles and two 0.5B smoke bundles                                                          
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   notebooks/             3           82,129    Baseline, smoke, and tennis Colab workflows                                                               
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   report/                3           36,160    LaTeX report and two update summaries                                                                     
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   results/             234      111,790,582    Tennis and context-conflict artifacts                                                                     
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   scripts/              30          212,907    3 root, 9 conflict, and 18 tennis entrypoints                                                             
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   src/                  37          166,386    Canonical implementation packages                                                                         
+  ─────────────────  ───────  ───────────────  ────────────────────────────────────────────────────────                                                   
+   tests/                 8           37,009    Lightweight project tests                                                                                 
+                                                                                                                                                          
+  src/ is divided into:                                                                                                                                   
+                                                                                                                                                          
+  - src/model: model and adapter loading                                                                                                                  
+  - src/train: trainer construction                                                                                                                       
+  - src/eval: generic evaluation                                                                                                                          
+  - src/inference: generation/parsing                                                                                                                     
+  - src/data: source-data fetching                                                                                                                        
+  - src/tennis: tennis preparation, trace generation, and scoring                                                                                         
+  - src/conflict: context-memory-conflict pipeline                                                                                                        
+  - src/utils: shared I/O and configuration helpers                                                                                                       
+                                                                                                                                                          
+  Results are distributed as:                                                                                                                             
+                                                                                                                                                          
+   Result tree                               Files          Bytes                                                                                         
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━  ━━━━━━━━━━━━━                                                                                        
+   results/context_memory_conflict/             36    101,906,278                                                                                         
+  ────────────────────────────────────────  ───────  ─────────────                                                                                        
+   results/tennis_domain_adaptation/           101      3,381,852                                                                                         
+  ────────────────────────────────────────  ───────  ─────────────                                                                                        
+   results/tennis_from_tiser_experiments/       97      6,502,452                                                                                         
+                                                                                                                                                          
+  A duplicated raw dataset was found:                                                                                                                     
+                                                                                                                                                          
+  - data/tennis/raw/tennis.json — 380,991 bytes                                                                                                           
+  - data/tennis/raw/tennis_raw.json — 380,991 bytes                                                                                                       
+  - Both have SHA-256 71a845dc592e9ed5ad7f4657a0afce2f6f88f76cae5b95adb49d878fdea0d509.                                                                   
+                                                                                                                                                          
+  A consumer-reference check should decide which filename is canonical before either is removed.                                                          
+                                                                                                                                                          
+  ## 3. Large Tracked Files                                                                                                                               
+                                                                                                                                                          
+  Exactly 50 tracked files exceed 5 MiB.                                                                                                                  
+                                                                                                                                                          
+  For every row below, two exact files exceed the threshold:                                                                                              
+                                                                                                                                                          
+  - <run directory>/adapter/adapter_model.safetensors                                                                                                     
+  - <run directory>/adapter/tokenizer.json
+                                                                                                                                                          
+  Every tokenizer is 12,179,339 bytes. M01–M22 weights are 40,400,200 bytes; M23–M24 weights are 8,676,008 bytes.                                         
+                                                                                                                                                          
+   ID     Exact run directory                                                              Weight purpose                                                 
+  ━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                  
+   M01    model/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p0_20260616_095331_001     Invalid nominal-dropout 7B run                                 
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M02    model/tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M03    model/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p0_20260616_095331_003     Invalid nominal-dropout 7B run                                 
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M04    model/tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M05    model/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p0_20260616_095331_005     Invalid nominal-dropout 7B run                                 
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M06    model/tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M07    model/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p0_20260616_095331_007     Invalid nominal-dropout 7B run                                 
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M08    model/tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M09    model/tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001     Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M10    model/tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002     Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M11    model/tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007     Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M12    model/tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008     Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M13    model/tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M14    model/tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M15    model/tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011    Best canonical 7B run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M16    model/tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M17    model/tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013     Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M18    model/tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014     Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M19    model/tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M20    model/tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M21    model/tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018    Canonical 7B grid run                                          
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M22    model/tennis_from_tiser_qwen7b_20260616_093822                                   Legacy run filling the e3/2e-4/GA4 grid slot                   
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M23    model/tiser_tennis_smoke                                                         Preliminary tennis-only 0.5B smoke adapter                     
+  ─────  ───────────────────────────────────────────────────────────────────────────────  ──────────────────────────────────────────────                  
+   M24    model/tiser_tennis_full600_smoke                                                 Preliminary full-600 0.5B smoke adapter                        
+                                                                                                                                                          
+  The other two large files are:                                                                                                                          
+                                                                                                                                                          
+        Bytes       MiB    Path                                                        Purpose                                                            
+  ━━━━━━━━━━━━  ━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                
+   73,933,106    70.508    results/context_memory_conflict/subset/items.jsonl          Derived 15,898-item conflict input/prompt corpus                   
+  ────────────  ────────  ──────────────────────────────────────────────────────────  ────────────────────────────────────────────────────                
+    5,644,115     5.383    results/context_memory_conflict/memory/memory_base.jsonl    Expensive stochastic base-model memory generations                 
+                                                                                                                                                          
+  Duplication findings:                                                                                                                                   
+                                                                                                                                                          
+  - The 24 weights contain only 20 unique hashes.                                                                                                         
+  - M01=M02, M03=M04, M05=M06, and M07=M08 at the tensor level.                                                                                           
+  - All 24 tokenizer suites are byte-identical. Each suite is 16,788,199 bytes:                                                                           
+                                                                                                                                                          
+   File                       Bytes per copy                                                                                                              
+  ━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━                                                                                                             
+   tokenizer.json                 12,179,339                                                                                                              
+  ─────────────────────────  ────────────────                                                                                                             
+   vocab.json                      2,776,833                                                                                                              
+  ─────────────────────────  ────────────────                                                                                                             
+   merges.txt                      1,823,241                                                                                                              
+  ─────────────────────────  ────────────────                                                                                                             
+   tokenizer_config.json               7,513                                                                                                              
+  ─────────────────────────  ────────────────                                                                                                             
+   special_tokens_map.json               644                                                                                                              
+  ─────────────────────────  ────────────────                                                                                                             
+   added_tokens.json                     629                                                                                                              
+                                                                                                                                                          
+  Keeping one suite and removing 23 repeated suites would save 386,128,577 bytes from a checkout. The tokenizer SHA-256 is                                
+  4fc1f8b369879e4c87e1721e5f6972b834cd64f704dd13ea935b6e85765e0369.                                                                                       
+                                                                                                                                                          
+  The large context JSONLs and unique adapters are required for exact reproducibility but are better suited to Git LFS or immutable external storage than 
+  ordinary Git blobs.                                                                                                                                     
+                                                                                                                                                          
+  ## 4. Experiment Inventory                                                                                                                              
+                                                                                                                                                          
+  There are 35 scored directories.                                                                                                                        
+                                                                                                                                                          
+  ### Preliminary Qwen2.5-0.5B baselines                                                                                                                  
+                                                                                                                                                          
+  All are under results/tennis_domain_adaptation/scored/.                                                                                                 
+                                                                                                                                                          
+   Run                             Classification                  N          EM          F1    Malformed responses                                       
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━  ━━━━━━━━━━  ━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━                                      
+   base_qwen_standard_fulltest     Misnamed 20-example subset     20    0.400000    0.449359                      0                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_standard_smoke_10     Smoke                          10    0.600000    0.682051                      0                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_standard_smoke_100    Smoke                         100    0.380000    0.450405                      0                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_standard_test224      Full evaluation               224    0.379464    0.471665                      0                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_tiser_fulltest        Misnamed 20-example subset     20    0.500000    0.578526                      0                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_tiser_smoke_10        Smoke                          10    0.600000    0.741667                      0                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_tiser_smoke_100       Smoke                         100    0.380000    0.401405                      4                                       
+  ──────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                      
+   base_qwen_tiser_test224         Full evaluation               224    0.375000    0.419980                      5                                       
+                                                                                                                                                          
+  ### Tennis-only Qwen2.5-0.5B                                                                                                                            
+                                                                                                                                                          
+   Run                              Classification                  N          EM          F1    Malformed responses                                      
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━  ━━━━━━━━━━  ━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━                                     
+   tennis_only_trace50_smoke_100    Trace-50 smoke                100    0.330000    0.376695                      1                                      
+  ───────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                     
+   tennis_only_full600_fulltest     Misnamed 20-example subset     20    0.450000    0.494444                      0                                      
+  ───────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                     
+   tennis_only_full600_smoke_100    Smoke                         100    0.470000    0.515784                      0                                      
+  ───────────────────────────────  ────────────────────────────  ─────  ──────────  ──────────  ─────────────────────                                     
+   tennis_only_full600_test224      Full evaluation               224    0.464286    0.516414                      0                                      
+                                                                                                                                                          
+  ### Original TISER 7B baseline                                                                                                                          
+                                                                                                                                                          
+  results/tennis_from_tiser_experiments/scored/original_tiser_qwen7b_test224/                                                                             
+                                                                                                                                                          
+  - N: 224                                                                                                                                                
+  - EM: 0.5803571428571429                                                                                                                                
+  - F1: 0.7007924693643546                                                                                                                                
+  - malformed responses: 0                                                                                                                                
+                                                                                                                                                          
+  ### Canonical 18-run tennis-from-TISER grid                                                                                                             
+                                                                                                                                                          
+  All have N=224 and malformed=0.                                                                                                                         
+                                                                                                                                                          
+   Epoch      LR     GA    Run                                                                              EM          F1                                
+  ━━━━━━━  ━━━━━━  ━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━  ━━━━━━━━━━                               
+       1    5e-5      4    tennis_from_tiser_e1_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_001     0.566964    0.681177                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       1    5e-5      8    tennis_from_tiser_e1_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_002     0.540179    0.656501                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       1    1e-4      4    tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_095331_002    0.647321    0.778710                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       1    1e-4      8    tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_095331_004    0.566964    0.681549                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       1    2e-4      4    tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_095331_006    0.691964    0.821288
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       1    2e-4      8    tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_006    0.607143    0.740845                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       2    5e-5      4    tennis_from_tiser_e2_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_007     0.665179    0.805440                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       2    5e-5      8    tennis_from_tiser_e2_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_008     0.558036    0.679193                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       2    1e-4      4    tennis_from_tiser_e2_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_009    0.709821    0.835776                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       2    1e-4      8    tennis_from_tiser_e2_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_010    0.647321    0.784701                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       2    2e-4      4    tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011    0.732143    0.855807                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       2    2e-4      8    tennis_from_tiser_e2_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_012    0.696429    0.827564                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       3    5e-5      4    tennis_from_tiser_e3_lr5e-05_bs4_ga4_r16_a32_d0p05_20260616_104036_013     0.709821    0.838112                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       3    5e-5      8    tennis_from_tiser_e3_lr5e-05_bs4_ga8_r16_a32_d0p05_20260616_104036_014     0.620536    0.752269                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       3    1e-4      4    tennis_from_tiser_e3_lr0.0001_bs4_ga4_r16_a32_d0p05_20260616_104036_015    0.727679    0.846599                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       3    1e-4      8    tennis_from_tiser_e3_lr0.0001_bs4_ga8_r16_a32_d0p05_20260616_104036_016    0.700893    0.836059                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       3    2e-4      4    Legacy tennis_from_tiser_qwen7b_20260616_093822                            0.709821    0.820375                                
+  ───────  ──────  ─────  ─────────────────────────────────────────────────────────────────────────  ──────────  ──────────                               
+       3    2e-4      8    tennis_from_tiser_e3_lr0.0002_bs4_ga8_r16_a32_d0p05_20260616_104036_018    0.727679    0.846546                                
+                                                                                                                                                          
+  The best run improves over the original TISER 7B baseline by:                                                                                           
+                                                                                                                                                          
+  - EM: +0.1517857143                                                                                                                                     
+  - F1: +0.1550145124                                                                                                                                     
+                                                                                                                                                          
+  ### Four invalid nominal-dropout outputs                                                                                                                
+                                                                                                                                                          
+   Nominal run                    EM          F1    Effective dropout                                                                                     
+  ━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━  ━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━                                                                                    
+   e1/1e-4/GA4/d0p0 _001    0.647321    0.778710                 0.05                                                                                     
+  ───────────────────────  ──────────  ──────────  ───────────────────                                                                                    
+   e1/1e-4/GA8/d0p0 _003    0.566964    0.681549                 0.05                                                                                     
+  ───────────────────────  ──────────  ──────────  ───────────────────                                                                                    
+   e1/2e-4/GA4/d0p0 _005    0.674107    0.809468                 0.05                                                                                     
+  ───────────────────────  ──────────  ──────────  ───────────────────                                                                                    
+   e1/2e-4/GA8/d0p0 _007    0.607143    0.740845                 0.05                                                                                     
+                                                                                                                                                          
+  The prediction files are not byte-identical to their paired runs. In particular, the e1/2e-4/GA4 pair has different aggregate metrics despite equal     
+  adapter tensors. Preserve this discrepancy as audit evidence.                                                                                           
+                                                                                                                                                          
+  ### Historical snapshots                                                                                                                                
+                                                                                                                                                          
+  - Legacy malformed snapshot:                                                                                                                            
+    results/tennis_domain_adaptation/trace_generation/generated_traces_full.before_inplace_repair.jsonl — 274,182 bytes, 19 malformed lines.              
+                                                                                                                                                          
+  - Canonical repaired file:                                                                                                                              
+    results/tennis_domain_adaptation/trace_generation/generated_traces_full.jsonl — 291,884 bytes.                                                        
+                                                                                                                                                          
+  - No malformed JSONL structure was identified in canonical active artifacts.                                                                            
+  - Preliminary metrics with nonzero malformed counts describe malformed model responses, not structurally invalid JSONL files.                           
+                                                                                                                                                          
+  ## 5. Grid Integrity Findings                                                                                                                           
+                                                                                                                                                          
+  The intended effective design is:                                                                                                                       
+                                                                                                                                                          
+  epochs {1,2,3} × LR {5e-5,1e-4,2e-4} × GA {4,8}                                                                                                         
+
+  Fixed effective factors:                                                                                                                                
+                                                                                                                                                          
+  - batch size 4                                                                                                                                          
+  - LoRA rank 16                                                                                                                                          
+  - alpha 32                                                                                                                                              
+  - dropout 0.05                                                                                                                                          
+  - seed 42                                                                                                                                               
+  - cosine scheduler                                                                                                                                      
+  - 4-bit NF4 loading                                                                                                                                     
+  - same traced-full training file                                                                                                                        
+  - same original TISER adapter                                                                                                                           
+                                                                                                                                                          
+  Training manifests:                                                                                                                                     
+                                                                                                                                                          
+  - gridsearch/tennis_from_tiser_qwen7b_20260616_095331/manifest.json                                                                                     
+      - 7 rows, all ok                                                                                                                                    
+      - stopped after index 7                                                                                                                             
+      - an eighth YAML exists but has no manifest row, model, or result                                                                                   
+                                                                                                                                                          
+  - gridsearch/tennis_from_tiser_qwen7b_20260616_104036/manifest.json                                                                                     
+      - 18 intended rows                                                                                                                                  
+      - 14 ok                                                                                                                                             
+      - 4 skipped_existing                                                                                                                                
+      - reused early _002, _004, _006, and legacy e3/2e-4/GA4                                                                                             
+                                                                                                                                                          
+  The evaluation manifest has:                                                                                                                            
+                                                                                                                                                          
+  - 25 rows                                                                                                                                               
+  - 17 ok                                                                                                                                                 
+  - 8 skipped_existing                                                                                                                                    
+  - 22 unique run names                                                                                                                                   
+  - 3 duplicated run-name rows:                                                                                                                           
+      - d0p05 _002: twice, both skipped                                                                                                                   
+      - d0p05 _004: twice, both skipped                                                                                                                   
+      - d0p05 _006: once ok, once skipped                                                                                                                 
+                                                                                                                                                          
+  - The first seven rows have combo_key: null.                                                                                                            
+  - Its stored output paths still use results/tennis_domain_adaptation/....                                                                               
+                                                                                                                                                          
+  The legacy run tennis_from_tiser_qwen7b_20260616_093822 supplies the e3/2e-4/GA4 combination. It is the legacy member of the 18-combination design,     
+  although it occupies manifest slot 17; _018 is the ordinary GA8 final row. There is no _017 YAML.                                                       
+                                                                                                                                                          
+  Valid analyses:                                                                                                                                         
+                                                                                                                                                          
+  - Epoch effects: compare epochs while holding LR and GA fixed.                                                                                          
+  - Learning-rate effects: compare LR while holding epoch and GA fixed.                                                                                   
+  - GA effects: compare GA while holding epoch and LR fixed.                                                                                              
+  - GA4 versus GA8 also changes effective batch size from 16 to 32; describe it as a GA/effective-batch comparison.                                       
+  - All effects are single-seed observations.                                                                                                             
+  - Dropout is not a valid ablation because no effective dropout variation occurred.                                                                      
+                                                                                                                                                          
+  ## 6. Path and Portability Problems                                                                                                                     
+                                                                                                                                                          
+   Pattern                                       Locations and impact                                                                                     
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   /Users/                                       config/config.yaml:11, config/config_smoke.yaml:14, and config/conflict.yaml:12 contain personal         
+                                                 fallback roots                                                                                           
+  ────────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+   C:\Users\, OneDrive, Desktop                  Preliminary 0.5B metrics/run metadata and both adapter-comparison generations contain personal Windows   
+                                                 paths                                                                                                    
+  ────────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+   /content/, /content/drive/, Google Drive      Systematic throughout the tennis notebook and 7B run_meta.json, metrics.json, and metrics_report.md      
+                                                 files                                                                                                    
+  ────────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Old results/tennis_domain_adaptation paths    Present in grid_eval_manifest.json, every 7B metrics report, comparison rows, and run metadata even      
+                                                 though canonical artifacts moved                                                                         
+  ────────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Missing checkpoints/adapter                   Required by actual continued-training metadata and original-baseline evaluation metadata                 
+  ────────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Missing model/tiser_qwen7b_full/adapter       Required by config/conflict.yaml                                                                         
+  ────────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Missing documented adapters                   Docs reference model/tiser_tennis_only_qwen7b/adapter, model/tiser_tennis_mixed_replay_qwen7b/adapter,   
+                                                 model/tennis_only_qwen7b/adapter, and model/mixed_tennis_tiser_replay_qwen7b/adapter; none exists        
+                                                                                                                                                          
+  Historical metadata should not be silently rewritten. Portability should be restored through a new canonical manifest mapping run IDs to relative paths 
+  and immutable external adapter URIs.                                                                                                                    
+                                                                                                                                                          
+  ## 7. Reproducibility Gaps                                                                                                                              
+                                                                                                                                                          
+  ### Configuration status                                                                                                                                
+                                                                                                                                                          
+   Configuration                              Status                                                                                                      
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+   config/config.yaml                         Near-standalone if external data/network prerequisites are available; personal /Users/... fallback remains  
+  ─────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+   config/config_smoke.yaml                   Same qualification                                                                                          
+  ─────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+   config/config_tennis_full600_smoke.yaml    Closest standalone completed 0.5B workflow                                                                  
+  ─────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+   config/config_tennis.yaml                  Not a standalone tennis-from-TISER reproduction config; missing traced file and base_adapter                
+  ─────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+   config/config_tennis_smoke.yaml            References missing tennis_train_traced.json; fallback changes intended input                                
+  ─────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+   config/conflict.yaml                       Depends on missing external TISER adapter and staged conflict artifacts                                     
+  ─────────────────────────────────────────  ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+   24 grid YAMLs                              Require notebook/CLI overrides for traced-full data, base adapter, and run name                             
+                                                                                                                                                          
+  Requested/effective discrepancies:                                                                                                                      
+                                                                                                                                                          
+  - Four YAML/run metadata records request dropout 0.0; exported adapters use 0.05.                                                                       
+  - Grid YAMLs request data/tennis/tennis_train_traced.json, which is absent.                                                                             
+  - Actual runs use data/tennis/tennis_train_traced_full.json.                                                                                            
+  - Grid YAMLs omit model.base_adapter; notebook commands supplied /content/.../checkpoints/adapter.                                                      
+  - Evaluation YAML requests max_new_tokens: 512; actual notebook/evaluation metadata records 256.                                                        
+  - Output directories were moved after execution.                                                                                                        
+                                                                                                                                                          
+  Fields that are present:                                                                                                                                
+                                                                                                                                                          
+  - seed 42                                                                                                                                               
+  - cosine scheduler                                                                                                                                      
+  - model name                                                                                                                                            
+  - 4-bit/NF4 settings                                                                                                                                    
+  - LoRA parameters                                                                                                                                       
+  - Torch, Transformers, PEFT, and TRL versions                                                                                                           
+  - resolved effective training config                                                                                                                    
+  - some training runtime metrics                                                                                                                         
+                                                                                                                                                          
+  Missing or fragmented provenance:                                                                                                                       
+                                                                                                                                                          
+  - base-adapter content hash, immutable URI, and source revision                                                                                         
+  - pinned base-model/tokenizer revision                                                                                                                  
+  - dataset checksums, exact source revision, repair lineage, and row-level provenance                                                                    
+  - GPU model per run, driver, OS, Python version, and complete CUDA environment                                                                          
+  - environment lock or container image                                                                                                                   
+  - hashes for predictions and unique adapters in manifests                                                                                               
+  - repeated seeds                                                                                                                                        
+  - one manifest connecting requested YAML, CLI overrides, effective config, hardware, runtime, weights, and metrics                                      
+                                                                                                                                                          
+  Notebook output suggests an A100-SXM4-40GB session, but this is not durable per-run hardware provenance.                                                
+                                                                                                                                                          
+  ## 8. Code and Interface Cleanup Candidates                                                                                                             
+                                                                                                                                                          
+  Canonical implementations remain unique:                                                                                                                
+                                                                                                                                                          
+   Concern              Canonical implementation                                                                                                          
+  ━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                                                                                
+   Loader               src/model/loader.py                                                                                                               
+  ───────────────────  ───────────────────────────────────────────────────                                                                                
+   Trainer              src/train/trainer.py                                                                                                              
+  ───────────────────  ───────────────────────────────────────────────────                                                                                
+   Generic evaluator    src/eval/run_eval.py                                                                                                              
+  ───────────────────  ───────────────────────────────────────────────────                                                                                
+   Parser               src/inference/parser.py                                                                                                           
+  ───────────────────  ───────────────────────────────────────────────────                                                                                
+   Fetcher              src/data/fetch.py
+  ───────────────────  ───────────────────────────────────────────────────                                                                                
+   Tennis scorer        src/tennis/eval.py, intentionally domain-specific                                                                                 
+                                                                                                                                                          
+  Thin delegates remain appropriate:                                                                                                                      
+                                                                                                                                                          
+  - scripts/train.py                                                                                                                                      
+  - scripts/evaluate.py                                                                                                                                   
+  - scripts/fetch_data.py                                                                                                                                 
+  - lazy exports in package __init__.py files                                                                                                             
+                                                                                                                                                          
+  Cleanup candidates, without refactoring yet:                                                                                                            
+                                                                                                                                                          
+  - scripts/tennis/compare_adapters.py --dynamic is an intentional compatibility no-op and should be documented or retired.                               
+  - aggregate_tennis_results.py and run_experiment_plan.py encode an older fixed E0–E3 matrix rather than the canonical 18-run grid.                      
+  - generate_tennis_traces.py overlaps newer prepare/merge/validate trace scripts.                                                                        
+  - Normalization/version-metadata logic is repeated across:                                                                                              
+      - src/eval/metrics.py                                                                                                                               
+      - src/tennis/build_dataset.py                                                                                                                       
+      - src/tennis/trace_generation.py                                                                                                                    
+      - src/utils/io.py                                                                                                                                   
+      - src/conflict/io.py                                                                                                                                
+                                                                                                                                                          
+  - notebooks/colab_tennis_experiments.ipynb has 39 cells, 15 executed cells, and 26 retained outputs.                                                    
+      - Cell 3 hard-codes a Drive/Desktop checkout.                                                                                                       
+      - Cell 11 enables training despite adjacent text saying full stages are disabled.                                                                   
+      - Cells 29 and 32 duplicate grid/evaluation orchestration.                                                                                          
+                                                                                                                                                          
+  - colab_run.ipynb and colab_smoke.ipynb overlap in setup but are legitimately full/smoke variants.                                                      
+                                                                                                                                                          
+  vLLM support remains present; the cleanup issue is missing documentation and duplicated notebook orchestration, not duplicate canonical evaluation      
+  implementations.                                                                                                                                        
+                                                                                                                                                          
+  ## 9. Documentation Problems                                                                                                                            
+                                                                                                                                                          
+  All material tracked-document inconsistencies found were:                                                                                               
+                                                                                                                                                          
+  ### README                                                                                                                                              
+                                                                                                                                                          
+  - [README.md:7](C:/Users/aless/OneDrive/Desktop/dnlp/tiser_temporal_reasoning_extension/tiser_temporal_reasoning_extension/README.md:7) describes the   
+    reported baseline as 4-bit QLoRA, while the report describes the actual reproduced baseline as bf16 LoRA without quantization. These should be        
+    distinguished as supported mode versus executed experiment.                                                                                           
+                                                                                                                                                          
+  - Line 13 calls one YAML the single source of truth, contradicted by six primary configs, 24 grid YAMLs, and required CLI overrides.                    
+  - Lines 21–23 omit tennis/conflict entrypoints and notebooks and claim data/models are ignored even though tennis data and adapters are tracked.        
+  - Lines 79–97 describe tennis work as planned/WIP despite completed 7B integration and results.                                                         
+  - No maintained README command documents:                                                                                                               
+      - continued training with --base-adapter                                                                                                            
+      - tennis_train_traced_full.json                                                                                                                     
+      - canonical best-run evaluation                                                                                                                     
+      - vLLM evaluation usage                                                                                                                             
+                                                                                                                                                          
+  ### Tennis documentation                                                                                                                                
+                                                                                                                                                          
+  Under docs/tennis_domain_adaptation/:                                                                                                                   
+                                                                                                                                                          
+  - Current_Status_and_Next_Steps.md:3-6,17-18,28-40,132-170 claims only prompting exists and that scored results/training/transfer are blocked.          
+  - Tennis_Trace_Data_Preparation.md:20-26,126-139 claims full traced data is absent. Lines 84–91 also place timeline/reflection incorrectly inside       
+    <reasoning>.                                                                                                                                          
+                                                                                                                                                          
+  - Tennis_Training_Commands.md:3-12,39-65 documents fresh tennis-only and mixed-replay paths but omits continued training from TISER.                    
+  - Tennis_Domain_Adaptation_Plan.md:217,338,350 remains future/blocked.                                                                                  
+  - Tennis_Domain_Adaptation_Agent_Handoff.md:789-815 says modules must be created although they now exist.                                               
+  - COLAB_EXPERIMENT_RUN_GUIDE.md:124-158,334,590-593 retains obsolete prerequisites and nonexistent adapter paths.                                       
+  - Tennis_Smoke_Results.md is valid historical 0.5B evidence but is not labeled preliminary or linked to final 7B results.                               
+  - The plan, run guide, cheatsheet, status, and training-command documents overlap heavily.                                                              
+                                                                                                                                                          
+  ### Context-conflict documentation                                                                                                                      
+                                                                                                                                                          
+  - Extension_ContextMemoryConflict_ExperimentPlan.md:17,305 says M7 was not run.                                                                         
+  - Its line 31 reports an obsolete baseline of .887/.955 rather than .878/.949.                                                                          
+  - Extension_ContextMemoryConflict_Report.md:34,211 calls conflict detection a lexical proxy and says an LLM judge is future work.                       
+  - report/report.tex:136 instead claims a completed Claude audit.                                                                                        
+  - report/REPORT_LATEX_UPDATE_SUMMARY.md:12,17,34,37,80,98 preserves old 3.8%/12.1% lexical-proxy results while the report uses 4.2%/7.4% agent-audit    
+    rates.                                                                                                                                                
+                                                                                                                                                          
+  ## 10. Report Problems                                                                                                                                  
+                                                                                                                                                          
+  Critical issues in [report/report.tex](C:/Users/aless/OneDrive/Desktop/dnlp/tiser_temporal_reasoning_extension/tiser_temporal_reasoning_extension/      
+  report/report.tex):                                                                                                                                     
+                                                                                                                                                          
+  - Line 199 references report/figures/conflict_summary.png, but the file is absent. This is a LaTeX build blocker.                                       
+  - Lines 35, 142, 235–251, 269, and 281 present tennis as 0.5B-only and claim original-TISER continuation remains unrun/future.                          
+  - The report omits:                                                                                                                                     
+      - original TISER 7B: N=224, EM 0.580357, F1 0.700792, malformed 0                                                                                   
+      - best adapted 7B: N=224, EM 0.732143, F1 0.855807, malformed 0                                                                                     
+      - continued-adapter method                                                                                                                          
+      - effective CLI overrides                                                                                                                           
+      - canonical 18-run grid                                                                                                                             
+      - invalid-dropout caveat                                                                                                                            
+                                                                                                                                                          
+  - Line 102 frames tennis as a preservation/forgetting study, but there is no reported general-TISER retention evaluation for the adapted 7B models.     
+  - Lines 172, 195, 263, and 273 contain derived percentages, significance tests, flagged-row counts, or kappa values that should be connected to tracked 
+    scripts/artifacts.                                                                                                                                    
+                                                                                                                                                          
+  - Line 136 needs exact Claude model/version, prompt provenance, and citation.                                                                           
+  - REPORT_LATEX_UPDATE_SUMMARY.md:78 acknowledges that the full baseline artifact supporting some report numbers is absent.                              
+  - Author formatting at lines 17–21 lacks separators/line breaks between some names.
+                                                                                                                                                          
+  Page-limit risk is high: IEEE conference format, a long abstract, four tables, two figures, and extensive methodology/results. The exact page count     
+  could not be measured because compiling would generate files and the audit was explicitly read-only. Restore the missing figure first, then compile in a
+  separately authorized task.                                                                                                                             
+                                                                                                                                                          
+  ## 11. Proposed Canonical Artifact Set                                                                                                                  
+                                                                                                                                                          
+  Keep in ordinary Git:                                                                                                                                   
+                                                                                                                                                          
+  - source, thin entrypoints, tests, configuration templates, and final documentation                                                                     
+  - tracked tennis datasets after licensing/provenance review                                                                                             
+  - original TISER 7B scored directory                                                                                                                    
+  - the 18 canonical 7B scored directories                                                                                                                
+  - compact prediction JSONLs, metrics, run metadata, trainer metrics, and manifests                                                                      
+  - a corrected 18-row grid manifest                                                                                                                      
+  - a 19-condition comparison: original TISER baseline plus 18 effective grid runs                                                                        
+  - per-category results filtered to those 19 conditions                                                                                                  
+  - invalid-dropout audit metadata and hash evidence                                                                                                      
+  - repair notes and checksums for the historical malformed snapshot                                                                                      
+  - a machine-readable artifact manifest containing:                                                                                                      
+      - run ID                                                                                                                                            
+      - byte size                                                                                                                                         
+      - SHA-256                                                                                                                                           
+      - base model and revision                                                                                                                           
+      - base adapter hash/URI                                                                                                                             
+      - dataset hash                                                                                                                                      
+      - requested and effective configuration                                                                                                             
+      - result path                                                                                                                                       
+      - external artifact URI                                                                                                                             
+                                                                                                                                                          
+  Use Git LFS for:                                                                                                                                        
+                                                                                                                                                          
+  - the best M15 adapter if one directly cloneable model is desired
+  - results/context_memory_conflict/subset/items.jsonl if repository-local conflict reproduction is required                                              
+  - results/context_memory_conflict/memory/memory_base.jsonl if downstream reproduction must work directly from a clone                                   
+                                                                                                                                                          
+  Use immutable external storage for:                                                                                                                     
+                                                                                                                                                          
+  - 17 unique non-best 7B adapters                                                                                                                        
+  - the two 0.5B smoke adapters                                                                                                                           
+  - optionally all adapters in one Hugging Face, Zenodo, OSF, or institutional collection                                                                 
+                                                                                                                                                          
+  Current ignore policy covers Python caches, virtual environments, notebook checkpoints, outputs/, W&B, IDE files, shallow data/*.json, checkpoints/,    
+  zip, and tgz files.                                                                                                                                     
+                                                                                                                                                          
+  Important gaps:                                                                                                                                         
+                                                                                                                                                          
+  - no .gitattributes and no Git LFS policy                                                                                                               
+  - no model/ or adapter policy                                                                                                                           
+  - no results/ policy                                                                                                                                    
+  - no *.safetensors, training_args.bin, *.pt, or *.pth                                                                                                   
+  - no prediction/result JSONL policy                                                                                                                     
+  - no repository-level .pytest_cache/                                                                                                                    
+  - no LaTeX auxiliary/PDF/log rules                                                                                                                      
+  - data/*.json does not cover data/tennis/*.json                                                                                                         
+                                                                                                                                                          
+  Consequently, newly generated adapters and results would currently be staged as ordinary Git files.                                                     
+                                                                                                                                                          
+  ## 12. Proposed Deletion/Externalization Set                                                                                                            
+                                                                                                                                                          
+  No item below should be removed during this audit.                                                                                                      
+                                                                                                                                                          
+  ### Exact duplicate tensors: safe deletion after verification                                                                                           
+                                                                                                                                                          
+  Each is 40,400,200 bytes.                                                                                                                               
+                                                                                                                                                          
+   Exact path                                      Canonical replacement    Scientific loss                       Verification                            
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   model/                                          M02 tensor               No, if M01 metadata/results remain    Recheck SHA equality and path consumers 
+   tennis_from_tiser_e1_lr0.0001_bs4_ga4_r16_a3                                                                                                           
+   2_d0p0_20260616_095331_001/adapter/                                                                                                                    
+   adapter_model.safetensors                                                                                                                              
+  ──────────────────────────────────────────────  ───────────────────────  ────────────────────────────────────  ─────────────────────────────────────────
+   model/                                          M04 tensor               No                                    Same                                    
+   tennis_from_tiser_e1_lr0.0001_bs4_ga8_r16_a3                                                                                                           
+   2_d0p0_20260616_095331_003/adapter/                                                                                                                    
+   adapter_model.safetensors                                                                                                                              
+  ──────────────────────────────────────────────  ───────────────────────  ────────────────────────────────────  ─────────────────────────────────────────
+   model/                                          M06 tensor               No                                    Same                                    
+   tennis_from_tiser_e1_lr0.0002_bs4_ga4_r16_a3                                                                                                           
+   2_d0p0_20260616_095331_005/adapter/                                                                                                                    
+   adapter_model.safetensors                                                                                                                              
+  ──────────────────────────────────────────────  ───────────────────────  ────────────────────────────────────  ─────────────────────────────────────────
+   model/                                          M08 tensor               No                                    Same                                    
+   tennis_from_tiser_e1_lr0.0002_bs4_ga8_r16_a3                                                                                                           
+   2_d0p0_20260616_095331_007/adapter/                                                                                                                    
+   adapter_model.safetensors                                                                                                                              
+                                                                                                                                                          
+  Do not delete their run metadata or scored outputs. Those preserve the failed dropout experiment and the metric discrepancy.                            
+                                                                                                                                                          
+  ### Repeated tokenizer suites: conditional deletion                                                                                                     
+                                                                                                                                                          
+  Under every exact M directory in Section 3 except M15, the following six paths are duplicated:                                                          
+                                                                                                                                                          
+  - adapter/tokenizer.json — 12,179,339 bytes                                                                                                             
+  - adapter/vocab.json — 2,776,833 bytes                                                                                                                  
+  - adapter/merges.txt — 1,823,241 bytes                                                                                                                  
+  - adapter/tokenizer_config.json — 7,513 bytes                                                                                                           
+  - adapter/special_tokens_map.json — 644 bytes                                                                                                           
+  - adapter/added_tokens.json — 629 bytes                                                                                                                 
+                                                                                                                                                          
+  Each removable suite is 16,788,199 bytes; 23 suites total 386,128,577 bytes.                                                                            
+                                                                                                                                                          
+  - Reason: all six files are byte-identical.
+  - Canonical replacement: M15’s suite or a pinned upstream Qwen tokenizer revision.                                                                      
+  - Scientific loss: none.                                                                                                                                
+  - Required verification: record all hashes, pin the upstream revision, verify clean tokenizer/adapter loading, and confirm packaging does not assume a  
+    tokenizer inside every run directory.                                                                                                                 
+                                                                                                                                                          
+  ### Unique adapters: externalize, never simply delete                                                                                                   
+                                                                                                                                                          
+  The exact externalization paths are adapter/adapter_model.safetensors under M02, M04, M06, M08–M14, and M16–M22. Each is 40,400,200 bytes; total        
+  686,803,400 bytes.                                                                                                                                      
+                                                                                                                                                          
+  - Reason: unique grid/intermediate checkpoints are unsuitable for ordinary Git.                                                                         
+  - Canonical replacement: immutable model collection with run IDs and SHA-256.                                                                           
+  - Scientific loss: yes if deleted without archival; none after verified archival.                                                                       
+  - Verification: upload, re-download, hash each file, map immutable URIs, and retain small metadata/results in Git.                                      
+                                                                                                                                                          
+  Best adapter:                                                                                                                                           
+                                                                                                                                                          
+  - Path: model/tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011/adapter/adapter_model.safetensors                                 
+  - Size: 40,400,200 bytes                                                                                                                                
+  - Action: move to Git LFS or an immutable model release.                                                                                                
+  - Canonical replacement: same-path LFS pointer or versioned external URI.                                                                               
+  - Scientific loss: none if retrievable and hash-verified.                                                                                               
+  - Verification: clean download/load and recorded SHA/metrics identity.                                                                                  
+                                                                                                                                                          
+  Smoke adapters:                                                                                                                                         
+                                                                                                                                                          
+   Exact path                                                   Size    Reason                          Replacement                     Scientific loss   
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━
+   model/tiser_tennis_smoke/adapter/                     8,676,008 B    Preliminary smoke checkpoint    Versioned historical archive    Yes if unarchived 
+   adapter_model.safetensors                                                                                                                              
+  ────────────────────────────────────────────────────  ─────────────  ──────────────────────────────  ──────────────────────────────  ───────────────────
+   model/tiser_tennis_full600_smoke/adapter/             8,676,008 B    Preliminary smoke checkpoint    Versioned historical archive    Yes if unarchived 
+   adapter_model.safetensors                                                                                                                              
+                                                                                                                                                          
+  Verify hashes, adapter configs, base-model identity, and that no active command requires the local paths.                                               
+                                                                                                                                                          
+  ### Large context artifacts                                                                                                                             
+                                                                                                                                                          
+   Exact path                  Size    Reason                       Replacement                  Scientific loss               Verification               
+  ━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   results/            73,933,106 B    Large derived prompt         LFS or immutable dataset     Yes if neither archived       SHA, 15,898 IDs, split     
+   context_memory_c                    corpus                       release                      nor deterministically         counts, source revision,   
+   onflict/subset/                                                                               rebuildable                   licensing, build recipe    
+   items.jsonl                                                                                                                                            
+  ──────────────────  ──────────────  ───────────────────────────  ───────────────────────────  ────────────────────────────  ────────────────────────────
+   results/             5,644,115 B    Expensive stochastic         LFS or immutable             Yes if unarchived             SHA, IDs, sampling config, 
+   context_memory_c                    generated output             experiment release                                         model revision, downstream 
+   onflict/memory/                                                                                                             reproducibility            
+   memory_base.json                                                                                                                                       
+   l                                                                                                                                                      
+                                                                                                                                                          
+  ### Historical malformed snapshot                                                                                                                       
+                                                                                                                                                          
+  - Path: results/tennis_domain_adaptation/trace_generation/generated_traces_full.before_inplace_repair.jsonl                                             
+  - Size: 274,182 bytes                                                                                                                                   
+  - Reason: legacy snapshot with 19 malformed lines.                                                                                                      
+  - Canonical active replacement: generated_traces_full.jsonl, 291,884 bytes.                                                                             
+  - Scientific loss: yes if repair lineage is erased.                                                                                                     
+  - Recommendation: retain in Git or externalize with checksum, malformed-line list, and inplace_repair_notes_full.json; do not simply delete.            
+                                                                                                                                                          
+  ### Stale placeholder summaries                                                                                                                         
+                                                                                                                                                          
+  These contain no valid final result and may be removed only after canonical replacements exist.                                                         
+                                                                                                                                                          
+   Exact path             Size    Reason                           Canonical replacement              Scientific loss    Verification                     
+  ━━━━━━━━━━━━━━━━━━  ━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   results/            1,214 B    Principal entries are MISSING    Correct 19-condition category      None               Verify replacement includes      
+   tennis_domain_ad                                                analysis                                              original 7B + 18 grid            
+   aptation/                                                                                                                                              
+   comparisons/                                                                                                                                           
+   category_analysi
+   s.md                                                                                                                                                   
+  ──────────────────  ─────────  ───────────────────────────────  ─────────────────────────────────  ─────────────────  ──────────────────────────────────
+   results/            2,733 B    Stale placeholder                Canonical 7B summary JSON          None               Schema/metric comparison         
+   tennis_domain_ad                                                                                                                                       
+   aptation/                                                                                                                                              
+   comparisons/                                                                                                                                           
+   final_results_su                                                                                                                                       
+   mmary.json                                                                                                                                             
+  ──────────────────  ─────────  ───────────────────────────────  ─────────────────────────────────  ─────────────────  ──────────────────────────────────
+   results/              685 B    Stale placeholder                Canonical 7B CSV                   None               Exact metric comparison          
+   tennis_domain_ad                                                                                                                                       
+   aptation/                                                                                                                                              
+   comparisons/                                                                                                                                           
+   final_results_ta                                                                                                                                       
+   ble.csv                                                                                                                                                
+  ──────────────────  ─────────  ───────────────────────────────  ─────────────────────────────────  ─────────────────  ──────────────────────────────────
+   results/              900 B    Stale placeholder                Canonical 7B Markdown table        None               Exact metric comparison          
+   tennis_domain_ad                                                                                                                                       
+   aptation/                                                                                                                                              
+   comparisons/                                                                                                                                           
+   final_results_ta                                                                                                                                       
+   ble.md                                                                                                                                                 
+  ──────────────────  ─────────  ───────────────────────────────  ─────────────────────────────────  ─────────────────  ──────────────────────────────────
+   results/              584 B    All conditions missing           Completed retention analysis,      None currently     Do not replace with unsupported  
+   tennis_domain_ad                                                if actually run                                       claims                           
+   aptation/                                                                                                                                              
+   comparisons/                                                                                                                                           
+   forgetting_analy                                                                                                                                       
+   sis.md                                                                                                                                                 
+                                                                                                                                                          
+  Four zero-byte error-analysis placeholders are also removal candidates after checking script expectations:                                              
+                                                                                                                                                          
+  - results/tennis_domain_adaptation/error_analysis/broken_by_tennis_only.jsonl                                                                           
+  - results/tennis_domain_adaptation/error_analysis/fixed_by_mixed_replay.jsonl                                                                           
+  - results/tennis_domain_adaptation/error_analysis/fixed_by_tennis_only.jsonl                                                                            
+  - results/tennis_domain_adaptation/error_analysis/persistent_failures.jsonl                                                                             
+                                                                                                                                                          
+  Each is 0 bytes; no scientific information would be lost.                                                                                               
+                                                                                                                                                          
+  ### Historical documentation consolidation                                                                                                              
+                                                                                                                                                          
+  These are not size-driven removals. Archive or delete only after transferring valid content.                                                            
+                                                                                                                                                          
+   Exact path                                                        Size    Replacement                                           Scientific-loss risk   
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━
+   report/TENNIS_EXTENSION_LATEX_UPDATE_SUMMARY.md                2,030 B    Final corrected report.tex                            Low                    
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   report/REPORT_LATEX_UPDATE_SUMMARY.md                          6,548 B    Final report plus retained missing-baseline caveat    Medium                 
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/                                 7,040 B    Current status page                                   Low                    
+   Current_Status_and_Next_Steps.md                                                                                                                       
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/                                25,315 B    Canonical design/provenance note                      Medium                 
+   Tennis_Domain_Adaptation_Agent_Handoff.md                                                                                                              
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/                                30,769 B    Historical archive or final methods page              Medium                 
+   Tennis_Domain_Adaptation_Plan.md                                                                                                                       
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/                                21,759 B    One maintained runbook                                Medium                 
+   COLAB_EXPERIMENT_RUN_GUIDE.md                                                                                                                          
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/COLAB_COMMANDS_CHEATSHEET.md     5,256 B    Maintained runbook                                    Low/medium             
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/                                 4,522 B    Canonical trace workflow                              Medium                 
+   Tennis_Trace_Data_Preparation.md                                                                                                                       
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/                                 3,444 B    Canonical trace workflow                              Medium                 
+   Tennis_Trace_Generation_Instructions.md                                                                                                                
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/Tennis_Smoke_Results.md          1,404 B    Labeled preliminary archive                           None if metrics remain 
+  ────────────────────────────────────────────────────────────  ──────────  ────────────────────────────────────────────────────  ────────────────────────
+   docs/tennis_domain_adaptation/Tennis_Training_Commands.md      5,044 B    Real 7B continuation runbook                          High if removed first  
+                                                                                                                                                          
+  The exact duplicate raw dataset pair is a cleanup candidate, but deletion should stop until code/document consumers determine which filename to retain. 
+                                                                                                                                                          
+  ## 13. Ordered Cleanup Plan                                                                                                                             
+                                                                                                                                                          
+  1. Record a checksum/size manifest for every dataset, adapter, prediction, and result before changing anything.                                         
+  2. Define the canonical 19-condition result set: original TISER 7B plus 18 effective grid runs.                                                         
+  3. Produce a corrected 18-row grid manifest and comparison files without including the four nominal-dropout runs.                                       
+  4. Preserve a compact invalid-dropout audit containing requested/effective configurations, paired hashes, and the metric discrepancy.                   
+  5. Pin the base model, tokenizer, original TISER adapter, and datasets by revision/hash/URI.                                                            
+  6. Restore or replace the missing report figure and connect every reported statistic to a tracked artifact/script.                                      
+  7. Update the report with the 7B method, baseline, best result, grid caveats, and no unsupported retention claim.                                       
+  8. Replace the README/status/training documentation with one maintained continuation/evaluation runbook, including Transformers and vLLM commands.      
+  9. Upload all unique adapters to immutable storage, re-download, and verify every hash.                                                                 
+  10. Move the best adapter and reproducibility-critical context JSONLs to LFS if repository-local access is required.                                    
+  11. Deduplicate tokenizer suites only after a clean-load test with a pinned tokenizer revision.                                                         
+  12. Remove the four duplicate tensors and stale placeholder summaries only after their replacements and references are verified.                        
+  13. Label or archive preliminary 0.5B, smoke, orphan-grid, and pre-repair materials.                                                                    
+  14. Add .gitattributes and explicit artifact policies to .gitignore.                                                                                    
+  15. Validate from a clean clone. Treat any history rewrite/LFS migration of already published blobs as a separate, explicitly approved project.         
+                                                                                                                                                          
+  ## 14. Risks and Stop Conditions                                                                                                                        
+                                                                                                                                                          
+  Stop cleanup if any of the following applies:                                                                                                           
+                                                                                                                                                          
+  - An external adapter or dataset has not been re-downloaded and hash-verified.                                                                          
+  - The original TISER base adapter cannot be identified by immutable hash/revision.                                                                      
+  - A tokenizer consumer requires per-run local files and no pinned fallback has been tested.                                                             
+  - The invalid d0p0 metadata or prediction discrepancy would be lost.                                                                                    
+  - The 19-line malformed snapshot has not been represented in repair-lineage documentation.                                                              
+  - A unique checkpoint would be deleted rather than archived.                                                                                            
+  - Dataset licensing does not permit external publication.                                                                                               
+  - The missing report figure or its source statistics cannot be recovered.                                                                               
+  - Report claims cannot be tied to tracked analysis artifacts.                                                                                           
+  - A forgetting/preservation claim is proposed without a general-TISER retention evaluation.                                                             
+  - Cleanup would require rewriting published Git history without team coordination.                                                                      
+  - Any dropout conclusion treats the nominal d0p0 runs as effective dropout-zero models.                                                                 
+  - Any cleanup script uses directory-wide deletion instead of the explicitly verified paths.                                                             
+                                                                                                                                                          
+  No changes were made during this audit.                                                                                                                 
+                                             

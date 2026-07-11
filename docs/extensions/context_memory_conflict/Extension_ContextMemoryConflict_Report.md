@@ -1,15 +1,15 @@
 ---
 tags: [polito, dnlp, project, t5-temporal-reasoning, tiser, extension, knowledge-conflict, report, living-document]
 created: 2026-06-02
-updated: 2026-06-04
-status: experimenting-closed · analysis-phase
+updated: 2026-07-11
+status: final-results-aligned
 aliases: [Context-Memory Conflict Report, E6 Report, Faithfulness Probe Report]
 ---
 
 # Context–Memory Conflict in TISER — Research Report
 
 > [!info] What this document is, read me first
-> This is the **handoff doc for the write-up**. It tells you, end-to-end and in plain language: *what we built, what we ran, what came out, and what it means.* The **design/decision record** lives in [[Extension_ContextMemoryConflict_ExperimentPlan]]; the **baseline** in `TISER_training_notes.md`. The **experimenting phase is closed** (modules M0→M6 ran); we are now in the **analysis phase** (no new model runs, just aggregating the results below).
+> This is the **handoff doc for the write-up**. It tells you, end-to-end and in plain language: *what we built, what we ran, what came out, and what it means.* The **design/decision record** lives in [[Extension_ContextMemoryConflict_ExperimentPlan]]; the **baseline** in `TISER_training_notes.md`. The **experimenting phase is closed**: M0→M6 produced the conflict set and run matrix, M7 added a post-hoc LLM-agent audit of the TISER-prompt reflections, and M10 produced the final analysis tables.
 
 ---
 
@@ -18,7 +18,7 @@ aliases: [Context-Memory Conflict Report, E6 Report, Faithfulness Probe Report]
 We probe whether the fine-tuned **TISER** model (Qwen2.5-7B-Instruct + LoRA SFT) trusts **what it reads** or **what it remembers**, and whether its `<reflection>` step actually *notices* a contradiction. We take real-entity temporal-QA items the model **provably knows** (it answers them correctly with *no context*), then **deterministically edit the context** so it points to a *different* answer than memory. Running the edited items through a 2×2 matrix of {fine-tune vs vanilla Qwen} × {TISER 4-tag prompt vs plain prompt}, we find:
 
 - **The TISER pipeline makes the model a faithful reader (H1 ✅):** it follows the edited text **78.7%** of the time, **+0.213** over the same model with a plain prompt and **+0.226** over vanilla Qwen with the TISER prompt.
-- **But it does not *notice* the conflict (H2 ✅, "silent override"):** when it gives the faithful answer, its reflection mentions the contradiction only **3.8%** of the time, essentially the 2.3% "rubber-stamp" rate we measured on normal data. It is right for the wrong reason.
+- **But it does not *notice* the conflict (H2 ✅, "silent override"):** a post-hoc LLM-agent audit of the TISER-prompt reflections finds that the star cell explicitly names the contradiction only **4.2%** of the time, barely above the 2.3% "rubber-stamp" rate measured on normal data. It is usually right for the wrong reason. The earlier lexical proxy rates (3.8% star cell, 12.1% base×TISER) are retained as first-pass diagnostics but are superseded by the audit for final reporting.
 - **One conflict type defeats it (H4 ✅):** date-shift and entity-swap are easy (0.94 / 0.97 faithful), but **order-reversal collapses to 0.37**, the only case where memory beats the text. The model reverts to the event order it remembers.
 - **H3 (does fame predict faithfulness?) is deferred** — it needs the entity-fame signal we scoped out.
 
@@ -31,7 +31,7 @@ We probe whether the fine-tuned **TISER** model (Qwen2.5-7B-Instruct + LoRA SFT)
 | # | Hypothesis | Verdict | Evidence |
 |---|---|---|---|
 | **H1** | The TISER prompt (timeline+reflection) is **more context-faithful** than a plain prompt | ✅ **supported** | faithful-EM **0.787** (TISER prompt) vs **0.574** (plain), same fine-tune → **+0.213**; +0.181 on vanilla Qwen |
-| **H2** | When faithful, `<reflection>` **names the conflict** (else: *silent override*) | ✅ **silent override** | faithful 78.7% but reflection names the clash only **3.8%** (≈ the **2.3%** baseline null). Lexical proxy; an LLM judge is future work |
+| **H2** | When conflict is present, `<reflection>` **names the conflict** (else: *silent override*) | ✅ **silent override** | faithful 78.7% but the LLM-agent audit says the star-cell reflection names the clash only **4.2%** of the time (≈ the **2.3%** baseline null). The older lexical proxy is archival, not the final detection metric |
 | **H3** | Faithfulness depends on **entity fame** | ⏸️ **deferred** | needs the fame signal (M8, scoped out → Plan §11) |
 | **H4** | Faithfulness depends on **conflict type** | ✅ **supported** | C1 0.936 · C2 0.971 · **C3 0.366** (only class where memorised > faithful) |
 
@@ -44,11 +44,12 @@ We probe whether the fine-tuned **TISER** model (Qwen2.5-7B-Instruct + LoRA SFT)
 
 **Subject.** Our frozen baseline: `Qwen2.5-7B-Instruct` + attention-only LoRA SFT (TISER reproduction). Full-test scores: **macro-EM 0.878 / macro-F1 0.949** (`…/baseline_full/tiser_qwen7b_full_FULL/…/metrics.json`; per-split: L2 0.907, L3 0.961, TimeQA-easy 0.980, TimeQA-hard 0.970). The probe is **inference-only**, nothing is re-trained.
 
-**Pipeline (6 stages + analysis).** Each consumes the previous artifact and writes a new one + `run_meta.json`:
+**Pipeline (7 stages + analysis).** Each consumes the previous artifact and writes a new one + `run_meta.json`:
 
 ```
 M0 subset ─► M1 closed-book memory ─► M2 eligibility (YIELD GATE) ─► M3 conflict set
-   ─► M4 run inputs ─► M5 run matrix (GPU) ─► M6 faithfulness scoring ─► M10 analysis
+   ─► M4 run inputs ─► M5 run matrix (GPU) ─► M6 faithfulness scoring
+   ─► M7 LLM-agent reflection audit ─► M10 analysis
 ```
 
 **The eligibility gate (the core idea).** An item is usable only if the model **truly knows** the fact:
@@ -170,25 +171,26 @@ Closed-book: `<answer> The New York Times </answer>` (5/5) ✅ KEPT.
 
 ### 5.2 Headline run matrix (M6)
 
-| Cell (model × prompt) | n | **faithful-EM** | faithful-F1 | memorised-EM | malformed | reflection-mention |
+| Cell (model × prompt) | n | **faithful-EM** | faithful-F1 | memorised-EM | malformed | refl-conflict (M7 audit) |
 |---|---:|---:|---:|---:|---:|---:|
-| **tiser × tiser** ★ | 1176 | **0.787** | 0.917 | 0.230 | 0.002 | **0.038** |
+| **tiser × tiser** ★ | 1176 | **0.787** | 0.917 | 0.230 | 0.002 | **0.042** |
 | tiser × standard | 1176 | 0.574 | 0.771 | 0.297 | 0.000 | — |
-| base × tiser | 1176 | 0.561 | 0.739 | 0.295 | 0.003 | 0.121 |
+| base × tiser | 1176 | 0.561 | 0.739 | 0.295 | 0.003 | 0.074 |
 | base × standard | 1176 | 0.380 | 0.605 | 0.332 | 0.000 | — |
 
 - **Prompt axis (H1):** 0.787 − 0.574 = **+0.213**.
 - **Model axis (SFT):** 0.787 − 0.561 = **+0.226**.
-- **H2:** the most faithful cell mentions the conflict the *least* (3.8%); vanilla base *talks* about it more (12.1%) yet is *less* faithful → mentioning ≠ resolving.
+- **H2:** the most faithful cell names the conflict rarely (4.2% by M7 audit); vanilla base names it more often (7.4%) yet is *less* faithful → naming ≠ resolving.
+- **Lexical proxy note:** M6 also persists keyword-style `reflection_mention_rate` for continuity with earlier analysis: 3.8% for tiser×tiser and 12.1% for base×tiser. These proxy rates are not the final conflict-detection metric.
 
 ### 5.3 Per-class (★ star cell)
 
-| Class | n | faithful-EM | memorised-EM | reading |
-|---|---:|---:|---:|---|
-| **C1** date-shift | 203 | 0.936 | 0.010 | follows the text |
-| **C2** entity-swap | 520 | 0.971 | 0.002 | follows the text |
-| **C3** order-reversal | 333 | **0.366** | **0.477** | **memory wins** |
-| **control** | 120 | 0.900 | 0.900 | sanity floor holds |
+| Class | n | faithful-EM | memorised-EM | agent-refl | reading |
+|---|---:|---:|---:|---:|---|
+| **C1** date-shift | 203 | 0.936 | 0.010 | 0.020 | follows the text |
+| **C2** entity-swap | 520 | 0.971 | 0.002 | 0.008 | follows the text |
+| **C3** order-reversal | 333 | **0.366** | **0.477** | 0.111 | **memory wins** |
+| **control** | 120 | 0.900 | 0.900 | 0.033 | sanity floor holds |
 
 ### 5.4 Cross-model memory overlap (color, not a gate)
 
@@ -199,7 +201,7 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 ## 6. What we conclude
 
 - **H1: TISER is a more faithful reader.** The timeline+reflection scaffold forces the model onto the text; strip it (plain prompt) and memory reasserts itself. The SFT compounds this (+0.226).
-- **H2: but it is silent override, not auditing.** Every faithful reflection in §4 says *"there are no errors"*, it never says *"this contradicts what I know."* Faithfulness is **incidental, not reasoned**. This is the sharpest result: it bounds the value of the reflection stage the TISER paper sells.
+- **H2: but it is silent override, not auditing.** The M7 audit shows that explicit conflict naming is rare even when the answer follows the edited context. Faithfulness is usually **incidental, not reasoned**. This is the sharpest result: it bounds the value of the reflection stage the TISER paper sells.
 - **H4: order-reversal is the blind spot.** C1/C2 (entity/date binding) are nearly solved; C3 (event-event ordering) is where the fine-tune reverts to remembered order and even fabricates a supporting timeline (Example B). 
 - **Control validates the instrument:** edits don't break contexts (0.900 floor), so the C3 drop is a genuine conflict effect.
 
@@ -207,8 +209,8 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 
 ## 7. Caveats (state these in the write-up)
 
-1. **Single-decode point estimates.** All numbers are one greedy decode, no CIs yet. The **analysis phase** adds bootstrap CIs + a paired **McNemar** test (H1 prompt-axis, model-axis) — cheap, CPU-only, no re-generation.
-2. **H2 rests on a lexical proxy.** "Mentions conflict" = a keyword match over `<reflection>`. It's brittle both ways; an LLM judge would harden it (future work). The qualitative reading in §4 backs the proxy.
+1. **Single-decode point estimates.** All cell scores are one greedy decode. Final analysis reports item-level bootstrap CIs and paired **McNemar** tests for the prompt and model axes.
+2. **H2 uses one automated LLM-agent audit.** The audit supersedes the lexical keyword proxy, but it is still one automated judge, not a human-calibrated multi-judge panel. It agrees with the discarded lexical proxy only moderately, so report it as an audit signal rather than ground-truth psychology.
 3. **The eligible set is a stress sample.** By construction it is **well-known entities** (strongest memory, hardest faithfulness case). Report "78.7% faithful" as *"on the items where memory should fight hardest,"* not a general rate. (This bias is also exactly the H3 fame gradient — see Plan §11.)
 4. **A normalisation edge case.** Some gold strings carry a mojibake (`u2013` for an en-dash); vanilla base sometimes outputs the *correct* en-dash and is wrongly scored unfaithful (seen in Example A / C1, base cell). The analysis pass applies a Unicode-normalising EM — it can only *raise* the base cells slightly, not change the story.
 
@@ -216,7 +218,7 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 
 ## 8. Asset map (every claim is backed by a file)
 
-> Repo branch `ext/context-memory-conflict`; artifacts under `outputs/conflict/<stage>/`. `outputs/` is gitignored → only the small JSON reports are committed; the large `*.jsonl` live locally / on the pod.
+> Repo branch `ext/context-memory-conflict`; canonical artifacts were produced under the conflict pipeline directories and may be mirrored under `results/context_memory_conflict/` in local checkouts. Large JSONL and audit artifacts can live on the run machine; report claims should cite the stage artifact, not terminal output.
 
 | Phase | Module | Key artifact(s) | rows | what it holds |
 |---|---|---|---:|---|
@@ -227,6 +229,8 @@ When **both** models are confident closed-book, they agree **81%** (222/274), wo
 | **M4** run inputs | `src/conflict/prompts.py` | `run_inputs/{tiser,standard}.jsonl` | 1,176 ×2 | exact prompts fed to the model, per style |
 | **M5** generations | `src/conflict/run.py` | `generations/{tiser,base}__{tiser,standard}.jsonl` | 1,176 ×4 | raw model completions + `run_meta.json` (git SHA, vLLM ver) |
 | **M6** scored | `src/conflict/score.py` | `scored/<cell>.jsonl` + `<cell>.metrics.json` | 1,176 ×4 | per-row faithful/memorised/guardrail EM+F1, `reflection_text`, mention flag |
+| **M7** audit | post-hoc LLM-agent reflection audit | `scored/audit/<cell>.audit.csv` | TISER-prompt cells | structured `conflict_raised`, `conflict_kind`, rationale; final H2 detection metric |
+| **M10** analysis | `scripts/conflict/07_confidence_vs_reflection.py` + analysis scripts | `confidence_vs_reflection/*` and report tables | derived | confidence stratification, flagged-row analysis, bootstrap/McNemar summaries |
 | **baseline** | (frozen) | `…/baseline_full/tiser_qwen7b_full_FULL/…/metrics.json` + `predictions.jsonl` | 22,014 | macro-EM 0.878 / F1 0.949, per-split |
 
 Thin CLIs: `scripts/conflict/0{1..6}_*.py`. Config: `config/conflict.yaml`. Stage reports carry the headline counts (`subset_report.json`, `conflict_report.json`, `<cell>.metrics.json`).
@@ -235,14 +239,14 @@ Thin CLIs: `scripts/conflict/0{1..6}_*.py`. Config: `config/conflict.yaml`. Stag
 
 ## 9. Status & what's next
 
-- **Experimenting phase: CLOSED**, M0→M6 complete; H1/H2/H4 answered.
-- **Analysis phase (current):** aggregate the four `scored/*` files → bootstrap CIs, paired McNemar (H1 + model axis), per-class breakdown (the C3 inversion), Unicode-EM fix, a small reflection gallery for silent override. **No new generations.**
-- **Future Paths (scoped out):** LLM conflict-detection judge (hardens H2), entity-fame (unlocks H3), human validation, GPT-4o ceiling. Full rationale in [[Extension_ContextMemoryConflict_ExperimentPlan]] §11.
+- **Experimenting phase: CLOSED**, M0→M7 and M10 complete; H1/H2/H4 answered.
+- **Final analysis:** four scored cells plus the M7 audit support the report tables: bootstrap CIs, paired McNemar tests, per-class breakdown, confidence-vs-reflection analysis, and the C3 inversion. **No new generations are needed.**
+- **Future Paths (scoped out):** entity-fame (unlocks H3), human validation / second-judge calibration, and the GPT-4o ceiling cell. Full rationale in [[Extension_ContextMemoryConflict_ExperimentPlan]] §11.
 
 ---
 
 ## 10. Reproducibility
 
-- Each stage writes a versioned artifact + `run_meta.json` (git SHA, lib versions incl. vLLM, resolved config) under `outputs/conflict/<stage>/`.
+- Each stage writes a versioned artifact + `run_meta.json` (git SHA, lib versions incl. vLLM, resolved config) under the conflict artifact root for the run machine; local checkouts may mirror the compact reports under `results/context_memory_conflict/`.
 - M1/M5 GPU runs: **vLLM on H100 SXM**, bf16, `VLLM_USE_DEEP_GEMM=0`; adapter at `model/tiser_qwen7b_full/adapter`. `base` = plain Qwen2.5-7B-Instruct.
 - Design/decisions: [[Extension_ContextMemoryConflict_ExperimentPlan]]. Motivation/prior work: [[Extension_ContextMemoryConflict_Presentation]].

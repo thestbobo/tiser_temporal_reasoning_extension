@@ -61,11 +61,15 @@ python scripts/tennis/generate_tennis_traces.py \
   --mode validate \
   --input-generations results/tennis_domain_adaptation/generations/tennis_trace_generations.jsonl \
   --base-records data/tennis/tennis_train.json \
-  --output data/tennis/tennis_train_traced.json \
+  --output data/tennis/tennis_train_traced_full.json \
   --report results/tennis_domain_adaptation/generations/tennis_trace_validation_report.md \
   --summary results/tennis_domain_adaptation/generations/tennis_trace_validation_summary.json
 ```
 
-Validation checks that each output is non-empty, long enough to be a real trace, contains all four required sections, has an extractable `<answer>`, and that the normalized extracted answer equals the normalized gold answer. Only valid traces are retained in `data/tennis/tennis_train_traced.json`; invalid traces are summarized in the Markdown report and JSON summary.
+Validation checks that each output is non-empty, long enough to be a real trace, contains all four required sections, has an extractable `<answer>`, and that the normalized extracted answer equals the normalized gold answer. Only valid traces are retained in `data/tennis/tennis_train_traced_full.json`; invalid traces are summarized in the Markdown report and JSON summary.
 
 The validation report includes total records, valid traces, invalid traces, answer mismatches, malformed tag counts, category-wise retention, and examples of invalid outputs.
+
+Current committed traced outputs include `data/tennis/tennis_train_traced_50.json`
+for smoke work and `data/tennis/tennis_train_traced_full.json` with 600
+validated traces for the completed tennis adaptation runs.

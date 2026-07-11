@@ -1,12 +1,14 @@
 # Agent Handoff: TISER Temporal Reasoning Codebase and Tennis Domain Adaptation Extension
 
-This document is for the next agent/developer who will build the second extension of this Deep Natural Language Processing project. The new extension is expected to stay in the same research area, temporal reasoning in language models, but shift the focus to domain adaptation in tennis.
+This document started as a handoff for building the second extension of this Deep Natural Language Processing project. The tennis extension has since been implemented far enough to produce both 0.5B standalone tennis results and 7B tennis-from-TISER transfer/adaptation results, so use this file as historical context plus current orientation rather than as an unstarted task list.
 
 The repository currently contains:
 
 - a faithful TISER baseline reproduction for temporal reasoning supervised fine-tuning;
 - a completed first extension about context-memory conflict and faithfulness under counterfactual temporal contexts;
 - committed result artifacts for that extension;
+- tennis-domain data, evaluation, training, comparison, and notebook orchestration code;
+- completed tennis result artifacts for the 0.5B standalone subexperiment and 7B tennis-from-TISER experiments;
 - reports and notebooks for reproducibility and write-up support.
 
 The most important point for the next extension: reuse the existing TISER data/model/evaluation infrastructure, but add a tennis-specific temporal QA/domain-adaptation layer instead of rewriting the training stack.
@@ -438,7 +440,8 @@ faithful EM: 0.787
 faithful F1: 0.917
 memorised EM: 0.230
 malformed rate: 0.002
-reflection mention rate: 0.038
+M6 lexical reflection-mention proxy: 0.038
+M7 LLM-agent conflict-naming rate: 0.042
 ```
 
 Full 2x2 faithful EM:
@@ -453,7 +456,7 @@ base model  + standard prompt:  0.380
 Main conclusion:
 
 - TISER makes the model much more context-faithful.
-- The `<reflection>` step usually does not explicitly notice the contradiction.
+- The M7 reflection audit shows that `<reflection>` usually does not explicitly notice the contradiction.
 - Date-shift and entity-swap are mostly handled.
 - Order-reversal is the weakness: the fine-tuned model often falls back to memorized event order.
 
@@ -528,7 +531,7 @@ pip install -e .
 
 ## 15. What the Tennis Domain Adaptation Extension Should Do
 
-The new extension should study whether adapting TISER to tennis-domain temporal language improves temporal reasoning in that domain, and whether it preserves general temporal reasoning.
+The tennis extension studies whether adapting TISER to tennis-domain temporal language improves temporal reasoning in that domain, and whether it preserves general temporal reasoning.
 
 Recommended research question:
 
@@ -542,6 +545,13 @@ Recommended hypotheses:
 - H2: Tennis adaptation improves temporal ordering questions more than simple entity/date lookup questions.
 - H3: Tennis adaptation causes some forgetting on original TISER in-domain splits unless mixed with replay data.
 - H4: A TISER-style prompt remains more effective than a plain prompt in the tennis domain.
+
+Current result status:
+
+- 0.5B standalone tennis subexperiment: base standard EM 0.379 / F1 0.472, base TISER prompt EM 0.375 / F1 0.420, tennis-only full600 EM 0.464 / F1 0.516.
+- 7B original TISER transfer: `original_tiser_qwen7b_test224`, EM 0.580 / F1 0.701.
+- 7B best continued tennis adaptation: `tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011`, EM 0.732 / F1 0.856.
+- Mixed replay and original-TISER forgetting evaluation remain unreported unless their artifacts are restored from another machine.
 
 ## 16. Tennis Dataset Design
 
@@ -784,37 +794,26 @@ scripts/evaluate.py
 
 Do not mix tennis-specific assumptions into generic baseline files unless the abstraction is clean. Prefer tennis-specific modules under `src/tennis/`.
 
-## 22. Known Gaps in This Checkout
+## 22. Current Checkout Notes
 
-The first-extension report refers to modules and scripts that are not present in the checked-in `src/` tree:
+The first-extension conflict modules and scripts are present in this checkout:
 
 ```text
-src/conflict/subset.py
-src/conflict/memory.py
-src/conflict/eligibility.py
-src/conflict/perturb.py
-src/conflict/prompts.py
-src/conflict/run.py
-src/conflict/score.py
-scripts/conflict/01_*.py ... 06_*.py
+src/conflict/
+scripts/conflict/
 config/conflict.yaml
 ```
 
-The corresponding artifacts exist under `results/`, so the experiment can be understood and reported, but reproducing it from this checkout would require recovering or reimplementing those modules.
+The compact conflict artifacts are mirrored under `results/context_memory_conflict/`; some large generation/audit artifacts may still live on the machine that ran the experiment. For tennis, the source modules and result summaries are present, but some adapter checkpoints and large outputs may also live off-machine.
 
-For the tennis extension, commit the source modules as well as result summaries. Future agents should not have to infer the pipeline from JSON artifacts.
+## 23. Practical Next Tasks
 
-## 23. Practical First Tasks for the Next Agent
+1. Decide whether the final report should include the completed 7B tennis-from-TISER result family or explicitly scope the tennis section to the 0.5B subexperiment.
+2. If mixed replay or forgetting metrics exist off-machine, copy their `metrics.json`, predictions, and run metadata into the result database before making replay/preservation claims.
+3. Regenerate comparison summaries if condition names are consolidated, because some older aggregators expected folders named `base_qwen`, `original_tiser`, `tennis_only`, and `mixed_replay`.
+4. Keep `Current_Status_and_Next_Steps.md` as the canonical result ledger for report writing.
 
-1. Create `config/config_tennis_smoke.yaml` and point it at a tiny tennis JSON dataset.
-2. Add `src/tennis/prompts.py` to produce TISER-style tennis prompts and completions.
-3. Add `src/tennis/normalize.py` with Unicode-aware tennis answer normalization.
-4. Add a small fixture dataset under a git-friendly path, for example `tests/fixtures/tennis_temporal_small.json`.
-5. Add `scripts/tennis/evaluate_tennis.py` that can load an adapter and score tennis rows.
-6. Run a smoke evaluation before any training.
-7. Only then train a tennis LoRA adapter.
-
-Recommended deliverables:
+Recommended report deliverables:
 
 - `Tennis_Domain_Adaptation_Report.md`;
 - `config/config_tennis.yaml`;

@@ -17,6 +17,13 @@ The notebook supports:
 
 Do not run full training or full 7B evaluation until smoke checks pass.
 
+Current database note: several full evaluations have already been run. The
+0.5B standalone tennis results live under
+`results/tennis_domain_adaptation/scored/`; the 7B original-TISER transfer and
+tennis-from-TISER continued-adaptation grid live under
+`results/tennis_from_tiser_experiments/scored/`. Use this guide to rerun or
+extend those experiments, not as evidence that they are still missing.
+
 ## 2. Recommended Colab Runtime
 
 Use `Runtime > Change runtime type > GPU`.
@@ -124,7 +131,7 @@ Run the notebook preflight cell before any evaluation. It checks the main files 
 | Path | Required for | If missing | How to generate or fix |
 | --- | --- | --- | --- |
 | `data/tennis/tennis_test.json` | E0, E1, E2, E3 tennis-test evaluation | Full evaluation cannot run. | Rebuild tennis data with the data preparation pipeline, or restore the file from Drive/Git. |
-| `data/tennis/tennis_train_traced.json` | Meaningful tennis-only and mixed-replay training | Do not train yet. The training wrapper may inspect `tennis_train.json`, but placeholder traces abort training by default. | Use `scripts/tennis/generate_tennis_traces.py` prepare and validate modes. |
+| `data/tennis/tennis_train_traced_full.json` | Meaningful tennis-only and mixed-replay training | Do not train yet. The training wrapper may inspect `tennis_train.json`, but placeholder traces abort training by default. | Use `scripts/tennis/generate_tennis_traces.py` prepare and validate modes. |
 | `config/config_tennis.yaml` | Full 7B evaluation and full training | Full commands cannot run. | Restore the config. It should use `Qwen/Qwen2.5-7B-Instruct`. |
 | `config/config_tennis_smoke.yaml` | Smoke training or 0.5B plumbing checks | Smoke training cannot run. | Restore the config. It uses `Qwen/Qwen2.5-0.5B-Instruct` and is not compatible with 7B adapters. |
 | `model/tiser_qwen7b_full/adapter` | E1 original TISER adapter evaluation and forgetting baseline | E1 cannot run. | Copy the adapter into Colab/Drive, or update `ORIGINAL_TISER_ADAPTER` to the correct existing path. |
@@ -147,15 +154,21 @@ Step 1, mandatory first run: Smoke Base Qwen evaluation with standard and TISER-
 
 Step 2, optional after smoke passes: Full Base Qwen tennis evaluation, E0.
 
-Step 3, blocked until `model/tiser_qwen7b_full/adapter` is restored: Original TISER adapter evaluation, E1.
+Step 3, for reruns when `model/tiser_qwen7b_full/adapter` or the equivalent
+off-machine adapter is available: Original TISER adapter evaluation, E1. A full
+224-example E1 result already exists as `original_tiser_qwen7b_test224`.
 
-Step 4, optional unless training adapters: Generate and validate traces if `tennis_train_traced.json` is missing.
+Step 4, optional unless training adapters: Generate and validate traces if `tennis_train_traced_full.json` is missing.
 
-Step 5, blocked until traced tennis data exists: Train tennis-only adapter if missing.
+Step 5, if extending or rerunning: Train tennis-only adapter if missing. The
+current database already contains `tennis_train_traced_full.json`, a 0.5B
+tennis-only full600 evaluation, and a completed 7B tennis-from-TISER grid.
 
-Step 6, blocked until traced tennis data and `data/TISER_train.json` exist: Build mixed replay dataset if missing.
+Step 6, still unreported in the current database: Build mixed replay dataset if
+traced tennis data and `data/TISER_train.json` exist.
 
-Step 7, blocked until mixed replay data exists: Train mixed replay adapter if missing.
+Step 7, still unreported in the current database: Train mixed replay adapter if
+missing.
 
 Step 8, mandatory for E2 comparison: Evaluate tennis-only adapter.
 
@@ -331,7 +344,7 @@ python scripts/tennis/evaluate_tennis.py \
 
 ## 9. Training Commands
 
-Do not train unless `data/tennis/tennis_train_traced.json` exists and has validated TISER outputs. If it is missing:
+Do not train unless `data/tennis/tennis_train_traced_full.json` exists and has validated TISER outputs. If it is missing:
 
 ```text
 Do not train yet. Generate and validate TISER traces first.
@@ -342,7 +355,7 @@ Tennis-only smoke training:
 ```bash
 python scripts/tennis/train_tennis.py \
   --config config/config_tennis_smoke.yaml \
-  --train-file data/tennis/tennis_train_traced.json \
+  --train-file data/tennis/tennis_train_traced_full.json \
   --run-name tiser_tennis_smoke \
   --subset 50 \
   --epochs 1
@@ -359,7 +372,7 @@ Tennis-only full training:
 ```bash
 python scripts/tennis/train_tennis.py \
   --config config/config_tennis.yaml \
-  --train-file data/tennis/tennis_train_traced.json \
+  --train-file data/tennis/tennis_train_traced_full.json \
   --run-name tiser_tennis_only_qwen7b \
   --output-dir outputs/tiser_tennis_only_qwen7b \
   --model-dir model/tiser_tennis_only_qwen7b
@@ -375,7 +388,7 @@ Mixed replay dataset creation:
 
 ```bash
 python scripts/tennis/build_mixed_replay_data.py \
-  --tennis-train data/tennis/tennis_train_traced.json \
+  --tennis-train data/tennis/tennis_train_traced_full.json \
   --tiser-train data/TISER_train.json \
   --tiser-replay-size 500 \
   --seed 42 \
@@ -433,14 +446,14 @@ python scripts/tennis/generate_tennis_traces.py \
   --mode validate \
   --input-generations results/tennis_domain_adaptation/generations/tennis_trace_generations.jsonl \
   --base-records data/tennis/tennis_train.json \
-  --output data/tennis/tennis_train_traced.json \
+  --output data/tennis/tennis_train_traced_full.json \
   --report results/tennis_domain_adaptation/generations/tennis_trace_validation_report.md \
   --summary results/tennis_domain_adaptation/generations/tennis_trace_validation_summary.json
 ```
 
 The validation step writes:
 
-- `data/tennis/tennis_train_traced.json`
+- `data/tennis/tennis_train_traced_full.json`
 - `results/tennis_domain_adaptation/generations/tennis_trace_validation_report.md`
 - `results/tennis_domain_adaptation/generations/tennis_trace_validation_summary.json`
 
@@ -557,12 +570,12 @@ Hugging Face authentication:
 - Confirm the account has access to the model.
 - Restart the runtime after installing or logging in if imports or auth state behave inconsistently.
 
-Missing `tennis_train_traced.json`:
+Missing `tennis_train_traced_full.json`:
 
 - Do not train yet.
 - Run trace prepare mode.
 - Generate outputs externally.
-- Run validate mode to write `data/tennis/tennis_train_traced.json`.
+- Run validate mode to write `data/tennis/tennis_train_traced_full.json`.
 
 Malformed predictions:
 
@@ -601,6 +614,16 @@ Use these files for report-ready numbers:
 - `results/tennis_domain_adaptation/comparisons/category_analysis.md`
 - `results/tennis_domain_adaptation/comparisons/forgetting_analysis.md`
 - `results/tennis_domain_adaptation/comparisons/error_analysis/error_analysis_report.md`, if available
+
+Current completed tennis-test metrics:
+
+| Result | n | EM | F1 | malformed |
+| --- | ---: | ---: | ---: | ---: |
+| `base_qwen_standard_test224` | 224 | 0.379 | 0.472 | 0 |
+| `base_qwen_tiser_test224` | 224 | 0.375 | 0.420 | 5 |
+| `tennis_only_full600_test224` | 224 | 0.464 | 0.516 | 0 |
+| `original_tiser_qwen7b_test224` | 224 | 0.580 | 0.701 | 0 |
+| `tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011` | 224 | 0.732 | 0.856 | 0 |
 
 Report the main conditions:
 

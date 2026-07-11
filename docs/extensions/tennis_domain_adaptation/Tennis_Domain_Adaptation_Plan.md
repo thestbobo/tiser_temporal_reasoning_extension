@@ -18,6 +18,13 @@ The experiment should test five hypotheses:
 
 The extension is intentionally narrow: it should measure adaptation effects, not introduce a new model architecture or rewrite the baseline pipeline.
 
+Current result status: the dataset/split pipeline is complete, a 0.5B
+standalone tennis subexperiment is complete, and the 7B original-TISER transfer
+plus tennis-from-TISER continued-adaptation grid are complete. Mixed replay and
+original-TISER forgetting evaluations are not yet reportable from the current
+result database. For the canonical current numbers, see
+`Current_Status_and_Next_Steps.md`.
+
 ## 2. Relation to TISER
 
 The tennis extension should reuse the baseline TISER supervision format and model infrastructure. TISER is a supervised fine-tuning method where the model learns to emit structured temporal reasoning traces:
@@ -152,12 +159,18 @@ python scripts/tennis/generate_tennis_traces.py \
   --mode validate \
   --input-generations results/tennis_domain_adaptation/generations/tennis_trace_generations.jsonl \
   --base-records data/tennis/tennis_train.json \
-  --output data/tennis/tennis_train_traced.json \
+  --output data/tennis/tennis_train_traced_full.json \
   --report results/tennis_domain_adaptation/generations/tennis_trace_validation_report.md \
   --summary results/tennis_domain_adaptation/generations/tennis_trace_validation_summary.json
 ```
 
 Filtering keeps only traces with non-empty outputs, all four required sections, an extractable `<answer>`, and a normalized final answer that matches the normalized gold answer. This answer-match filter is necessary because traces that end in the wrong final answer would teach the supervised model an incorrect target even if the reasoning text appears plausible.
+
+Current traced training artifacts:
+
+- `data/tennis/tennis_train_traced_50.json`: 50-trace smoke subset.
+- `data/tennis/tennis_train_traced_full.json`: 600 validated traces used by
+  the completed tennis-only/continued-adaptation runs.
 
 ### Dataset Splits
 
@@ -210,15 +223,34 @@ Evaluate the base instruct model with no LoRA adapter. This estimates tennis tem
 
 ### E1: Original TISER Adapter
 
-Blocked until `model/tiser_qwen7b_full/adapter` is restored. After that adapter exists, evaluate the original TISER LoRA adapter on tennis temporal QA to test whether general TISER temporal SFT transfers to tennis-domain contexts without tennis-specific adaptation.
+Completed for the 224-example tennis test set as
+`original_tiser_qwen7b_test224` under
+`results/tennis_from_tiser_experiments/scored/`. The original TISER LoRA
+adapter transfers to tennis at EM 0.580 / F1 0.701 with zero malformed outputs.
+Use this as the 7B transfer baseline when discussing continued tennis
+adaptation.
 
 ### E2: Tennis-Only LoRA Adapter
 
-Blocked until `data/tennis/tennis_train_traced.json` exists with validated non-placeholder traces. After traced data exists, train a LoRA adapter on tennis train examples only, using TISER-style prompts and completions.
+Completed in two related forms:
+
+- 0.5B standalone tennis-only `full600`: EM 0.464 / F1 0.516 on the
+  224-example tennis test set, zero malformed outputs.
+- 7B continued adaptation from the original TISER adapter: best canonical run
+  `tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011`,
+  EM 0.732 / F1 0.856 on the 224-example tennis test set, zero malformed
+  outputs.
+
+The 7B run is the stronger domain-adaptation result; the 0.5B run is useful as
+a lightweight standalone subexperiment.
 
 ### E3: Mixed Adapter Trained on Tennis + TISER Replay
 
-Blocked until traced tennis data and `data/TISER_train.json` exist. After both exist, train a LoRA adapter on tennis train examples plus a replay subset of original TISER training data. The replay subset should be documented by size, sampling seed, source split, and category/dataset composition where available.
+Not yet reportable from the current result database. After traced tennis data
+and `data/TISER_train.json` exist on the run machine, train a LoRA adapter on
+tennis train examples plus a replay subset of original TISER training data. The
+replay subset should be documented by size, sampling seed, source split, and
+category/dataset composition where available.
 
 ### E4: Standard Prompt vs TISER Prompt Comparison
 
@@ -361,6 +393,17 @@ The planned final evaluations are:
 
 Use `--limit N` for smoke runs and `--execute` only when intentionally launching evaluation. Existing completed result folders are skipped unless `--force` is passed to the planner or `FORCE=1` is set when running the generated shell script.
 
+Completed result folders use more specific names than the original four-folder
+plan. For report-ready numbers, prefer:
+
+| Result family | Folder |
+| --- | --- |
+| 0.5B base standard | `results/tennis_domain_adaptation/scored/base_qwen_standard_test224/` |
+| 0.5B base TISER prompt | `results/tennis_domain_adaptation/scored/base_qwen_tiser_test224/` |
+| 0.5B tennis-only full600 | `results/tennis_domain_adaptation/scored/tennis_only_full600_test224/` |
+| 7B original TISER transfer | `results/tennis_from_tiser_experiments/scored/original_tiser_qwen7b_test224/` |
+| 7B best continued tennis adaptation | `results/tennis_from_tiser_experiments/scored/tennis_from_tiser_e2_lr0.0002_bs4_ga4_r16_a32_d0p05_20260616_104036_011/` |
+
 Build the fixed original TISER sample before final forgetting runs:
 
 ```bash
@@ -454,7 +497,8 @@ The report includes condition-level overview metrics, category-wise error counts
 
 ### Phase 5: Baseline Evaluation
 
-- Evaluate E0 and E1 on `tennis_dev` and `tennis_test`.
+- Evaluate E0 and E1 on `tennis_dev` and `tennis_test`. The 7B E1 tennis-test
+  evaluation is complete as `original_tiser_qwen7b_test224`.
 - Evaluate E1 on `original_TISER_sample`.
 - Save predictions, extracted answers, metrics, and malformed-output diagnostics.
 - Use dev results only for implementation debugging, not final claims.
@@ -529,7 +573,9 @@ Each condition folder writes `predictions.jsonl`, `metrics.json`, `metrics_repor
 
 ### Phase 6: Tennis-Only Training
 
-- Train E2 using tennis train examples only.
+- Train E2 using tennis train examples only. A 0.5B full600 adapter and a 7B
+  continued-adaptation grid have already been evaluated; preserve their run
+  metadata when updating report tables.
 - Save the exact config, adapter path, run metadata, and training data manifest.
 - Do not overwrite the original TISER adapter.
 - Run the same tennis and original_TISER_sample evaluations as E1.
