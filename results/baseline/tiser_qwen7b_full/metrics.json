@@ -1,0 +1,47 @@
+{
+  "per_split": {
+    "tempreason_l2_test": {
+      "em": 0.9073559384843431,
+      "f1": 0.9292666558517723,
+      "n": 5397
+    },
+    "tempreason_l3_test": {
+      "em": 0.9611387257117036,
+      "f1": 0.9743004278931681,
+      "n": 4426
+    },
+    "tgqa_test": {
+      "em": 0.5708685162846804,
+      "f1": 0.8698172972576336,
+      "n": 3316
+    },
+    "timeqa_easy_test": {
+      "em": 0.9796463129796463,
+      "f1": 0.9889040455976584,
+      "n": 2997
+    },
+    "timeqa_hard_test": {
+      "em": 0.9701104613385315,
+      "f1": 0.9806609305160893,
+      "n": 3078
+    },
+    "tot_semantic_test": {
+      "em": 0.38107142857142856,
+      "f1": 0.38107142857142856,
+      "n": 2800
+    }
+  },
+  "macro_splits": [
+    "tgqa_test",
+    "tempreason_l2_test",
+    "tempreason_l3_test",
+    "timeqa_easy_test",
+    "timeqa_hard_test"
+  ],
+  "macro_em": 0.8778239909597809,
+  "macro_f1": 0.9485898714232643,
+  "n_total": 22014,
+  "n_malformed": 460,
+  "config_name": "tiser_qwen7b_full",
+  "adapter_dir": "/workspace/tiser_temporal_reasoning_extension/model/tiser_qwen7b_full/adapter"
+}

@@ -8,13 +8,13 @@ paths:
   test_file: data/TISER_test.json
   model_dir: model
   output_dir: outputs
-  local_source_dir: "/Users/gabrieleadorni/Documents/POLITO/Magistrale Data Science Engineering/Deep Natural Language Processing/TISER-main/data"
+  local_source_dir: "local_data"    # optional: dir with real TISER_*.json to copy instead of downloading
   hf_dataset_id: AmazonScience/TISER
 
 model:
   name: Qwen/Qwen2.5-7B-Instruct        # swap to -3B-Instruct / -1.5B-Instruct, no code change
-  load_in_4bit: true                     # true = QLoRA (smoke-validated). false = bf16 base LoRA
-                                         #   (~20-40% faster on H100, fits 80GB, closer to paper)
+  load_in_4bit: false                    # false = bf16 base LoRA (what the reported full run used;
+                                         #   fits 80GB). true = QLoRA for smaller GPUs
   bnb_4bit_quant_type: nf4
   bnb_4bit_use_double_quant: true
   # compute dtype is auto: bf16 if supported (A100) else fp16 (T4)

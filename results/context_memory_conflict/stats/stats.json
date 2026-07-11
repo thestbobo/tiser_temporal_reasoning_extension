@@ -1,0 +1,73 @@
+{
+  "n_rows": 1176,
+  "metric": "faithful_em",
+  "bootstrap": {
+    "resamples": 2000,
+    "seed": 42,
+    "paired": true
+  },
+  "cells": {
+    "tiser__tiser": {
+      "faithful_em": 0.7865646258503401,
+      "ci95": [
+        0.7610544217687075,
+        0.8095238095238095
+      ]
+    },
+    "tiser__standard": {
+      "faithful_em": 0.5739795918367347,
+      "ci95": [
+        0.5459183673469388,
+        0.6028911564625851
+      ]
+    },
+    "base__tiser": {
+      "faithful_em": 0.5612244897959183,
+      "ci95": [
+        0.5314625850340136,
+        0.5892857142857143
+      ]
+    },
+    "base__standard": {
+      "faithful_em": 0.38010204081632654,
+      "ci95": [
+        0.3520408163265306,
+        0.407312925170068
+      ]
+    }
+  },
+  "axes": {
+    "prompt_axis": {
+      "cells": [
+        "tiser__tiser",
+        "tiser__standard"
+      ],
+      "delta_faithful_em": 0.2125850340136054,
+      "ci95": [
+        0.1870748299319728,
+        0.23809523809523808
+      ],
+      "mcnemar": {
+        "discordant_first_only": 266,
+        "discordant_second_only": 16,
+        "chi2_cc": 219.86170212765958
+      }
+    },
+    "model_axis": {
+      "cells": [
+        "tiser__tiser",
+        "base__tiser"
+      ],
+      "delta_faithful_em": 0.22534013605442182,
+      "ci95": [
+        0.19642857142857142,
+        0.2542517006802721
+      ],
+      "mcnemar": {
+        "discordant_first_only": 316,
+        "discordant_second_only": 51,
+        "chi2_cc": 189.90735694822888
+      }
+    }
+  }
+}
